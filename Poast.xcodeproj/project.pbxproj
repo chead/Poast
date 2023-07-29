@@ -16,6 +16,7 @@
 		C24213BD2A7567A70012950B /* PoastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213BC2A7567A70012950B /* PoastTests.swift */; };
 		C24213C72A7567A70012950B /* PoastUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213C62A7567A70012950B /* PoastUITests.swift */; };
 		C24213C92A7567A70012950B /* PoastUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213C82A7567A70012950B /* PoastUITestsLaunchTests.swift */; };
+		C2D044C52A756A2F001DC946 /* SwiftBluesky in Frameworks */ = {isa = PBXBuildFile; productRef = C2D044C42A756A2F001DC946 /* SwiftBluesky */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2D044C52A756A2F001DC946 /* SwiftBluesky in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +151,9 @@
 			dependencies = (
 			);
 			name = Poast;
+			packageProductDependencies = (
+				C2D044C42A756A2F001DC946 /* SwiftBluesky */,
+			);
 			productName = Poast;
 			productReference = C24213A32A7567A40012950B /* Poast.app */;
 			productType = "com.apple.product-type.application";
@@ -221,6 +226,9 @@
 				Base,
 			);
 			mainGroup = C242139A2A7567A40012950B;
+			packageReferences = (
+				C2D044C32A756A2F001DC946 /* XCRemoteSwiftPackageReference "SwiftBluesky" */,
+			);
 			productRefGroup = C24213A42A7567A40012950B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -591,6 +599,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C2D044C32A756A2F001DC946 /* XCRemoteSwiftPackageReference "SwiftBluesky" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/chead/SwiftBluesky.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C2D044C42A756A2F001DC946 /* SwiftBluesky */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2D044C32A756A2F001DC946 /* XCRemoteSwiftPackageReference "SwiftBluesky" */;
+			productName = SwiftBluesky;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		C24213B12A7567A60012950B /* Poast.xcdatamodeld */ = {
