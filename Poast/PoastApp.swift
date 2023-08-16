@@ -9,12 +9,11 @@ import SwiftUI
 
 @main
 struct PoastApp: App {
-    let persistenceController = PersistenceController.shared
+    let dependencyProvider = DependencyProvider.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            PoastAccountsView(accountsViewModel: PoastAccountsViewModel(provider: dependencyProvider))
         }
     }
 }
