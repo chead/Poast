@@ -9,11 +9,16 @@ import SwiftUI
 
 @main
 struct PoastApp: App {
-    let dependencyProvider = DependencyProvider.shared
+    init() {
+        DependencyProvider.register(PoastSessionService())
+        DependencyProvider.register(PoastAccountService())
+        DependencyProvider.register(PoastCredentialsService())
+        DependencyProvider.register(PoastBlueskyService())
+    }
 
     var body: some Scene {
         WindowGroup {
-            PoastAccountsView(accountsViewModel: PoastAccountsViewModel(provider: dependencyProvider))
+            PoastAccountsView(accountsViewModel: PoastAccountsViewModel())
         }
     }
 }

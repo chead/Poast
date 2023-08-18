@@ -13,12 +13,8 @@ enum PoastSessionServiceError: Error {
     case store
 }
 
-class PoastSessionService: ServiceRepresentable {
-    private var sessionStore: PoastSessionStore!
-    
-    required init(provider: DependencyProviding) {
-        self.sessionStore = provider.register()
-    }
+class PoastSessionService {
+    private var sessionStore: PoastSessionStore = DependencyProvider.resolve()
     
     func createSession(account: PoastAccountObject) -> Result<PoastSessionObject, PoastSessionServiceError> {
         if let oldSession = account.session {

@@ -10,9 +10,9 @@ import CoreData
 import SwiftBluesky
 
 protocol UtilityProviding {
-    func register() -> NSManagedObjectContext
-    func register() -> BlueskyClient
-    func register() -> PoastCredentialsStore
-    func register() -> PoastSessionStore
-    func register() -> PoastAccountStore
+    static func resolve() -> NSManagedObjectContext
+    static func resolve() -> BlueskyClient
+    static func resolve() -> PoastCredentialsStore
+    static func resolve() -> PoastSessionStore
+    static func resolve() -> PoastAccountStore
 }

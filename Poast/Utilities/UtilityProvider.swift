@@ -12,13 +12,15 @@ import SwiftBluesky
 final class UtilityProvider: UtilityProviding {
     private var instances = [String: Any]()
 
-    func register() -> NSManagedObjectContext {
+    private static var shared = UtilityProvider()
+
+    static func resolve() -> NSManagedObjectContext {
         let key = "\(NSManagedObjectContext.self)"
 
-        guard let managedObjectContext = instances[key] as? NSManagedObjectContext else {
+        guard let managedObjectContext = shared.instances[key] as? NSManagedObjectContext else {
             let managedObjectContext = PersistenceController.shared.container.viewContext
 
-            instances[key] = managedObjectContext
+            shared.instances[key] = managedObjectContext
             
             return managedObjectContext
         }
@@ -26,13 +28,13 @@ final class UtilityProvider: UtilityProviding {
         return managedObjectContext
     }
 
-    func register() -> BlueskyClient {
+    static func resolve() -> BlueskyClient {
         let key = "\(BlueskyClient.self)"
 
-        guard let client = instances[key] as? BlueskyClient else {
+        guard let client = shared.instances[key] as? BlueskyClient else {
             let client = BlueskyClient()
             
-            instances[key] = client
+            shared.instances[key] = client
             
             return client
         }
@@ -40,13 +42,13 @@ final class UtilityProvider: UtilityProviding {
         return client
     }
 
-    func register() -> PoastCredentialsStore {
+    static func resolve() -> PoastCredentialsStore {
         let key = "\(PoastCredentialsStore.self)"
 
-        guard let credentialsStore = instances[key] as? PoastCredentialsStore else {
+        guard let credentialsStore = shared.instances[key] as? PoastCredentialsStore else {
             let credentialsStore = PoastCredentialsStore()
 
-            instances[key] = credentialsStore
+            shared.instances[key] = credentialsStore
             
             return credentialsStore
         }
@@ -54,13 +56,13 @@ final class UtilityProvider: UtilityProviding {
         return credentialsStore
     }
 
-    func register() -> PoastSessionStore {
+    static func resolve() -> PoastSessionStore {
         let key = "\(PoastSessionStore.self)"
 
-        guard let sessionStore = instances[key] as? PoastSessionStore else {
-            let sessionStore = PoastSessionStore(managedObjectContext: self.register())
+        guard let sessionStore = shared.instances[key] as? PoastSessionStore else {
+            let sessionStore = PoastSessionStore(managedObjectContext: self.resolve())
             
-            instances[key] = sessionStore
+            shared.instances[key] = sessionStore
             
             return sessionStore
         }
@@ -68,13 +70,13 @@ final class UtilityProvider: UtilityProviding {
         return sessionStore
     }
     
-    func register() -> PoastAccountStore {
+    static func resolve() -> PoastAccountStore {
         let key = "\(PoastAccountStore.self)"
 
-        guard let accountStore = instances[key] as? PoastAccountStore else {
-            let accountStore = PoastAccountStore(managedObjectContext: self.register())
+        guard let accountStore = shared.instances[key] as? PoastAccountStore else {
+            let accountStore = PoastAccountStore(managedObjectContext: self.resolve())
             
-            instances[key] = accountStore
+            shared.instances[key] = accountStore
             
             return accountStore
         }

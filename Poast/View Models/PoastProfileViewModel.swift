@@ -37,17 +37,12 @@ enum PoastProfileViewModelError: Error {
 }
 
 class PoastProfileViewModel: ObservableObject {
-    private let blueskyService: PoastBlueskyService?
+    @Dependency private(set) var blueskyService: PoastBlueskyService
+
     private let session: PoastSessionObject?
     private let handle: String
 
-    required init(provider: DependencyProviding? = nil, session: PoastSessionObject? = nil, handle: String) {
-        if let provider = provider {
-            self.blueskyService = provider.register(provider: provider)
-        } else {
-            self.blueskyService = nil
-        }
-
+    required init(session: PoastSessionObject? = nil, handle: String) {
         self.session = session
         self.handle = handle
     }
@@ -55,10 +50,6 @@ class PoastProfileViewModel: ObservableObject {
     func getProfile() async -> Result<PoastProfileModel?, PoastProfileViewModelError> {
         guard let session = session else {
             return .failure(.session)
-        }
-
-        guard let blueskyService = self.blueskyService else {
-            return .failure(.service)
         }
 
         switch(await blueskyService.getProfiles(session: session, actors: [session.account!.handle!])) {

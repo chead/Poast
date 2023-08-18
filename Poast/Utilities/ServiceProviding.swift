@@ -8,5 +8,6 @@
 import Foundation
 
 protocol ServiceProviding {
-    func register<Service: ServiceRepresentable>(provider: DependencyProviding) -> Service
+    static func register<Dependency>(_ dependency: Dependency)
+    static func resolve<Dependency>() -> Dependency
 }

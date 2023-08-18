@@ -35,26 +35,17 @@ enum PoastSignInViewModelError: Error {
 }
 
 class PoastSignInViewModel: ObservableObject {
-    private let blueskyService: PoastBlueskyService?
+    @Dependency private(set) var blueskyService: PoastBlueskyService
     
-    required init(provider: DependencyProviding? = nil) {
-        if let provider = provider {
-            self.blueskyService = provider.register(provider: provider)
-        } else {
-            self.blueskyService = nil
-        }
-    }
+    required init() {}
     
     func signIn(host: URL, handle: String, password: String) async -> Result<PoastSessionObject, PoastSignInViewModelError> {
-        switch(await self.blueskyService?.createSession(host: host, handle: handle, password: password)) {
+        switch(await self.blueskyService.createSession(host: host, handle: handle, password: password)) {
         case .success(let sessionObject):
             return .success(sessionObject)
         
         case .failure(let error):
             return .failure(PoastSignInViewModelError(blueskyServiceError: error))
-
-        case .none:
-            return .failure(.unknown)
         }
     }
 }

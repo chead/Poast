@@ -42,18 +42,11 @@ enum PoastBlueskyServiceError: Error {
     }
 }
 
-class PoastBlueskyService: ServiceRepresentable {
-    private let blueskyClient: BlueskyClient!
-    private let sessionService: PoastSessionService!
-    private let credentialsService: PoastCredentialsService!
-    private let accountService: PoastAccountService!
-    
-    required init(provider: DependencyProviding) {
-        self.blueskyClient = provider.register()
-        self.sessionService = provider.register(provider: provider)
-        self.credentialsService = provider.register(provider: provider)
-        self.accountService = provider.register(provider: provider)
-    }
+class PoastBlueskyService {
+    private let blueskyClient: BlueskyClient = DependencyProvider.resolve()
+    private let sessionService: PoastSessionService = DependencyProvider.resolve()
+    private let credentialsService: PoastCredentialsService = DependencyProvider.resolve()
+    private let accountService: PoastAccountService = DependencyProvider.resolve()
     
     func createSession(host: URL, handle: String, password: String) async -> Result<PoastSessionObject, PoastBlueskyServiceError> {
         do {

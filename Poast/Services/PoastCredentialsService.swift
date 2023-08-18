@@ -11,12 +11,8 @@ enum PoastCredentialsServiceError: Error {
     case store
 }
 
-class PoastCredentialsService: ServiceRepresentable {
-    private var credentialsStore: PoastCredentialsStore!
-
-    required init(provider: DependencyProviding) {
-        self.credentialsStore = provider.register()
-    }
+class PoastCredentialsService {
+    private var credentialsStore: PoastCredentialsStore = DependencyProvider.resolve()
 
     func addCredentials(account: PoastAccountObject, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)

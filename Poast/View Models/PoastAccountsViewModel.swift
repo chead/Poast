@@ -13,21 +13,9 @@ enum PoastAccountsViewModelError: Error {
 }
 
 class PoastAccountsViewModel: ObservableObject {
-    private let accountsService: PoastAccountService?
-
-    required init(provider: DependencyProviding? = nil) {
-        if let provider = provider {
-            self.accountsService = provider.register(provider: provider)
-        } else {
-            self.accountsService = nil
-        }
-    }
+    @Dependency private(set) var accountsService: PoastAccountService
 
     func getAccounts() -> Set<PoastAccountObject> {
-        guard let accountsService = self.accountsService else {
-            return []
-        }
-
         switch(accountsService.getAccounts()) {
         case .success(let accounts):
             return accounts

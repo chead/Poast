@@ -9,33 +9,43 @@ import Foundation
 import CoreData
 import SwiftBluesky
 
+@propertyWrapper
+struct Dependency<T> {
+    var wrappedValue: T
+
+    init() {
+        self.wrappedValue = DependencyProvider.resolve()
+    }
+}
+
 class DependencyProvider: DependencyProviding {
-    private let serviceProvider = ServiceProvider()
-    private let utilityProvider = UtilityProvider()
-    
     static let shared = DependencyProvider()
     
-    func register<Service: ServiceRepresentable>(provider: DependencyProviding) -> Service {
-        return serviceProvider.register(provider: provider)
+    static func register<Dependency>(_ dependency: Dependency) {
+        ServiceProvider.register(dependency)
     }
 
-    func register() -> NSManagedObjectContext {
-        return utilityProvider.register()
+    static func resolve<Dependency>() -> Dependency {
+        ServiceProvider.resolve()
+    }
+
+    static func resolve() -> NSManagedObjectContext {
+        return UtilityProvider.resolve()
     }
     
-    func register() -> BlueskyClient {
-        return utilityProvider.register()
+    static func resolve() -> BlueskyClient {
+        return UtilityProvider.resolve()
     }
     
-    func register() -> PoastCredentialsStore {
-        return utilityProvider.register()
+    static func resolve() -> PoastCredentialsStore {
+        return UtilityProvider.resolve()
     }
     
-    func register() -> PoastSessionStore {
-        return utilityProvider.register()
+    static func resolve() -> PoastSessionStore {
+        return UtilityProvider.resolve()
     }
     
-    func register() -> PoastAccountStore {
-        return utilityProvider.register()
+    static func resolve() -> PoastAccountStore {
+        return UtilityProvider.resolve()
     }
 }

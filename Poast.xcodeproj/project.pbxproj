@@ -37,7 +37,6 @@
 		C2D045402A798AB3001DC946 /* DependencyProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D0453F2A798AB3001DC946 /* DependencyProviding.swift */; };
 		C2D045422A798AEA001DC946 /* ServiceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D045412A798AEA001DC946 /* ServiceProviding.swift */; };
 		C2D045442A798AF5001DC946 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D045432A798AF5001DC946 /* ServiceProvider.swift */; };
-		C2D045462A798BB4001DC946 /* ServiceRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D045452A798BB4001DC946 /* ServiceRepresentable.swift */; };
 		C2D0454B2A798E4C001DC946 /* PoastAccountsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D0454A2A798E4C001DC946 /* PoastAccountsViewModel.swift */; };
 		C2D0454D2A79D02E001DC946 /* PoastAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D0454C2A79D02E001DC946 /* PoastAccountsView.swift */; };
 		C2D0458E2A7AC750001DC946 /* UtilityProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D0458D2A7AC750001DC946 /* UtilityProviding.swift */; };
@@ -95,7 +94,6 @@
 		C2D0453F2A798AB3001DC946 /* DependencyProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviding.swift; sourceTree = "<group>"; };
 		C2D045412A798AEA001DC946 /* ServiceProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviding.swift; sourceTree = "<group>"; };
 		C2D045432A798AF5001DC946 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
-		C2D045452A798BB4001DC946 /* ServiceRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceRepresentable.swift; sourceTree = "<group>"; };
 		C2D0454A2A798E4C001DC946 /* PoastAccountsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastAccountsViewModel.swift; sourceTree = "<group>"; };
 		C2D0454C2A79D02E001DC946 /* PoastAccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastAccountsView.swift; sourceTree = "<group>"; };
 		C2D0458D2A7AC750001DC946 /* UtilityProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityProviding.swift; sourceTree = "<group>"; };
@@ -240,7 +238,6 @@
 				C2D044E82A78A567001DC946 /* Keychain.swift */,
 				C2D0453F2A798AB3001DC946 /* DependencyProviding.swift */,
 				C2D0453D2A798A9B001DC946 /* DependencyProvider.swift */,
-				C2D045452A798BB4001DC946 /* ServiceRepresentable.swift */,
 				C2D045412A798AEA001DC946 /* ServiceProviding.swift */,
 				C2D045432A798AF5001DC946 /* ServiceProvider.swift */,
 				C2D0458D2A7AC750001DC946 /* UtilityProviding.swift */,
@@ -412,7 +409,6 @@
 				C2A8D6CA2A7BFE69005D9235 /* PoastSignInView.swift in Sources */,
 				C2D045422A798AEA001DC946 /* ServiceProviding.swift in Sources */,
 				C2D045402A798AB3001DC946 /* DependencyProviding.swift in Sources */,
-				C2D045462A798BB4001DC946 /* ServiceRepresentable.swift in Sources */,
 				C2D0453E2A798A9B001DC946 /* DependencyProvider.swift in Sources */,
 				C2D0454B2A798E4C001DC946 /* PoastAccountsViewModel.swift in Sources */,
 				C2222C622A8421E7000C7C45 /* PoastProfileViewModel.swift in Sources */,

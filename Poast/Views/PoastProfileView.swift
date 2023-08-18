@@ -20,7 +20,11 @@ struct PoastProfileView: View {
                     image
                         .resizable()
                         .scaledToFill()
-                } placeholder: {}
+                } placeholder: {
+                    Rectangle()
+                        .fill(.gray)
+                        .frame(width: 200, height: 200)
+                }
                 .frame(height: 100)
             }
 
@@ -54,8 +58,8 @@ struct PoastProfileView: View {
     }
 }
 
-//struct PoastProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PoastProfileView(profileViewModel: PoastProfileViewModel(session: nil))
-//    }
-//}
+struct PoastProfileView_Previews: PreviewProvider {
+    static var previews: some View {
+        PoastProfileView(profileViewModel: PoastProfileViewModel(session: nil, handle: ""))
+    }
+}

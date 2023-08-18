@@ -8,23 +8,28 @@
 import Foundation
 
 class ServiceProvider: ServiceProviding {
-    private var instances = [String: ServiceRepresentable]()
+    private var instances = [String: AnyObject]()
 
-    func register<Service: ServiceRepresentable>(provider: DependencyProviding) -> Service {
-        let key: String = "\(Service.self)"
-        
-        guard let service = instances[key] as? Service else {
-            return instance(key: key, provider: provider)
-        }
-        
-        return service
+    private static var shared = ServiceProvider()
+
+    static func register<Dependency>(_ dependency: Dependency) {
+        shared.register(dependency)
     }
 
-    private func instance<Service: ServiceRepresentable>(key: String, provider: DependencyProviding) -> Service {
-        let service = Service(provider: provider)
+    static func resolve<Dependency>() -> Dependency {
+        shared.resolve()
+    }
+
+    private func register<Dependency>(_ dependency: Dependency) {
+        let key: String = "\(Dependency.self)"
         
-        instances[key] = service
-        
-        return service
+        instances[key] = dependency as AnyObject
+    }
+
+    private func resolve<Dependency>() -> Dependency {
+        let key = String(describing: Dependency.self)
+        let dependency = instances[key] as? Dependency
+
+        return dependency!
     }
 }

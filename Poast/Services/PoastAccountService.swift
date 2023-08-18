@@ -11,16 +11,12 @@ enum PoastAccountServiceError: Error {
     case store
 }
 
-class PoastAccountService: ServiceRepresentable {
+class PoastAccountService {
     private enum UserDefaultsKeys: String {
         case activeAccount = "ActiveAccount"
     }
 
-    private var accountStore: PoastAccountStore!
-
-    required init(provider: DependencyProviding) {
-        self.accountStore = provider.register()
-    }
+    private var accountStore: PoastAccountStore = DependencyProvider.resolve()
     
     func getAccounts() -> Result<Set<PoastAccountObject>, PoastAccountServiceError> {
         do {

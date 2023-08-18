@@ -13,15 +13,13 @@ struct PoastSignInView: View {
     @State var host: String = ""
     @State var handle: String = ""
     @State var password: String = ""
-    @State var signedInSession: PoastSessionObject? = nil
 
-    @State var showSessionView: Bool = false
-    @State var showInvalidURLAlert: Bool = false
-    @State var showUnauthorizedAlert: Bool = false
-    @State var showHostUnreachableAlert: Bool = false
-    @State var showUnknownErrorAlert: Bool = false
-
-    @Binding var accounts: [PoastAccountObject]
+    @State private var signedInSession: PoastSessionObject? = nil
+    @State private var showSessionView: Bool = false
+    @State private var showInvalidURLAlert: Bool = false
+    @State private var showUnauthorizedAlert: Bool = false
+    @State private var showHostUnreachableAlert: Bool = false
+    @State private var showUnknownErrorAlert: Bool = false
 
     var isSignInButtonDisabled: Bool {
         [host, handle, password].contains(where: \.isEmpty)
@@ -77,9 +75,6 @@ struct PoastSignInView: View {
                         switch(await self.signInViewModel.signIn(host: hostURL, handle: self.handle, password: self.password)) {
                         case .success(let sessionObject):
                             self.signedInSession = sessionObject
-
-                            self.accounts.append(sessionObject.account!)
-
                             self.showSessionView = true
 
                         case .failure(let error):
@@ -136,6 +131,6 @@ struct PoastSignInView: View {
 
 struct PoastSignInView_Previews: PreviewProvider {
     static var previews: some View {
-        PoastSignInView(signInViewModel: PoastSignInViewModel(provider: nil), accounts: .constant([]))
+        PoastSignInView(signInViewModel: PoastSignInViewModel())
     }
 }
