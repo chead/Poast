@@ -19,8 +19,6 @@ protocol PoastTimelineViewModeling {
 
 class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
     func getTimeline(session: PoastSessionObject) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
-
-
         return .success(PoastTimelineModel(posts: [
             PoastFeedViewPostModel(
                 id: "",
@@ -29,7 +27,7 @@ class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
                 author: PoastProfileModel(
                     did: "",
                     handle: "foobar.net",
-                    displayName: "Foobar",
+                    displayName: "Fooooooooooooooo bar",
                     description: "Lorem Ipsum",
                     avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
                     banner: "",

@@ -35,14 +35,8 @@ struct PoastParentPostView: View {
             }
 
             VStack(alignment: .leading) {
-                HStack {
-                    Text(self.post.author.name)
-                        .bold()
-
-                    Spacer()
-
-                    Text(self.postViewModel.getTimeAgo(date: self.post.date))
-                }
+                PoastPostHeaderView(authorName: self.post.author.name,
+                                    timeAgo: self.postViewModel.getTimeAgo(date: self.post.date))
 
                 Spacer()
 
@@ -51,8 +45,12 @@ struct PoastParentPostView: View {
                         Image(systemName: "arrowshape.turn.up.backward.fill")
 
                         Text(replyTo)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
                     }
                 }
+
+                Spacer()
 
                 Text(self.post.text)
 

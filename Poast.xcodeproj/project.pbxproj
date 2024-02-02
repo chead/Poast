@@ -21,6 +21,7 @@
 		C23D92492B6D5F7C0014F4D9 /* PoastReplyReferenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23D92482B6D5F7C0014F4D9 /* PoastReplyReferenceModel.swift */; };
 		C23D924B2B6D66280014F4D9 /* PoastFeedPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23D924A2B6D66280014F4D9 /* PoastFeedPostViewModel.swift */; };
 		C23D924D2B6D787C0014F4D9 /* PoastParentPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23D924C2B6D787C0014F4D9 /* PoastParentPostView.swift */; };
+		C24104EA2B6DA7D300EAA66C /* PoastPostHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24104E92B6DA7D300EAA66C /* PoastPostHeaderView.swift */; };
 		C24213A72A7567A40012950B /* PoastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213A62A7567A40012950B /* PoastApp.swift */; };
 		C24213AB2A7567A60012950B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C24213AA2A7567A60012950B /* Assets.xcassets */; };
 		C24213AE2A7567A60012950B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C24213AD2A7567A60012950B /* Preview Assets.xcassets */; };
@@ -95,6 +96,7 @@
 		C23D92482B6D5F7C0014F4D9 /* PoastReplyReferenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastReplyReferenceModel.swift; sourceTree = "<group>"; };
 		C23D924A2B6D66280014F4D9 /* PoastFeedPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastFeedPostViewModel.swift; sourceTree = "<group>"; };
 		C23D924C2B6D787C0014F4D9 /* PoastParentPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastParentPostView.swift; sourceTree = "<group>"; };
+		C24104E92B6DA7D300EAA66C /* PoastPostHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostHeaderView.swift; sourceTree = "<group>"; };
 		C24213A32A7567A40012950B /* Poast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Poast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C24213A62A7567A40012950B /* PoastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastApp.swift; sourceTree = "<group>"; };
 		C24213AA2A7567A60012950B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -263,9 +265,10 @@
 				C2A8D6C92A7BFE69005D9235 /* PoastSignInView.swift */,
 				C2005B4B2A966F7200ED9570 /* PoastProfileHeaderView.swift */,
 				C2222C632A842601000C7C45 /* PoastProfileView.swift */,
+				C24104E92B6DA7D300EAA66C /* PoastPostHeaderView.swift */,
+				C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */,
 				C2D3E88A2B63430D00440738 /* PoastPostView.swift */,
 				C23D924C2B6D787C0014F4D9 /* PoastParentPostView.swift */,
-				C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */,
 				C229D8ED2AC0D80900924661 /* PoastTimelineView.swift */,
 				C29362482B5C2177002BE99E /* PoastAccountSettingsView.swift */,
 			);
@@ -477,6 +480,7 @@
 				C2D3E88B2B63430D00440738 /* PoastPostView.swift in Sources */,
 				C2EDB4002B67409400C31720 /* PoastEmbedModel.swift in Sources */,
 				C229D8EE2AC0D80900924661 /* PoastTimelineView.swift in Sources */,
+				C24104EA2B6DA7D300EAA66C /* PoastPostHeaderView.swift in Sources */,
 				C29362472B5C1F6D002BE99E /* PoastTabView.swift in Sources */,
 				C24213B32A7567A60012950B /* Poast.xcdatamodeld in Sources */,
 				C29362452B5B6789002BE99E /* PoastLandingViewModel.swift in Sources */,
