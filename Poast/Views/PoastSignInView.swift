@@ -8,129 +8,153 @@
 import SwiftUI
 
 struct PoastSignInView: View {
-    @ObservedObject var signInViewModel: PoastSignInViewModel
+    struct AccountSession: Hashable {
+        var account: PoastAccountObject
+        var session: PoastSessionObject
+    }
 
-    @State var host: String = ""
-    @State var handle: String = ""
+    let signInViewModel: PoastSignInViewModel
+
+    @State var host: String
+    @State var handle: String
     @State var password: String = ""
 
-    @State private var signedInSession: PoastSessionObject? = nil
-    @State private var showSessionView: Bool = false
+    @State private var loading: Bool = false
+    @State private var signedInAccountSession: AccountSession? = nil
     @State private var showInvalidURLAlert: Bool = false
+    @State private var showAccountExistsAlert: Bool = false
+    @State private var showSessionExistsAlert: Bool = false
     @State private var showUnauthorizedAlert: Bool = false
     @State private var showHostUnreachableAlert: Bool = false
     @State private var showUnknownErrorAlert: Bool = false
 
+    init(host: String = "", handle: String = "", signInViewModel: PoastSignInViewModel) {
+        self.host = host
+        self.handle = handle
+        self.signInViewModel = signInViewModel
+    }
+
     var isSignInButtonDisabled: Bool {
-        [host, handle, password].contains(where: \.isEmpty)
+        self.loading == true || [host, handle, password].contains(where: \.isEmpty)
     }
     
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 15) {
-                Spacer()
+        VStack(alignment: .leading, spacing: 15) {
+            Spacer()
 
-                TextField("Host",
-                          text: $host,
-                          prompt: Text("Host").foregroundColor(.blue)
-                )
-                .padding(10)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.blue, lineWidth: 2)
-                }
-                .padding(.horizontal)
-                
-                TextField("Name",
-                          text: $handle,
-                          prompt: Text("Handle").foregroundColor(.blue)
-                )
-                .padding(10)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.blue, lineWidth: 2)
-                }
-                .padding(.horizontal)
+            TextField("Host",
+                      text: $host,
+                      prompt: Text("Host").foregroundColor(.gray)
+            )
+            .padding(10)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(.gray, lineWidth: 2)
+            }
+            .padding(.horizontal)
 
-                SecureField("Password",
-                            text: $password,
-                            prompt: Text("Password").foregroundColor(.red)
-                )
-                .padding(10)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.red, lineWidth: 2)
-                }.padding(.horizontal)
-                
-                Spacer()
-                
-                Button {
-                    Task {
-                        guard let hostURL = URL(string: self.host) else {
-                            self.showInvalidURLAlert = true
+            TextField("Name",
+                      text: $handle,
+                      prompt: Text("Handle").foregroundColor(.gray)
+            )
+            .padding(10)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(.gray, lineWidth: 2)
+            }
+            .padding(.horizontal)
 
-                            return
-                        }
+            SecureField("Password",
+                        text: $password,
+                        prompt: Text("Password").foregroundColor(.gray)
+            )
+            .padding(10)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(.gray, lineWidth: 2)
+            }.padding(.horizontal)
 
-                        switch(await self.signInViewModel.signIn(host: hostURL, handle: self.handle, password: self.password)) {
-                        case .success(let sessionObject):
-                            self.signedInSession = sessionObject
-                            self.showSessionView = true
+            Spacer()
 
-                        case .failure(let error):
-                            switch(error) {
-                            case .authorization:
-                                self.showUnauthorizedAlert = true
+            Button {
+                Task {
+                    guard let hostURL = URL(string: self.host) else {
+                        self.showInvalidURLAlert = true
 
-                            case .availability:
-                                self.showHostUnreachableAlert = true
+                        return
+                    }
 
-                            case .request, .service, .unknown:
-                                self.showUnknownErrorAlert = true
-                            }
+                    self.loading = true
+
+                    switch(await self.signInViewModel.signIn(host: hostURL, handle: self.handle, password: self.password)) {
+                    case .success(let accountSession):
+                        self.signedInAccountSession = AccountSession(account: accountSession.0, session: accountSession.1)
+
+                    case .failure(let error):
+                        self.loading = false
+
+                        switch(error) {
+                        case .accountExists:
+                            self.showAccountExistsAlert = true
+
+                        case .sessionExists:
+                            self.showSessionExistsAlert = true
+
+                        case .unauthorized:
+                            self.showUnauthorizedAlert = true
+
+                        case .unavailable:
+                            self.showHostUnreachableAlert = true
+
+                        default:
+                            self.showUnknownErrorAlert = true
                         }
                     }
-                } label: {
-                    Text("Sign In")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
                 }
-                .frame(height: 50)
-                .frame(maxWidth: .infinity)
-                .background(
-                    isSignInButtonDisabled ?
-                    LinearGradient(colors: [.gray], startPoint: .topLeading, endPoint: .bottomTrailing) :
-                        LinearGradient(colors: [.blue, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-                .cornerRadius(20)
-                .disabled(isSignInButtonDisabled)
-                .padding()
-                .navigationDestination(isPresented: $showSessionView) {
-                    Text("Foobar")
-//                    if let signedInAccount = self.signedInAccount {
-//                        PoastTimelineView(timelineViewModel: PoastTimelineViewModel(account: signedInAccount, provider: DependencyProvider()))
-//                    }
-                }
-                .alert("Invalid Host", isPresented: $showInvalidURLAlert) {
-                    Button("OK", role: .cancel) {}
-                }
-                .alert("Invalid handle or password", isPresented: $showUnauthorizedAlert) {
-                    Button("OK", role: .cancel) {}
-                }
-                .alert("Host unreachable", isPresented: $showHostUnreachableAlert) {
-                    Button("OK", role: .cancel) {}
-                }
-                .alert("Sign in failed", isPresented: $showUnknownErrorAlert) {
-                    Button("OK", role: .cancel) {}
-                }
+            } label: {
+                Text("Sign In")
+            }
+            .frame(maxWidth: .infinity)
+            .disabled(isSignInButtonDisabled)
+            .padding()
+            .navigationDestination(item: self.$signedInAccountSession, destination: { accountSession in
+                PoastTabView(account: accountSession.account)
+                    .environmentObject(accountSession.session)
+                    .navigationBarBackButtonHidden(true)
+
+            })
+            .alert("Invalid Host", isPresented: $showInvalidURLAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Invalid handle or password", isPresented: $showUnauthorizedAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Duplicate account", isPresented: $showAccountExistsAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Duplicate session", isPresented: $showSessionExistsAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Host unreachable", isPresented: $showHostUnreachableAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Sign in failed", isPresented: $showUnknownErrorAlert) {
+                Button("OK", role: .cancel) {}
             }
         }
+        .disabled(self.loading)
+        .blur(radius: self.loading ? 3 : 0)
+        .overlay {
+            if self.loading == true {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
+        }
+        .navigationTitle("Sign in")
+
     }
 }
 
-struct PoastSignInView_Previews: PreviewProvider {
-    static var previews: some View {
-        PoastSignInView(signInViewModel: PoastSignInViewModel())
-    }
+#Preview {
+    PoastSignInView(signInViewModel: PoastSignInViewModel())
 }

@@ -2,46 +2,76 @@
 //  PoastAccountsView.swift
 //  Poast
 //
-//  Created by Christopher Head on 8/1/23.
+//  Created by Christopher Head on 1/1/24.
 //
 
 import SwiftUI
 
 struct PoastAccountsView: View {
-    @StateObject var accountsViewModel: PoastAccountsViewModel
+    struct AccountSession: Hashable {
+        var account: PoastAccountObject
+        var session: PoastSessionObject?
+    }
 
+    let accountsViewModel: PoastAccountsViewModel
+
+    @State var selectedAccountSession: AccountSession? = nil
     @State var accounts: [PoastAccountObject] = []
-    @State private var selectedAccount: PoastAccountObject?
     @State private var showingSignInView: Bool = false
 
     var body: some View {
         NavigationStack() {
-            List(self.accounts) { account in
-                NavigationLink(account.handle!, value: account)
+            List {
+                ForEach(self.accounts) { account in
+                    VStack {
+                        Button(action: {
+                            let session = self.accountsViewModel.getSessions(account: account).first
+
+                            if session != nil {
+                                self.accountsViewModel.setActiveSession(session: session)
+                            }
+
+                            self.selectedAccountSession = AccountSession(account: account, session: session)
+                        }) {
+                            Text("\(account.handle!) @ \(account.host!.host()!)")
+                        }
+                    }
+                }
+                .onDelete { indexSet in
+                    indexSet.forEach { self.accountsViewModel.deleteAccount(account: self.accounts[$0]) }
+
+                    self.accounts.remove(atOffsets: indexSet)
+                }
             }
-            .navigationDestination(for: PoastAccountObject.self, destination: { account in
-                Text(account.handle!)
+            .navigationDestination(item: self.$selectedAccountSession, destination: { accountSession in
+                if let session = accountSession.session {
+                    PoastTabView(account: accountSession.account)
+                        .environmentObject(session)
+                        .navigationBarBackButtonHidden(true)
+                } else {
+                    PoastSignInView(host: accountSession.account.host!.absoluteString, handle: accountSession.account.handle!, signInViewModel: PoastSignInViewModel())
+                        .environmentObject(accountSession.account)
+                }
             })
             .navigationTitle("Accounts")
-            .onAppear {
-                self.accounts = self.accountsViewModel.getAccounts().sorted { $0.handle! > $1.handle! }
-            }
             .toolbar {
+                EditButton()
                 Button {
-                    showingSignInView = true
+                    self.showingSignInView = true
                 } label: {
                     Image(systemName: "plus")
                 }
                 .navigationDestination(isPresented: $showingSignInView) {
-                    PoastSignInView(signInViewModel: PoastSignInViewModel())
+                   PoastSignInView(signInViewModel: PoastSignInViewModel())
                 }
+            }
+            .onAppear {
+                self.accounts = self.accountsViewModel.getAccounts().sorted { $0.handle! > $1.handle! }
             }
         }
     }
 }
 
-struct PoastAccountsView_Previews: PreviewProvider {
-    static var previews: some View {
-        PoastAccountsView(accountsViewModel: PoastAccountsViewModel())
-    }
+#Preview {
+    PoastAccountsView(accountsViewModel: PoastAccountsViewModel())
 }

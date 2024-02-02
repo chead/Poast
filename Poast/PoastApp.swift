@@ -6,19 +6,23 @@
 //
 
 import SwiftUI
+import SwiftBluesky
 
 @main
 struct PoastApp: App {
     init() {
+        DependencyProvider.register(BlueskyClient())
+        DependencyProvider.register(PoastSessionStore())
         DependencyProvider.register(PoastSessionService())
+        DependencyProvider.register(PoastAccountStore())
         DependencyProvider.register(PoastAccountService())
+        DependencyProvider.register(PoastCredentialsStore())
         DependencyProvider.register(PoastCredentialsService())
-        DependencyProvider.register(PoastBlueskyService())
     }
 
     var body: some Scene {
         WindowGroup {
-            PoastAccountsView(accountsViewModel: PoastAccountsViewModel())
+            PoastLandingView(landingViewModel: PoastLandingViewModel())
         }
     }
 }

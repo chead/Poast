@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftBluesky
 
 enum PoastProfileViewModelError: Error {
     case session
@@ -15,49 +16,96 @@ enum PoastProfileViewModelError: Error {
     case request
     case service
     case unknown
+}
 
-    init(blueskyServiceError: PoastBlueskyServiceError) {
-        switch blueskyServiceError {
-        case .clientAuthorization:
-            self = .authorization
+protocol PostProfileViewModeling {
+    var handle: String { get }
 
-        case .clientAvailability:
-            self = .availability
+    func getProfile(session: PoastSessionObject) async -> Result<PoastProfileModel?, PoastProfileViewModelError>
+}
 
-        case .clientRequest, .clientResponse:
-            self = .request
+struct PoastProfileViewModel: PostProfileViewModeling {
+    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var accountService: PoastAccountService
+    @Dependency private var blueskyClient: BlueskyClient
 
-        case .accountService, .credentialsService, .sessionService:
-            self = .service
+    let handle: String
 
-        default:
-            self = .unknown
+    init(handle: String) {
+        self.handle = handle
+    }
+
+    func getProfile(session: PoastSessionObject) async -> Result<PoastProfileModel?, PoastProfileViewModelError> {
+        guard let sessionDid = session.did,
+              let accountUUID = session.accountUUID else {
+            return .failure(.session)
+        }
+        
+        do {
+            switch(self.credentialsService.getCredentials(sessionDID: session.did!)) {
+            case .success(let credentials):
+                guard let credentials = credentials else {
+                    return .failure(.unknown)
+                }
+
+                switch(self.accountService.getAccount(uuid: session.accountUUID!)) {
+                case .success(let account):
+                    guard let account = account else {
+                        return .failure(.unknown)
+                    }
+
+                    switch(try await self.blueskyClient.getProfiles(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [self.handle])) {
+                    case .success(let getProfilesResponseBody):
+                        return .success(getProfilesResponseBody.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first)
+
+                    case .failure(_):
+                        return .failure(.unknown)
+                    }
+
+                case .failure(_):
+                    return .failure(.unknown)
+                }
+
+            case .failure(_):
+                return .failure(.unknown)
+            }
+
+        } catch(_) {
+            return .failure(.unknown)
         }
     }
 }
 
-class PoastProfileViewModel: ObservableObject {
-    @Dependency private(set) var blueskyService: PoastBlueskyService
+struct PoastProfileViewPreviewModel: PostProfileViewModeling {
+    let handle: String
 
-    private let session: PoastSessionObject?
-    private let handle: String
+    func getProfile(session: PoastSessionObject) async -> Result<PoastProfileModel?, PoastProfileViewModelError> {
+        let managedObjectContext = PersistenceController.preview.container.viewContext
 
-    required init(session: PoastSessionObject? = nil, handle: String) {
-        self.session = session
-        self.handle = handle
-    }
+        let account = PoastAccountObject(context: managedObjectContext)
 
-    func getProfile() async -> Result<PoastProfileModel?, PoastProfileViewModelError> {
-        guard let session = session else {
-            return .failure(.session)
-        }
+        account.created = Date()
+        account.handle = "Foobar"
+        account.host = URL(string: "https://bsky.social")!
+        account.uuid = UUID()
 
-        switch(await blueskyService.getProfiles(session: session, actors: [session.account!.handle!])) {
-        case .success(let profileModels):
-            return .success(profileModels.first)
+        let session = PoastSessionObject(context: managedObjectContext)
 
-        case .failure(_):
-            return .failure(.service)
-        }
+        session.created = Date()
+        session.accountUUID = account.uuid!
+        session.did = ""
+
+        let profile = PoastProfileModel(did: "0",
+                                        handle: "foobar",
+                                        displayName: "FOOBAR",
+                                        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a tortor dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a felis sit amet elit viverra porttitor. In hac habitasse platea dictumst. Nulla mollis luctus sagittis. Vestibulum volutpat ipsum vel elit accumsan dapibus. Vivamus quis erat consequat, auctor est id, malesuada sem.",
+                                        avatar: "",
+                                        banner: "",
+                                        followsCount: 0,
+                                        followersCount: 1,
+                                        postsCount: 2,
+                                        labels: [])
+
+        return .success(profile)
     }
 }

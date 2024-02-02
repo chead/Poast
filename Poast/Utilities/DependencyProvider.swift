@@ -28,10 +28,6 @@ class DependencyProvider: DependencyProviding {
     static func resolve<Dependency>() -> Dependency {
         ServiceProvider.resolve()
     }
-
-    static func resolve() -> NSManagedObjectContext {
-        return UtilityProvider.resolve()
-    }
     
     static func resolve() -> BlueskyClient {
         return UtilityProvider.resolve()

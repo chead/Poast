@@ -14,20 +14,6 @@ final class UtilityProvider: UtilityProviding {
 
     private static var shared = UtilityProvider()
 
-    static func resolve() -> NSManagedObjectContext {
-        let key = "\(NSManagedObjectContext.self)"
-
-        guard let managedObjectContext = shared.instances[key] as? NSManagedObjectContext else {
-            let managedObjectContext = PersistenceController.shared.container.viewContext
-
-            shared.instances[key] = managedObjectContext
-            
-            return managedObjectContext
-        }
-
-        return managedObjectContext
-    }
-
     static func resolve() -> BlueskyClient {
         let key = "\(BlueskyClient.self)"
 
@@ -60,7 +46,7 @@ final class UtilityProvider: UtilityProviding {
         let key = "\(PoastSessionStore.self)"
 
         guard let sessionStore = shared.instances[key] as? PoastSessionStore else {
-            let sessionStore = PoastSessionStore(managedObjectContext: self.resolve())
+            let sessionStore = PoastSessionStore()
             
             shared.instances[key] = sessionStore
             
@@ -74,7 +60,7 @@ final class UtilityProvider: UtilityProviding {
         let key = "\(PoastAccountStore.self)"
 
         guard let accountStore = shared.instances[key] as? PoastAccountStore else {
-            let accountStore = PoastAccountStore(managedObjectContext: self.resolve())
+            let accountStore = PoastAccountStore()
             
             shared.instances[key] = accountStore
             

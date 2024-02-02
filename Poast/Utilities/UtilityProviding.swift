@@ -10,7 +10,6 @@ import CoreData
 import SwiftBluesky
 
 protocol UtilityProviding {
-    static func resolve() -> NSManagedObjectContext
     static func resolve() -> BlueskyClient
     static func resolve() -> PoastCredentialsStore
     static func resolve() -> PoastSessionStore

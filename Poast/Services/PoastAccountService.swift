@@ -8,16 +8,39 @@
 import Foundation
 
 enum PoastAccountServiceError: Error {
+    case accountExists
     case store
+
+    init(accountStoreError: PoastAccountStoreError) {
+        switch(accountStoreError) {
+        case .accountExists:
+            self = .accountExists
+        }
+    }
 }
 
 class PoastAccountService {
-    private enum UserDefaultsKeys: String {
-        case activeAccount = "ActiveAccount"
+    @Dependency private(set) var accountStore: PoastAccountStore
+
+    func getOrCreateAccount(host: URL, handle: String) -> Result<PoastAccountObject, PoastAccountServiceError> {
+        do {
+            if let account = try self.accountStore.getAccount(host: host, handle: handle) {
+                return .success(account)
+            }
+
+            switch(try self.accountStore.createAccount(host: host, handle: handle)) {
+            case .success(let account):
+                return .success(account)
+
+            case .failure(let error):
+                return .failure(PoastAccountServiceError(accountStoreError: error))
+            }
+
+        } catch(_) {
+            return .failure(.store)
+        }
     }
 
-    private var accountStore: PoastAccountStore = DependencyProvider.resolve()
-    
     func getAccounts() -> Result<Set<PoastAccountObject>, PoastAccountServiceError> {
         do {
             return .success(try self.accountStore.accounts())
@@ -25,30 +48,22 @@ class PoastAccountService {
             return .failure(.store)
         }
     }
-    
-    func createAccount(host: URL, handle: String) -> Result<PoastAccountObject, PoastAccountServiceError> {
+
+    func getAccount(uuid: UUID) -> Result<PoastAccountObject?, PoastAccountServiceError> {
         do {
-            return .success(try self.accountStore.createAccount(host: host, handle: handle))
-        } catch(_) {
+            return .success(try self.accountStore.getAccount(uuid: uuid))
+        } catch {
             return .failure(.store)
         }
     }
-    
-    func setActiveAccount(account: PoastAccountObject) {
-        UserDefaults.standard.set(account.uuid?.uuidString, forKey: UserDefaultsKeys.activeAccount.rawValue)
-    }
-    
-    func getActiveAccount() -> Result<PoastAccountObject?, PoastAccountServiceError> {
-        if let uuidString = UserDefaults.standard.object(forKey: UserDefaultsKeys.activeAccount.rawValue) as? String,
-           let uuid = UUID(uuidString: uuidString)
-        {
-            do {
-                return .success(try self.accountStore.getAccount(uuid: uuid))
-            } catch(_) {
-                return .failure(.store)
-            }
-        } else {
-            return .success(nil)
+
+    func deleteAccount(account: PoastAccountObject) -> PoastAccountServiceError? {
+        do {
+            try self.accountStore.deleteAccount(uuid: account.uuid!)
+
+            return nil
+        } catch {
+            return .store
         }
     }
 }

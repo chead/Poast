@@ -8,12 +8,12 @@
 import Foundation
 import CoreData
 
-struct PoastAccountStore {
-    private let managedObjectContext: NSManagedObjectContext
+enum PoastAccountStoreError: Error {
+    case accountExists
+}
 
-    init(managedObjectContext: NSManagedObjectContext) {
-        self.managedObjectContext = managedObjectContext
-    }
+struct PoastAccountStore {
+    private let managedObjectContext = PersistenceController.shared.container.viewContext
 
     func accounts() throws -> Set<PoastAccountObject> {
         let accountObjectFetchRequest = PoastAccountObject.fetchRequest()
@@ -29,27 +29,42 @@ struct PoastAccountStore {
 
         return try self.managedObjectContext.fetch(accountObjectFetchRequest).first
     }
-    
-    func createAccount(host: URL, handle: String) throws -> PoastAccountObject {
+
+    func getAccount(host: URL, handle: String) throws -> PoastAccountObject? {
+        let accountObjectFetchRequest = PoastAccountObject.fetchRequest()
+
+        accountObjectFetchRequest.predicate = NSPredicate(format: "host ==[c] %@ AND handle ==[c] %@", argumentArray: [host, handle])
+
+        return try self.managedObjectContext.fetch(accountObjectFetchRequest).first
+    }
+
+    func createAccount(host: URL, handle: String) throws -> Result<PoastAccountObject, PoastAccountStoreError> {
+        let accountObjectFetchRequest = PoastAccountObject.fetchRequest()
+
+        accountObjectFetchRequest.predicate = NSPredicate(format: "host ==[c] %@ AND handle ==[c] %@", argumentArray: [host, handle])
+
+        let accounts = try self.managedObjectContext.fetch(accountObjectFetchRequest)
+
+        if(accounts.count > 0) {
+            return .failure(.accountExists)
+        }
+
         let account = PoastAccountObject(context: self.managedObjectContext)
         
         account.uuid = UUID()
         account.host = host
         account.handle = handle
+        account.created = Date()
 
         try self.managedObjectContext.save()
 
-        return account
+        return .success(account)
     }
 
-    func deleteAccount(account: PoastAccountObject) throws {
-        let accountObjectFetchRequest = PoastAccountObject.fetchRequest()
-        
-        accountObjectFetchRequest.predicate = NSPredicate(format: "uuid = %@", account.uuid! as CVarArg)
-        
-        let accountObjects = try self.managedObjectContext.fetch(accountObjectFetchRequest)
+    func deleteAccount(uuid: UUID) throws {
+        guard let account = try getAccount(uuid: uuid) else { return }
 
-        accountObjects.forEach { self.managedObjectContext.delete($0) }
+        self.managedObjectContext.delete(account)
 
         try self.managedObjectContext.save()
     }

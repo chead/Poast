@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23B81" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="PoastAccountObject" syncable="YES" codeGenerationType="class">
+        <attribute name="created" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="handle" attributeType="String"/>
         <attribute name="host" attributeType="URI"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="session" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Session" inverseName="account" inverseEntity="Session"/>
     </entity>
     <entity name="Session" representedClassName="PoastSessionObject" syncable="YES" codeGenerationType="class">
+        <attribute name="accountUUID" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="created" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="session" inverseEntity="Account"/>
+        <attribute name="did" attributeType="String"/>
     </entity>
 </model>

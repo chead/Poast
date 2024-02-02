@@ -12,37 +12,32 @@ enum PoastCredentialsServiceError: Error {
 }
 
 class PoastCredentialsService {
-    private var credentialsStore: PoastCredentialsStore = DependencyProvider.resolve()
+    @Dependency private(set) var credentialsStore: PoastCredentialsStore
 
-    func addCredentials(account: PoastAccountObject, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
+    func addCredentials(did: String, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
 
         do {
-            return .success(try self.credentialsStore.addCredentials(identifier: account.uuid!.uuidString, credentials: credentials) ? true : false)
+            return .success(try self.credentialsStore.addCredentials(identifier: did, credentials: credentials) ? true : false)
         } catch(_) {
             return .failure(.store)
         }
     }
 
-    func getCredentials(account: PoastAccountObject) -> Result<PoastCredentialsModel?, PoastCredentialsServiceError> {
+    func getCredentials(sessionDID: String) -> Result<PoastCredentialsModel?, PoastCredentialsServiceError> {
         do {
-            return .success(try self.credentialsStore.getCredentials(identifier: account.uuid!.uuidString))
+            return .success(try self.credentialsStore.getCredentials(identifier: sessionDID))
         } catch(_) {
             return .failure(.store)
         }
     }
 
-    func updateCredentials(account: PoastAccountObject, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
-        let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
-
-        do {
-            return .success(try self.credentialsStore.updateCredentials(identifier: account.uuid!.uuidString, credentials: credentials) ? true : false)
-        } catch(_) {
-            return .failure(.store)
+    func deleteCredentials(sessionDID: String) -> PoastCredentialsServiceError? {
+        switch(self.credentialsStore.deleteCredentials(identifier: sessionDID)) {
+        case true:
+            return nil
+        case false:
+            return .store
         }
-    }
-
-    func deleteCredentials(account: PoastAccountObject) {
-        let _ = Keychain.delete(key: account.uuid!.uuidString)
     }
 }

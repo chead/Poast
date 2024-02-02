@@ -8,7 +8,7 @@
 import Foundation
 import SwiftBluesky
 
-struct PoastProfileModel {
+struct PoastProfileModel: Hashable {
     let did: String
     let handle: String
     let displayName: String?
@@ -18,9 +18,17 @@ struct PoastProfileModel {
     let followsCount: Int?
     let followersCount: Int?
     let postsCount: Int?
-    let labels: [String]?
+    let labels: [PoastLabelModel]?
 
-    init(did: String, handle: String, displayName: String, description: String, avatar: String, banner: String, followsCount: Int, followersCount: Int, postsCount: Int, labels: [String]) {
+    static func == (lhs: PoastProfileModel, rhs: PoastProfileModel) -> Bool {
+        lhs.did == rhs.did
+    }
+
+    var name: String {
+        return self.displayName ?? "@\(self.handle)"
+    }
+
+    init(did: String, handle: String, displayName: String, description: String, avatar: String, banner: String, followsCount: Int, followersCount: Int, postsCount: Int, labels: [PoastLabelModel]) {
         self.did = did
         self.handle = handle
         self.displayName = displayName
@@ -33,6 +41,19 @@ struct PoastProfileModel {
         self.labels = labels
     }
     
+    init(blueskyActorProfileViewBasic: BlueskyActorProfileViewBasic) {
+        self.did = blueskyActorProfileViewBasic.did
+        self.handle = blueskyActorProfileViewBasic.handle
+        self.displayName = blueskyActorProfileViewBasic.displayName
+        self.description = nil
+        self.avatar = blueskyActorProfileViewBasic.avatar
+        self.banner = nil
+        self.followsCount = nil
+        self.followersCount = nil
+        self.postsCount = nil
+        self.labels = blueskyActorProfileViewBasic.labels?.map { PoastLabelModel(atProtoLabel: $0) }
+    }
+
     init(blueskyActorProfileViewDetailed: BlueskyActorProfileViewDetailed) {
         self.did = blueskyActorProfileViewDetailed.did
         self.handle = blueskyActorProfileViewDetailed.handle
@@ -43,6 +64,6 @@ struct PoastProfileModel {
         self.followsCount = blueskyActorProfileViewDetailed.followsCount
         self.followersCount = blueskyActorProfileViewDetailed.followersCount
         self.postsCount = blueskyActorProfileViewDetailed.postsCount
-        self.labels = blueskyActorProfileViewDetailed.labels
+        self.labels = blueskyActorProfileViewDetailed.labels?.map { PoastLabelModel(atProtoLabel: $0) }
     }
 }
