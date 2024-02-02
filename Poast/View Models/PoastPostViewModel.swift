@@ -32,7 +32,7 @@ struct PoastPostViewModel {
         return formatter.localizedString(for: date, relativeTo: Date())
     }
 
-    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastPostModel?, PoastPostViewModelError> {
+    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastFeedPostViewModel?, PoastPostViewModelError> {
         do {
             guard let sessionDid = session.did,
                   let accountUUID = session.accountUUID else {
@@ -53,7 +53,7 @@ struct PoastPostViewModel {
 
                     switch(try await self.blueskyClient.getPosts(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, uris: [uri])) {
                     case .success(let getPostsResponseBody):
-                        return .success(getPostsResponseBody.posts.map { PoastPostModel(blueSkyFeedPostView: $0) }.first)
+                        return .success(PoastFeedPostViewModel(blueSkyFeedPostView: getPostsResponseBody.posts.first!))
 
                     case .failure(let error):
                         return .failure(.unknown)

@@ -20,24 +20,17 @@ struct PoastTimelineView: View {
             if let parent = post.parent {
                 switch(parent) {
                 case .post(let parentPost):
-                    PoastPostView(postViewModel: PoastPostViewModel(), post: parentPost, isParent: true)
+                    PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
 
-                default:
-                    EmptyView()
+                case .notFound(_):
+                    Text("Post not found")
+
+                case .blocked(_, _):
+                    Text("Blocked post")
                 }
-//                switch(parent) {
-//                case .post(let parentPost):
-//                    PoastPostView(postViewModel: PoastPostViewModel(), post: parentPost, isParent: true, isChild: parentPost.parent != nil)
-//
-//                case .notFound(_):
-//                    Text("Post not found")
-//
-//                case .blocked(_, _):
-//                    Text("Blocked post")
-//                }
             }
-
-            PoastPostView(postViewModel: PoastPostViewModel(), post: post, isParent: false)
+            
+            PoastPostView(postViewModel: PoastPostViewModel(), post: post)
                 .environmentObject(session)
         }
         .toolbar {

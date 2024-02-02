@@ -36,8 +36,9 @@ struct PoastProfileViewModel: PostProfileViewModeling {
     }
 
     func getProfile(session: PoastSessionObject) async -> Result<PoastProfileModel?, PoastProfileViewModelError> {
-        guard let sessionDid = session.did,
-              let accountUUID = session.accountUUID else {
+        guard session.did != nil,
+              session.accountUUID != nil
+        else {
             return .failure(.session)
         }
         

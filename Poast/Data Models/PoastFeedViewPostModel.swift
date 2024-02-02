@@ -8,18 +8,20 @@
 import Foundation
 import SwiftBluesky
 
-//enum PoastPostModelReplyType: Hashable {
-//    case reference(uri: String, cid: String)
-//    case reply(PoastReplyModel)
-//}
-
-class PoastPostModel: Hashable, Equatable, Identifiable {
-    static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
+struct PoastFeedViewPostModel: Hashable, Identifiable {
+    static func == (lhs: PoastFeedViewPostModel, rhs: PoastFeedViewPostModel) -> Bool {
         lhs.id == rhs.id
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(self.id)
+        hasher.combine(self.uri)
+        hasher.combine(self.text)
+        hasher.combine(self.author)
+        hasher.combine(self.replyCount)
+        hasher.combine(self.likeCount)
+        hasher.combine(self.root)
+        hasher.combine(self.parent)
     }
 
     var id: String
@@ -32,42 +34,18 @@ class PoastPostModel: Hashable, Equatable, Identifiable {
     let root: PoastReplyModel?
     let parent: PoastReplyModel?
     let date: Date
-
-    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, repostCount: Int, likeCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, date: Date) {
+    
+    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, date: Date) {
         self.id = id
         self.uri = uri
         self.text = text
         self.author = author
         self.replyCount = replyCount
-        self.repostCount = repostCount
         self.likeCount = likeCount
+        self.repostCount = repostCount
         self.root = root
         self.parent = parent
         self.date = date
-    }
-
-    init(blueSkyFeedPostView: BlueskyFeedPostView) {
-        self.id = blueSkyFeedPostView.cid
-        self.uri = blueSkyFeedPostView.uri
-
-        switch(blueSkyFeedPostView.record) {
-        case .blueskyFeedPost(let blueskyFeedPost):
-            self.text = blueskyFeedPost.text
-
-            if let reply = blueskyFeedPost.reply {
-                self.root = .reference(uri: reply.root.uri, cid: reply.root.cid)
-                self.parent = .reference(uri: reply.parent.uri, cid: reply.parent.cid)
-            } else {
-                self.root = nil
-                self.parent = nil
-            }
-        }
-
-        self.author = PoastProfileModel(blueskyActorProfileViewBasic: blueSkyFeedPostView.author)
-        self.replyCount = blueSkyFeedPostView.replyCount ?? 0
-        self.repostCount = blueSkyFeedPostView.repostCount ?? 0
-        self.likeCount = blueSkyFeedPostView.likeCount ?? 0
-        self.date = blueSkyFeedPostView.indexedAt
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
@@ -84,6 +62,10 @@ class PoastPostModel: Hashable, Equatable, Identifiable {
         self.repostCount = blueskyFeedFeedViewPost.post.repostCount ?? 0
         self.likeCount = blueskyFeedFeedViewPost.post.likeCount ?? 0
 
+        switch(blueskyFeedFeedViewPost.post.embed) {
+        default:
+            break
+        }
 
         if let parent = blueskyFeedFeedViewPost.reply?.parent {
             self.parent = PoastReplyModel(feedReplyRef: parent)

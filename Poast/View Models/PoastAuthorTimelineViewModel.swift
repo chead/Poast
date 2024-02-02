@@ -21,8 +21,9 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModeling {
 
     func getTimeline(session: PoastSessionObject) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
         do {
-            guard let sessionDid = session.did,
-                  let accountUUID = session.accountUUID else {
+            guard session.did != nil,
+                  session.accountUUID != nil
+            else {
                 return .failure(.session)
             }
 

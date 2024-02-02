@@ -19,75 +19,50 @@ protocol PoastTimelineViewModeling {
 
 class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
     func getTimeline(session: PoastSessionObject) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
-        let authorOne = PoastProfileModel(did: "",
-                                       handle: "weed.cum",
-                                       displayName: "Weedlord",
-                                       description: "Lorem Ipsum",
-                                       avatar: "",
-                                       banner: "",
-                                       followsCount: 10,
-                                       followersCount: 123,
-                                       postsCount: 4123,
-                                       labels: [])
 
-        let authorTwo = PoastProfileModel(did: "",
-                                       handle: "foobar.net",
-                                       displayName: "Foobar",
-                                       description: "Lorem Ipsum",
-                                       avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
-                                       banner: "",
-                                       followsCount: 10,
-                                       followersCount: 123,
-                                       postsCount: 4123,
-                                       labels: [])
 
-        let rootPost = PoastPostModel(id: "0",
-                                      uri: "foo",
-                                      text: "Root post",
-                                      author: authorOne,
-                                      replyCount: 1,
-                                      repostCount: 0,
-                                      likeCount: 10,
-                                      root: nil,
-                                      parent: nil,
-                                      date: Date(timeIntervalSinceNow: -1000))
-
-        let parentPost = PoastPostModel(id: "1",
-                                        uri: "",
-                                        text: "Parent post",
-                                        author: authorTwo,
-                                        replyCount: 1,
-                                        repostCount: 0,
-                                        likeCount: 10,
-                                        root: .reference(uri: "foo", cid: ""),
-                                        parent: .reference(uri: "foo", cid: ""),
-                                        date: Date(timeIntervalSinceNow: -10))
-
-        let firstPost = PoastPostModel(id: "2",
-                                       uri: "",
-                                       text: "First post",
-                                       author: authorTwo,
-                                       replyCount: 1,
-                                       repostCount: 0,
-                                       likeCount: 10,
-                                       root: nil,
-                                       parent: .post(parentPost),
-                                       date: Date())
-
-        let secondPost = PoastPostModel(id: "3",
-                                        uri: "",
-                                        text: "Second post",
-                                        author: authorTwo,
-                                        replyCount: 1,
-                                        repostCount: 0,
-                                        likeCount: 10,
-                                        root: nil,
-                                        parent: nil,
-                                        date: Date())
-
-        let timeline = PoastTimelineModel(posts: [firstPost, secondPost])
-
-        return .success(timeline)
+        return .success(PoastTimelineModel(posts: [
+            PoastFeedViewPostModel(
+                id: "",
+                uri: "",
+                text: "Child post",
+                author: PoastProfileModel(
+                    did: "",
+                    handle: "foobar.net",
+                    displayName: "Foobar",
+                    description: "Lorem Ipsum",
+                    avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
+                    banner: "",
+                    followsCount: 10,
+                    followersCount: 123,
+                    postsCount: 4123,
+                    labels: []),
+                replyCount: 1,
+                likeCount: 0,
+                repostCount: 10,
+                root: nil,
+                parent: .post(PoastFeedPostViewModel(id: "",
+                                                     uri: "",
+                                                     text: "Parent post",
+                                                     author: PoastProfileModel(
+                                                        did: "",
+                                                        handle: "barbaz.net",
+                                                        displayName: "Barbaz",
+                                                        description: "Lorem Ipsum",
+                                                        avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
+                                                        banner: "",
+                                                        followsCount: 1,
+                                                        followersCount: 3,
+                                                        postsCount: 551,
+                                                        labels: []),
+                                                     replyCount: 0,
+                                                     likeCount: 0,
+                                                     repostCount: 0,
+                                                     root: nil,
+                                                     parent: nil,
+                                                     date: Date() - 1000)),
+                date: Date(timeIntervalSinceNow: -10))
+        ]))
     }
 }
 
