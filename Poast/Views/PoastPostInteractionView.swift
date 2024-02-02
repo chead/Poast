@@ -1,5 +1,5 @@
 //
-//  PoastParentPostView.swift
+//  PoastPostInteractionView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
@@ -7,77 +7,47 @@
 
 import SwiftUI
 
-struct PoastParentPostView: View {
+struct PoastPostInteractionView: View {
     @EnvironmentObject var session: PoastSessionObject
 
-    @State var postViewModel: PoastPostViewModel
-    @State var post: PoastFeedPostViewModel
-    @State var replyTo: String?
+    @Binding var postViewModel: PoastPostViewModel
+
+    let replyCount: Int
+    let repostCount: Int
+    let likeCount: Int
 
     var body: some View {
-        HStack(alignment: .top) {
-            VStack {
-                AsyncImage(url: URL(string: self.post.author.avatar ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(.green)
-                        .frame(width: 50, height: 50)
-                }
-                .frame(width: 50, height: 50)
-                .clipShape(Circle())
-
-                Rectangle()
-                    .fill(.gray)
-                    .frame(width: 2)
-            }
-
-            VStack(alignment: .leading) {
+        HStack {
+            Button(action: {}, label: {
                 HStack {
-                    Text(self.post.author.name)
-                        .bold()
-
-                    Spacer()
-
-                    Text(self.postViewModel.getTimeAgo(date: self.post.date))
+                    Image(systemName: "bubble")
+                    Text("\(self.replyCount)")
                 }
+            })
 
-                Spacer()
+            Spacer()
 
-                if let replyTo = self.replyTo {
-                    HStack {
-                        Image(systemName: "arrowshape.turn.up.backward.fill")
-
-                        Text(replyTo)
-                    }
+            Button(action: {}, label: {
+                HStack {
+                    Image(systemName: "repeat")
+                    Text("\(self.repostCount)")
                 }
+            })
 
-                Text(self.post.text)
+            Spacer()
 
-                Spacer()
-
-                PoastPostInteractionView(postViewModel: self.$postViewModel,
-                                         replyCount: self.post.replyCount,
-                                         repostCount: self.post.repostCount,
-                                         likeCount: self.post.likeCount)
-                .environmentObject(session)
-
-                Spacer()
-            }
-        }
-        .task {
-            if let parent = self.post.parent {
-                switch(await self.postViewModel.getPost(session: self.session, uri: parent.uri)) {
-                case .success(let grandParentPost):
-                    if let grandParentPost = grandParentPost {
-                        self.replyTo = grandParentPost.author.name
-                    }
-                case .failure(_):
-                    break
+            Button(action: {}, label: {
+                HStack {
+                    Image(systemName: "heart")
+                    Text("\(self.likeCount)")
                 }
-            }
+            })
+
+            Spacer()
+
+            Button(action: {}, label: {
+                Image(systemName: "ellipsis")
+            })
         }
     }
 }
@@ -111,6 +81,6 @@ struct PoastParentPostView: View {
                                       parent: nil,
                                       date: Date())
 
-    return PoastParentPostView(postViewModel: PoastPostViewModel(), post: post)
+    return PoastPostInteractionView(postViewModel: .constant(PoastPostViewModel()), replyCount: 1, repostCount: 2, likeCount: 3)
         .environmentObject(session)
 }

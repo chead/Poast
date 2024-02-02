@@ -65,6 +65,7 @@
 		C2EDB4072B6ACC8300C31720 /* PoastPreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4062B6ACC8300C31720 /* PoastPreferencesService.swift */; };
 		C2EDB4092B6ACC9400C31720 /* PoastPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4082B6ACC9400C31720 /* PoastPreferencesStore.swift */; };
 		C2EDB40B2B6AF50600C31720 /* PoastPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB40A2B6AF50600C31720 /* PoastPostViewModel.swift */; };
+		C2FA38CD2B6D9D510001A8C1 /* PoastPostInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +140,7 @@
 		C2EDB4062B6ACC8300C31720 /* PoastPreferencesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPreferencesService.swift; sourceTree = "<group>"; };
 		C2EDB4082B6ACC9400C31720 /* PoastPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPreferencesStore.swift; sourceTree = "<group>"; };
 		C2EDB40A2B6AF50600C31720 /* PoastPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostViewModel.swift; sourceTree = "<group>"; };
+		C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostInteractionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,8 +183,8 @@
 				C293623C2B5B17C4002BE99E /* PoastAccountsViewModel.swift */,
 				C2A8D6CB2A7C0C4A005D9235 /* PoastSignInViewModel.swift */,
 				C2222C612A8421E7000C7C45 /* PoastProfileViewModel.swift */,
-				C229D8EF2AC0D87B00924661 /* PoastAuthorTimelineViewModel.swift */,
 				C2EDB40A2B6AF50600C31720 /* PoastPostViewModel.swift */,
+				C229D8EF2AC0D87B00924661 /* PoastAuthorTimelineViewModel.swift */,
 				C2D3E8882B633EF700440738 /* PoastTimelineViewModel.swift */,
 				C293624A2B5C21A4002BE99E /* PoastAccountSettingsViewModel.swift */,
 			);
@@ -263,6 +265,7 @@
 				C2222C632A842601000C7C45 /* PoastProfileView.swift */,
 				C2D3E88A2B63430D00440738 /* PoastPostView.swift */,
 				C23D924C2B6D787C0014F4D9 /* PoastParentPostView.swift */,
+				C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */,
 				C229D8ED2AC0D80900924661 /* PoastTimelineView.swift */,
 				C29362482B5C2177002BE99E /* PoastAccountSettingsView.swift */,
 			);
@@ -490,6 +493,7 @@
 				C2D3E8892B633EF700440738 /* PoastTimelineViewModel.swift in Sources */,
 				C2D044F02A78AE65001DC946 /* PoastAccountStore.swift in Sources */,
 				C2D044D42A759293001DC946 /* PoastFeedViewPostModel.swift in Sources */,
+				C2FA38CD2B6D9D510001A8C1 /* PoastPostInteractionView.swift in Sources */,
 				C2D0458E2A7AC750001DC946 /* UtilityProviding.swift in Sources */,
 				C29362432B5B674F002BE99E /* PoastLandingView.swift in Sources */,
 				C2A8D6CA2A7BFE69005D9235 /* PoastSignInView.swift in Sources */,

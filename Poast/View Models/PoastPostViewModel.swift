@@ -15,7 +15,7 @@ enum PoastPostViewModelError: Error {
     case unknown
 }
 
-struct PoastPostViewModel {
+class PoastPostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var accountService: PoastAccountService
     @Dependency private var blueskyClient: BlueskyClient

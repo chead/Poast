@@ -13,17 +13,6 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         lhs.id == rhs.id
     }
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(self.id)
-        hasher.combine(self.uri)
-        hasher.combine(self.text)
-        hasher.combine(self.author)
-        hasher.combine(self.replyCount)
-        hasher.combine(self.likeCount)
-        hasher.combine(self.root)
-        hasher.combine(self.parent)
-    }
-
     var id: String
     var uri: String
     let text: String
