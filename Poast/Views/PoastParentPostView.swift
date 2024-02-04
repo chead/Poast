@@ -48,9 +48,9 @@ struct PoastParentPostView: View {
                             .lineLimit(1)
                             .truncationMode(.tail)
                     }
-                }
 
-                Spacer()
+                    Spacer()
+                }
 
                 Text(self.post.text)
 

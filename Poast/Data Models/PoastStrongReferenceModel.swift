@@ -1,5 +1,5 @@
 //
-//  PoastReplyReferenceModel.swift
+//  PoastStrongReferenceModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftATProto
 
-struct PoastReplyReferenceModel: Hashable {
+struct PoastStrongReferenceModel: Hashable {
     let uri: String
     let cid: String
 

@@ -19,7 +19,7 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModeling {
         self.actor = actor
     }
 
-    func getTimeline(session: PoastSessionObject) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
+    func getTimeline(session: PoastSessionObject, cursor: Date?) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
         do {
             guard session.did != nil,
                   session.accountUUID != nil
@@ -40,8 +40,14 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModeling {
                     }
 
                     switch(try await self.blueskyClient.getAuthorFeed(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actor: actor, limit: 50, cursor: "")) {
-                    case .success(let getAuthorFeedResponseBody):
-                        return .success(PoastTimelineModel(blueskyFeedFeedViewPosts: getAuthorFeedResponseBody.feed))
+                    case .success(let getAuthorFeedResponse):
+                        if let credentials = getAuthorFeedResponse.credentials {
+                            _ = self.credentialsService.updateCredentials(did: session.did!,
+                                                                          accessToken: credentials.accessToken,
+                                                                          refreshToken: credentials.refreshToken)
+                        }
+
+                        return .success(PoastTimelineModel(blueskyFeedFeedViewPosts: getAuthorFeedResponse.body.feed))
 
                     case .failure(_):
                         return .failure(.unknown)

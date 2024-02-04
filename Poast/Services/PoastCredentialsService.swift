@@ -32,6 +32,16 @@ class PoastCredentialsService {
         }
     }
 
+    func updateCredentials(did: String, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
+        let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
+
+        do {
+            return .success(try self.credentialsStore.updateCredentials(identifier: did, credentials: credentials) ? true : false)
+        } catch(_) {
+            return .failure(.store)
+        }
+    }
+
     func deleteCredentials(sessionDID: String) -> PoastCredentialsServiceError? {
         switch(self.credentialsStore.deleteCredentials(identifier: sessionDID)) {
         case true:

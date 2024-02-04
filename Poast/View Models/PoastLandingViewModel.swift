@@ -19,6 +19,7 @@ class PoastLandingViewModel {
         switch(self.sessionService.getActiveSession()) {
         case .success(let session):
             return .success(session)
+
         case .failure(_):
             return .failure(.unknown)
         }

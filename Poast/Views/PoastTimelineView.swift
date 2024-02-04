@@ -16,7 +16,7 @@ struct PoastTimelineView: View {
     @State var showingComposerView: Bool = false
 
     var body: some View {
-        List(self.timeline?.posts ?? []) { post in
+        List(Array((self.timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
             if let parent = post.parent {
                 switch(parent) {
                 case .post(let parentPost):
@@ -32,6 +32,11 @@ struct PoastTimelineView: View {
             
             PoastPostView(postViewModel: PoastPostViewModel(), post: post)
                 .environmentObject(session)
+                .onAppear {
+                    if index == (self.timeline?.posts ?? []).count - 1 {
+                        print("Bottom!")
+                    }
+                }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -60,7 +65,8 @@ struct PoastTimelineView: View {
         .listStyle(.plain)
         .onAppear {
             Task {
-                switch(await self.timelineViewModel.getTimeline(session: self.session)) {
+                switch(await self.timelineViewModel.getTimeline(session: self.session,
+                                                                cursor: nil)) {
                 case .success(let timeline):
                     self.timeline = timeline
 

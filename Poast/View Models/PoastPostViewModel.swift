@@ -52,8 +52,14 @@ class PoastPostViewModel {
                     }
 
                     switch(try await self.blueskyClient.getPosts(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, uris: [uri])) {
-                    case .success(let getPostsResponseBody):
-                        return .success(PoastFeedPostViewModel(blueSkyFeedPostView: getPostsResponseBody.posts.first!))
+                    case .success(let getPostsResponse):
+                        if let credentials = getPostsResponse.credentials {
+                            _ = self.credentialsService.updateCredentials(did: session.did!,
+                                                                          accessToken: credentials.accessToken,
+                                                                          refreshToken: credentials.refreshToken)
+                        }
+
+                        return .success(PoastFeedPostViewModel(blueSkyFeedPostView: getPostsResponse.body.posts.first!))
 
                     case .failure(let error):
                         return .failure(.unknown)

@@ -13,8 +13,8 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         lhs.id == rhs.id
     }
 
-    var id: String
-    var uri: String
+    let id: String
+    let uri: String
     let text: String
     let author: PoastProfileModel
     let replyCount: Int
@@ -22,9 +22,11 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
     let repostCount: Int
     let root: PoastReplyModel?
     let parent: PoastReplyModel?
+    let embed: PoastPostEmbedModel?
     let date: Date
-    
-    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, date: Date) {
+    let repostedBy: PoastProfileModel?
+
+    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?) {
         self.id = id
         self.uri = uri
         self.text = text
@@ -34,7 +36,9 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         self.repostCount = repostCount
         self.root = root
         self.parent = parent
+        self.embed = embed
         self.date = date
+        self.repostedBy = repostedBy
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
@@ -51,11 +55,6 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         self.repostCount = blueskyFeedFeedViewPost.post.repostCount ?? 0
         self.likeCount = blueskyFeedFeedViewPost.post.likeCount ?? 0
 
-        switch(blueskyFeedFeedViewPost.post.embed) {
-        default:
-            break
-        }
-
         if let parent = blueskyFeedFeedViewPost.reply?.parent {
             self.parent = PoastReplyModel(feedReplyRef: parent)
         } else {
@@ -68,6 +67,21 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
             self.root = nil
         }
 
+        if let embed = blueskyFeedFeedViewPost.post.embed {
+            self.embed = PoastPostEmbedModel(blueskyFeedPostViewEmbedType: embed)
+        } else {
+            self.embed = nil
+        }
+
         self.date = blueskyFeedFeedViewPost.post.indexedAt
+
+        if let reason = blueskyFeedFeedViewPost.reason {
+            switch(reason) {
+            case .blueskyFeedReasonRepost(let repost):
+                self.repostedBy = PoastProfileModel(blueskyActorProfileViewBasic: repost.by)
+            }
+        } else {
+            self.repostedBy = nil
+        }
     }
 }

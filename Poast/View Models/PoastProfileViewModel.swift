@@ -56,8 +56,14 @@ struct PoastProfileViewModel: PostProfileViewModeling {
                     }
 
                     switch(try await self.blueskyClient.getProfiles(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [self.handle])) {
-                    case .success(let getProfilesResponseBody):
-                        return .success(getProfilesResponseBody.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first)
+                    case .success(let getProfilesResponse):
+                        if let credentials = getProfilesResponse.credentials {
+                            _ = self.credentialsService.updateCredentials(did: session.did!,
+                                                                          accessToken: credentials.accessToken,
+                                                                          refreshToken: credentials.refreshToken)
+                        }
+
+                        return .success(getProfilesResponse.body.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first)
 
                     case .failure(_):
                         return .failure(.unknown)

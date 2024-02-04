@@ -9,18 +9,18 @@ import Foundation
 import SwiftBluesky
 
 struct PoastFeedPostViewModel: Hashable {
-    var id: String
-    var uri: String
+    let id: String
+    let uri: String
     let text: String
     let author: PoastProfileModel
     let replyCount: Int
     let likeCount: Int
     let repostCount: Int
-    let root: PoastReplyReferenceModel?
-    let parent: PoastReplyReferenceModel?
+    let root: PoastStrongReferenceModel?
+    let parent: PoastStrongReferenceModel?
     let date: Date
 
-    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyReferenceModel?, parent: PoastReplyReferenceModel?, date: Date) {
+    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastStrongReferenceModel?, parent: PoastStrongReferenceModel?, date: Date) {
         self.id = id
         self.uri = uri
         self.text = text
@@ -42,8 +42,8 @@ struct PoastFeedPostViewModel: Hashable {
             self.text = blueskyFeedPost.text
 
             if let reply = blueskyFeedPost.reply {
-                self.root = PoastReplyReferenceModel(atProtoRepoStrongRef: reply.root)
-                self.parent = PoastReplyReferenceModel(atProtoRepoStrongRef: reply.parent)
+                self.root = PoastStrongReferenceModel(atProtoRepoStrongRef: reply.root)
+                self.parent = PoastStrongReferenceModel(atProtoRepoStrongRef: reply.parent)
             } else {
                 self.root = nil
                 self.parent = nil

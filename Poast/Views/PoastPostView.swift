@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+fileprivate let avatarWidth = 50.0
+
 struct PoastPostView: View {
     @EnvironmentObject var session: PoastSessionObject
 
@@ -23,19 +25,40 @@ struct PoastPostView: View {
                 } placeholder: {
                     Rectangle()
                         .fill(.green)
-                        .frame(width: 50, height: 50)
+                        .frame(width: avatarWidth, height: avatarWidth)
                 }
-                .frame(width: 50, height: 50)
+                .frame(width: avatarWidth, height: avatarWidth)
                 .clipShape(Circle())
             }
 
             VStack(alignment: .leading) {
+                Spacer()
+
                 PoastPostHeaderView(authorName: self.post.author.name,
                                     timeAgo: self.postViewModel.getTimeAgo(date: self.post.date))
+
+                if let repostedBy = self.post.repostedBy {
+                    Spacer()
+
+                    HStack {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .bold()
+
+                        Text(repostedBy.name)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+                }
 
                 Spacer()
 
                 Text(self.post.text)
+
+                Spacer()
+
+                if let embed = self.post.embed {
+                    PoastPostEmbedView(postViewModel: self.$postViewModel, embed: embed)
+                }
 
                 Spacer()
 
@@ -78,7 +101,9 @@ struct PoastPostView: View {
                                       repostCount: 10,
                                       root: nil,
                                       parent: nil,
-                                      date: Date() - 1000)
+                                      embed: nil,
+                                      date: Date() - 1000,
+                                      repostedBy: nil)
 
     return PoastPostView(postViewModel: PoastPostViewModel(), post: post)
         .environmentObject(session)
