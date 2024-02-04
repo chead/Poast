@@ -8,14 +8,9 @@
 import SwiftUI
 
 struct PoastLandingView: View {
-    struct AccountSession: Hashable {
-        var account: PoastAccountObject
-        var session: PoastSessionObject
-    }
-
     let landingViewModel: PoastLandingViewModel
 
-    @State var activeAccountSession: AccountSession? = nil
+    @State var activeAccountSession: (account: PoastAccountObject, session: PoastSessionObject)? = nil
 
     var body: some View {
         Group {
@@ -35,7 +30,7 @@ struct PoastLandingView: View {
                 case .success(let account):
                     guard let account = account else { break }
 
-                    self.activeAccountSession = AccountSession(account: account, session: session)
+                    self.activeAccountSession = (account: account, session: session)
 
                 case .failure(_):
                     break

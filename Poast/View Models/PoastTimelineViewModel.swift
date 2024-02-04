@@ -21,8 +21,9 @@ class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
     func getTimeline(session: PoastSessionObject, cursor: Date?) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
         return .success(PoastTimelineModel(posts: [
             PoastFeedViewPostModel(
-                id: "",
+                id: UUID(),
                 uri: "",
+                cid: "",
                 text: "Child post",
                 author: PoastProfileModel(
                     did: "",
@@ -39,7 +40,7 @@ class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
                 likeCount: 0,
                 repostCount: 10,
                 root: nil,
-                parent: .post(PoastFeedPostViewModel(id: "",
+                parent: .post(PoastFeedPostViewModel(cid: "",
                                                      uri: "",
                                                      text: "Parent post",
                                                      author: PoastProfileModel(

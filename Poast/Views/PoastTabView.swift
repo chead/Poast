@@ -13,32 +13,23 @@ struct PoastTabView: View {
     let account: PoastAccountObject
 
     var body: some View {
-        NavigationStack {
-            TabView {
-                NavigationStack {
-                    PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
-                        .environmentObject(session)
-                }
+        TabView {
+            PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
+                .environmentObject(session)
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
-
-                Rectangle()
-                    .fill(.blue)
-                    .tabItem { Label("Feeds", systemImage: "number") }
-
-                Rectangle()
-                    .fill(.red)
-                    .tabItem { Label("Notifications", systemImage: "bell") }
-
-                PoastProfileView(profileViewModel: PoastProfileViewModel(handle: account.handle!))
-                    .environmentObject(session)
-                    .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
-
-                PoastAccountSettingsView(accountSettingsViewModel: PoastAccountSettingsViewModel())
-                    .environmentObject(session)
-                    .tabItem { Label("Settings", systemImage: "gear") }
-            }
+            Rectangle()
+                .fill(.blue)
+                .tabItem { Label("Feeds", systemImage: "number") }
+            Rectangle()
+                .fill(.red)
+                .tabItem { Label("Notifications", systemImage: "bell") }
+            PoastProfileView(profileViewModel: PoastProfileViewModel(handle: account.handle!))
+                .environmentObject(session)
+                .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
+            PoastAccountSettingsView(accountSettingsViewModel: PoastAccountSettingsViewModel())
+                .environmentObject(session)
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
-
     }
 }
 

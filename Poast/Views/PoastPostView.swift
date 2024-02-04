@@ -83,8 +83,9 @@ struct PoastPostView: View {
     session.accountUUID = UUID()
     session.did = ""
 
-    let post = PoastFeedViewPostModel(id: "",
+    let post = PoastFeedViewPostModel(id: UUID(),
                                       uri: "",
+                                      cid: "",
                                       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed molestie leo felis, ut ultrices est euismod vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce bibendum iaculis augue, eget luctus purus dapibus ut. Morbi congue, nibh lacinia consequat tempus, lacus nisl eleifend ligula, quis dapibus sem diam ac ex.",
                                       author: PoastProfileModel(did: "",
                                                                 handle: "foobar.net",

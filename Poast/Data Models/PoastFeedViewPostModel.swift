@@ -13,8 +13,9 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         lhs.id == rhs.id
     }
 
-    let id: String
+    let id: UUID
     let uri: String
+    let cid: String
     let text: String
     let author: PoastProfileModel
     let replyCount: Int
@@ -26,9 +27,10 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
     let date: Date
     let repostedBy: PoastProfileModel?
 
-    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?) {
+    init(id: UUID, uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?) {
         self.id = id
         self.uri = uri
+        self.cid = cid
         self.text = text
         self.author = author
         self.replyCount = replyCount
@@ -42,8 +44,9 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
-        self.id = blueskyFeedFeedViewPost.post.cid
+        self.id = UUID()
         self.uri = blueskyFeedFeedViewPost.post.uri
+        self.cid = blueskyFeedFeedViewPost.post.cid
 
         switch(blueskyFeedFeedViewPost.post.record) {
         case .blueskyFeedPost(let blueskyFeedPost):

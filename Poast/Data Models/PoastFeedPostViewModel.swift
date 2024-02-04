@@ -9,7 +9,7 @@ import Foundation
 import SwiftBluesky
 
 struct PoastFeedPostViewModel: Hashable {
-    let id: String
+    let cid: String
     let uri: String
     let text: String
     let author: PoastProfileModel
@@ -20,8 +20,8 @@ struct PoastFeedPostViewModel: Hashable {
     let parent: PoastStrongReferenceModel?
     let date: Date
 
-    init(id: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastStrongReferenceModel?, parent: PoastStrongReferenceModel?, date: Date) {
-        self.id = id
+    init(cid: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastStrongReferenceModel?, parent: PoastStrongReferenceModel?, date: Date) {
+        self.cid = cid
         self.uri = uri
         self.text = text
         self.author = author
@@ -34,7 +34,7 @@ struct PoastFeedPostViewModel: Hashable {
     }
 
     init(blueSkyFeedPostView: BlueskyFeedPostView) {
-        self.id = blueSkyFeedPostView.cid
+        self.cid = blueSkyFeedPostView.cid
         self.uri = blueSkyFeedPostView.uri
 
         switch(blueSkyFeedPostView.record) {
