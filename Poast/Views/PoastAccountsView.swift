@@ -8,14 +8,11 @@
 import SwiftUI
 
 struct PoastAccountsView: View {
-    struct AccountSession: Hashable {
-        var account: PoastAccountObject
-        var session: PoastSessionObject?
-    }
+    @EnvironmentObject var user: PoastUser
 
     let accountsViewModel: PoastAccountsViewModel
 
-    @State var selectedAccountSession: AccountSession? = nil
+    @State var selectedAccount: PoastAccountObject?
     @State var accounts: [PoastAccountObject] = []
     @State private var showingSignInView: Bool = false
 
@@ -27,11 +24,13 @@ struct PoastAccountsView: View {
                         Button(action: {
                             let session = self.accountsViewModel.getSessions(account: account).first
 
-                            if session != nil {
+                            if let session {
                                 self.accountsViewModel.setActiveSession(session: session)
-                            }
 
-                            self.selectedAccountSession = AccountSession(account: account, session: session)
+                                user.accountSession = (account: account, session: session)
+                            } else {
+                                selectedAccount = account
+                            }
                         }) {
                             Text("\(account.handle!) @ \(account.host!.host()!)")
                         }
@@ -43,15 +42,8 @@ struct PoastAccountsView: View {
                     self.accounts.remove(atOffsets: indexSet)
                 }
             }
-            .navigationDestination(item: self.$selectedAccountSession, destination: { accountSession in
-                if let session = accountSession.session {
-                    PoastTabView(account: accountSession.account)
-                        .environmentObject(session)
-                        .navigationBarBackButtonHidden(true)
-                } else {
-                    PoastSignInView(host: accountSession.account.host!.absoluteString, handle: accountSession.account.handle!, signInViewModel: PoastSignInViewModel())
-                        .environmentObject(accountSession.account)
-                }
+            .navigationDestination(item: self.$selectedAccount, destination: { account in
+                PoastSignInView(host: account.host!.absoluteString, handle: account.handle!, signInViewModel: PoastSignInViewModel())
             })
             .navigationTitle("Accounts")
             .toolbar {

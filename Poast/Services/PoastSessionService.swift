@@ -22,7 +22,7 @@ enum PoastSessionServiceError: Error {
 }
 
 class PoastSessionService {
-    @Dependency private(set) var sessionStore: PoastSessionStore
+    private var sessionStore = PoastSessionStore()
 
     func createSession(did: String, accountUUID: UUID) -> Result<PoastSessionObject, PoastSessionServiceError> {
         do {

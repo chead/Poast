@@ -20,7 +20,7 @@ enum PoastAccountServiceError: Error {
 }
 
 class PoastAccountService {
-    @Dependency private(set) var accountStore: PoastAccountStore
+    private var accountStore = PoastAccountStore()
 
     func getOrCreateAccount(host: URL, handle: String) -> Result<PoastAccountObject, PoastAccountServiceError> {
         do {

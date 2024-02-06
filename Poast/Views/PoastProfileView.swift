@@ -17,9 +17,9 @@ enum PoastProfileViewFeed {
 }
 
 struct PoastProfileView: View {
-    var profileViewModel: PostProfileViewModeling
+    @EnvironmentObject var user: PoastUser
 
-    @EnvironmentObject var session: PoastSessionObject
+    var profileViewModel: PostProfileViewModeling
 
     @State var profile: PoastProfileModel?
     @State var feed: PoastProfileViewFeed = .posts
@@ -76,7 +76,6 @@ struct PoastProfileView: View {
             switch(self.feed) {
             case .posts:
                 PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: self.profileViewModel.handle))
-                    .environmentObject(session)
 
             case .replies:
                 Rectangle()
@@ -103,6 +102,10 @@ struct PoastProfileView: View {
         }
         .onAppear() {
             Task {
+                guard let session = user.accountSession?.session else {
+                    return
+                }
+
                 switch(await self.profileViewModel.getProfile(session: session)) {
                 case .success(let profile):
                     self.profile = profile

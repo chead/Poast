@@ -62,7 +62,7 @@ class PoastSignInViewModel {
     @Dependency private var sessionService: PoastSessionService
     @Dependency private var credentialsService: PoastCredentialsService
     
-    func signIn(host: URL, handle: String, password: String) async -> Result<(PoastAccountObject, PoastSessionObject), PoastSignInViewModelError> {
+    func signIn(host: URL, handle: String, password: String) async -> Result<(account: PoastAccountObject, session: PoastSessionObject), PoastSignInViewModelError> {
         do {
             switch(try await self.blueskyClient.createSession(host: host, identifier: handle, password: password)) {
             case .success(let createSessionResponseBody):

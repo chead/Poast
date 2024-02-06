@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct PoastTimelineView: View {
+    @EnvironmentObject var user: PoastUser
+
     let timelineViewModel: PoastTimelineViewModeling
 
-    @EnvironmentObject var session: PoastSessionObject
-    
     @State var timeline: PoastTimelineModel?
     @State var showingComposerView: Bool = false
 
@@ -31,7 +31,6 @@ struct PoastTimelineView: View {
             }
             
             PoastPostView(postViewModel: PoastPostViewModel(), post: post)
-                .environmentObject(session)
                 .onAppear {
                     if index == (self.timeline?.posts ?? []).count - 1 {
                         print("Bottom!")
@@ -65,7 +64,11 @@ struct PoastTimelineView: View {
         .listStyle(.plain)
         .onAppear {
             Task {
-                switch(await self.timelineViewModel.getTimeline(session: self.session,
+                guard let accountSession = user.accountSession else {
+                    return
+                }
+
+                switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
                                                                 cursor: nil)) {
                 case .success(let timeline):
                     self.timeline = timeline
@@ -81,12 +84,25 @@ struct PoastTimelineView: View {
 #Preview {
     let managedObjectContext = PersistenceController.preview.container.viewContext
 
+    let account = PoastAccountObject(context: managedObjectContext)
+
+    account.uuid = UUID()
+    account.created = Date()
+    account.handle = "@foobar.baz"
+    account.host = URL(string: "https://bsky.social")!
+
     let session = PoastSessionObject(context: managedObjectContext)
 
     session.created = Date()
-    session.accountUUID = UUID()
+    session.accountUUID = account.uuid
     session.did = ""
 
-    return PoastTimelineView(timelineViewModel: PoastTimelinePreviewViewModel())
-        .environmentObject(session)
+    let user = PoastUser()
+
+    user.accountSession = (account: account, session: session)
+
+    return NavigationStack {
+        PoastTimelineView(timelineViewModel: PoastTimelinePreviewViewModel())
+            .environmentObject(user)
+    }
 }

@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct PoastSignInView: View {
-    struct AccountSession: Hashable {
-        var account: PoastAccountObject
-        var session: PoastSessionObject
-    }
+    @EnvironmentObject var user: PoastUser
 
     let signInViewModel: PoastSignInViewModel
 
@@ -20,7 +17,6 @@ struct PoastSignInView: View {
     @State var password: String = ""
 
     @State private var loading: Bool = false
-    @State private var signedInAccountSession: AccountSession? = nil
     @State private var showInvalidURLAlert: Bool = false
     @State private var showAccountExistsAlert: Bool = false
     @State private var showSessionExistsAlert: Bool = false
@@ -88,7 +84,7 @@ struct PoastSignInView: View {
 
                     switch(await self.signInViewModel.signIn(host: hostURL, handle: self.handle, password: self.password)) {
                     case .success(let accountSession):
-                        self.signedInAccountSession = AccountSession(account: accountSession.0, session: accountSession.1)
+                        user.accountSession = (account: accountSession.account, session: accountSession.session)
 
                     case .failure(let error):
                         self.loading = false
@@ -117,12 +113,6 @@ struct PoastSignInView: View {
             .frame(maxWidth: .infinity)
             .disabled(isSignInButtonDisabled)
             .padding()
-            .navigationDestination(item: self.$signedInAccountSession, destination: { accountSession in
-                PoastTabView(account: accountSession.account)
-                    .environmentObject(accountSession.session)
-                    .navigationBarBackButtonHidden(true)
-
-            })
             .alert("Invalid Host", isPresented: $showInvalidURLAlert) {
                 Button("OK", role: .cancel) {}
             }
@@ -157,4 +147,5 @@ struct PoastSignInView: View {
 
 #Preview {
     PoastSignInView(signInViewModel: PoastSignInViewModel())
+        .environmentObject(PoastUser())
 }

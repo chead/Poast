@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastParentPostView: View {
-    @EnvironmentObject var session: PoastSessionObject
+    @EnvironmentObject var user: PoastUser
 
     @State var postViewModel: PoastPostViewModel
     @State var post: PoastFeedPostViewModel
@@ -60,14 +60,17 @@ struct PoastParentPostView: View {
                                          replyCount: self.post.replyCount,
                                          repostCount: self.post.repostCount,
                                          likeCount: self.post.likeCount)
-                .environmentObject(session)
 
                 Spacer()
             }
         }
         .task {
             if let parent = self.post.parent {
-                switch(await self.postViewModel.getPost(session: self.session, uri: parent.uri)) {
+                guard let session = user.accountSession?.session else {
+                    return
+                }
+
+                switch(await self.postViewModel.getPost(session: session, uri: parent.uri)) {
                 case .success(let grandParentPost):
                     if let grandParentPost = grandParentPost {
                         self.replyTo = grandParentPost.author.name
@@ -81,14 +84,6 @@ struct PoastParentPostView: View {
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = UUID()
-    session.did = ""
-
     let post = PoastFeedPostViewModel(cid: "",
                                       uri: "",
                                       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed molestie leo felis, ut ultrices est euismod vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce bibendum iaculis augue, eget luctus purus dapibus ut. Morbi congue, nibh lacinia consequat tempus, lacus nisl eleifend ligula, quis dapibus sem diam ac ex.",
@@ -110,5 +105,4 @@ struct PoastParentPostView: View {
                                       date: Date())
 
     return PoastParentPostView(postViewModel: PoastPostViewModel(), post: post)
-        .environmentObject(session)
 }

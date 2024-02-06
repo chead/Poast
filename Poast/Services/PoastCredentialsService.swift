@@ -12,7 +12,7 @@ enum PoastCredentialsServiceError: Error {
 }
 
 class PoastCredentialsService {
-    @Dependency private(set) var credentialsStore: PoastCredentialsStore
+    private var credentialsStore =  PoastCredentialsStore()
 
     func addCredentials(did: String, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)

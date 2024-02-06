@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct PoastPostInteractionView: View {
-    @EnvironmentObject var session: PoastSessionObject
-
     @Binding var postViewModel: PoastPostViewModel
 
     let replyCount: Int
@@ -53,14 +51,6 @@ struct PoastPostInteractionView: View {
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = UUID()
-    session.did = ""
-
     let post = PoastFeedPostViewModel(cid: "",
                                       uri: "",
                                       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed molestie leo felis, ut ultrices est euismod vitae. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce bibendum iaculis augue, eget luctus purus dapibus ut. Morbi congue, nibh lacinia consequat tempus, lacus nisl eleifend ligula, quis dapibus sem diam ac ex.",
@@ -81,6 +71,8 @@ struct PoastPostInteractionView: View {
                                       parent: nil,
                                       date: Date())
 
-    return PoastPostInteractionView(postViewModel: .constant(PoastPostViewModel()), replyCount: 1, repostCount: 2, likeCount: 3)
-        .environmentObject(session)
+    return PoastPostInteractionView(postViewModel: .constant(PoastPostViewModel()),
+                                    replyCount: 1,
+                                    repostCount: 2,
+                                    likeCount: 3)
 }

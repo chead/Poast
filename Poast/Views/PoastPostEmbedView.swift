@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastPostEmbedView: View {
-    @EnvironmentObject var session: PoastSessionObject
+    @EnvironmentObject var user: PoastUser
 
     @Binding var postViewModel: PoastPostViewModel
 
@@ -48,7 +48,11 @@ struct PoastPostEmbedView: View {
                         .stroke(.gray, lineWidth: 1)
                 )
                 .task {
-                    switch(await self.postViewModel.getPost(session: self.session, uri: recordRecord.uri)) {
+                    guard let session = user.accountSession?.session else {
+                        return
+                    }
+
+                    switch(await self.postViewModel.getPost(session: session, uri: recordRecord.uri)) {
                     case .success(let poastFeedPostViewModel):
                         self.recordRecord = poastFeedPostViewModel
 

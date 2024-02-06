@@ -8,14 +8,11 @@
 import SwiftUI
 
 struct PoastTabView: View {
-    @EnvironmentObject var session: PoastSessionObject
-
-    let account: PoastAccountObject
+    @EnvironmentObject var user: PoastUser
 
     var body: some View {
         TabView {
             PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
-                .environmentObject(session)
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
             Rectangle()
                 .fill(.blue)
@@ -23,11 +20,13 @@ struct PoastTabView: View {
             Rectangle()
                 .fill(.red)
                 .tabItem { Label("Notifications", systemImage: "bell") }
-            PoastProfileView(profileViewModel: PoastProfileViewModel(handle: account.handle!))
-                .environmentObject(session)
-                .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
+
+            if let handle = user.accountSession?.account.handle {
+                PoastProfileView(profileViewModel: PoastProfileViewModel(handle: handle))
+                    .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
+            }
+
             PoastAccountSettingsView(accountSettingsViewModel: PoastAccountSettingsViewModel())
-                .environmentObject(session)
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
@@ -38,17 +37,19 @@ struct PoastTabView: View {
 
     let account = PoastAccountObject(context: managedObjectContext)
 
-    account.created = Date()
-    account.handle = "Foobar"
-    account.host = URL(string: "https://bsky.social")!
     account.uuid = UUID()
+    account.created = Date()
+    account.handle = "@foobar.baz"
+    account.host = URL(string: "https://bsky.social")!
 
     let session = PoastSessionObject(context: managedObjectContext)
 
     session.created = Date()
-    session.accountUUID = account.uuid!
+    session.accountUUID = account.uuid
     session.did = ""
 
-    return PoastTabView(account: account)
-        .environmentObject(session)
+    let user = PoastUser()
+
+    return PoastTabView()
+        .environmentObject(user)
 }

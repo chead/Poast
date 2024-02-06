@@ -10,8 +10,6 @@ import SwiftUI
 fileprivate let avatarWidth = 50.0
 
 struct PoastPostView: View {
-    @EnvironmentObject var session: PoastSessionObject
-
     @State var postViewModel: PoastPostViewModel
     @State var post: PoastFeedViewPostModel
 
@@ -66,7 +64,6 @@ struct PoastPostView: View {
                                          replyCount: self.post.replyCount,
                                          repostCount: self.post.repostCount,
                                          likeCount: self.post.likeCount)
-                .environmentObject(session)
 
                 Spacer()
             }
@@ -75,14 +72,6 @@ struct PoastPostView: View {
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = UUID()
-    session.did = ""
-
     let post = PoastFeedViewPostModel(id: UUID(),
                                       uri: "",
                                       cid: "",
@@ -107,5 +96,4 @@ struct PoastPostView: View {
                                       repostedBy: nil)
 
     return PoastPostView(postViewModel: PoastPostViewModel(), post: post)
-        .environmentObject(session)
 }
