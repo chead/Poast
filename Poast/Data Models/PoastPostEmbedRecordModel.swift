@@ -52,11 +52,7 @@ enum PoastPostEmbedRecordModel: Hashable {
     case record(PoastPostEmbedRecordRecordModel)
 
     init(blueskyEmbedRecordView: BlueskyEmbedRecordView) {
-        self.init(blueskyEmbedRecordViewRecordType: blueskyEmbedRecordView.record)
-    }
-
-    init(blueskyEmbedRecordViewRecordType: BlueskyEmbedRecordViewRecordType) {
-        switch(blueskyEmbedRecordViewRecordType) {
+        switch(blueskyEmbedRecordView.record) {
         case .blueskyEmbedRecordViewBlocked(let blueskyEmbedRecordViewBlocked):
             self = .blocked(PoastPostEmbedBlockedRecordModel(blueskyEmbedRecordViewBlocked: blueskyEmbedRecordViewBlocked))
 

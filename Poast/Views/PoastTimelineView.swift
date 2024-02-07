@@ -16,65 +16,67 @@ struct PoastTimelineView: View {
     @State var showingComposerView: Bool = false
 
     var body: some View {
-        List(Array((self.timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
-            if let parent = post.parent {
-                switch(parent) {
-                case .post(let parentPost):
-                    PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
-
-                case .notFound(_):
-                    Text("Post not found")
-
-                case .blocked(_, _):
-                    Text("Blocked post")
-                }
-            }
-            
-            PoastPostView(postViewModel: PoastPostViewModel(), post: post)
-                .onAppear {
-                    if index == (self.timeline?.posts ?? []).count - 1 {
-                        print("Bottom!")
+        NavigationStack {
+            List(Array((self.timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
+                if let parent = post.parent {
+                    switch(parent) {
+                    case .post(let parentPost):
+                        PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
+                        
+                    case .notFound(_):
+                        Text("Post not found")
+                        
+                    case .blocked(_, _):
+                        Text("Blocked post")
                     }
                 }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
+                
+                PoastPostView(postViewModel: PoastPostViewModel(), post: post)
+                    .onAppear {
+                        if index == (self.timeline?.posts ?? []).count - 1 {
+                            print("Bottom!")
+                        }
+                    }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
 
-                } label: {
-                    Image(systemName: "magnifyingglass")
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("Poast")
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        self.showingComposerView = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .sheet(isPresented: $showingComposerView) {
+                        EmptyView()
+                    }
                 }
             }
+            .listStyle(.plain)
+            .onAppear {
+                Task {
+                    guard let accountSession = user.accountSession else {
+                        return
+                    }
 
-            ToolbarItem(placement: .principal) {
-                Text("Poast")
-            }
+                    switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
+                                                                    cursor: nil)) {
+                    case .success(let timeline):
+                        self.timeline = timeline
 
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    self.showingComposerView = true
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .sheet(isPresented: $showingComposerView) {
-                    EmptyView()
-                }
-            }
-        }
-        .listStyle(.plain)
-        .onAppear {
-            Task {
-                guard let accountSession = user.accountSession else {
-                    return
-                }
-
-                switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
-                                                                cursor: nil)) {
-                case .success(let timeline):
-                    self.timeline = timeline
-
-                case .failure(_):
-                    break
+                    case .failure(_):
+                        break
+                    }
                 }
             }
         }
@@ -101,8 +103,6 @@ struct PoastTimelineView: View {
 
     user.accountSession = (account: account, session: session)
 
-    return NavigationStack {
-        PoastTimelineView(timelineViewModel: PoastTimelinePreviewViewModel())
-            .environmentObject(user)
-    }
+    return PoastTimelineView(timelineViewModel: PoastTimelinePreviewViewModel())
+        .environmentObject(user)
 }

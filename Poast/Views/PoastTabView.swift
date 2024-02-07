@@ -14,9 +14,11 @@ struct PoastTabView: View {
         TabView {
             PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
+
             Rectangle()
                 .fill(.blue)
                 .tabItem { Label("Feeds", systemImage: "number") }
+
             Rectangle()
                 .fill(.red)
                 .tabItem { Label("Notifications", systemImage: "bell") }
@@ -26,7 +28,7 @@ struct PoastTabView: View {
                     .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
 
-            PoastAccountSettingsView(accountSettingsViewModel: PoastAccountSettingsViewModel())
+            PoastSettingsView(accountSettingsViewModel: PoastSettingsViewModel())
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
@@ -49,6 +51,8 @@ struct PoastTabView: View {
     session.did = ""
 
     let user = PoastUser()
+
+    user.accountSession = (account: account, session: session)
 
     return PoastTabView()
         .environmentObject(user)

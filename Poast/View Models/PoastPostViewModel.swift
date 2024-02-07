@@ -58,8 +58,12 @@ class PoastPostViewModel {
                                                                           accessToken: credentials.accessToken,
                                                                           refreshToken: credentials.refreshToken)
                         }
-
-                        return .success(PoastFeedPostViewModel(blueSkyFeedPostView: getPostsResponse.body.posts.first!))
+                        
+                        if let post = getPostsResponse.body.posts.first {
+                            return .success(PoastFeedPostViewModel(blueSkyFeedPostView: post))
+                        } else {
+                            return .success(nil)
+                        }
 
                     case .failure(let error):
                         return .failure(.unknown)

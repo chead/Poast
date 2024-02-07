@@ -1,5 +1,5 @@
 //
-//  PoastAccountSettingsViewModel.swift
+//  PoastSettingsViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/20/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PoastAccountSettingsViewModel {
+class PoastSettingsViewModel {
     @Dependency private var sessionService: PoastSessionService
     @Dependency private var credentialsService: PoastCredentialsService
 

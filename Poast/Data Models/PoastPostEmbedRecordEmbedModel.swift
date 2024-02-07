@@ -61,22 +61,13 @@ struct PoastPostEmbedExternalImageModel: Hashable {
 }
 
 enum PoastPostEmbedRecordWithMediaMediaModel: Hashable {
-    case unknown
-    case external(PoastPostEmbedExternalExternalModel)
     case externalView(PoastPostEmbedExternalModel)
-    case images([PoastPostEmbedExternalImageModel])
     case imagesView([PoastPostEmbedImageModel])
 
     init(blueskyEmbedRecordWithMediaViewMediaType: BlueskyEmbedRecordWithMediaViewMediaType) {
         switch(blueskyEmbedRecordWithMediaViewMediaType) {
-        case .blueskyEmbedExternal(let blueskyEmbedExternal):
-            self = .external(PoastPostEmbedExternalExternalModel(blueskyEmbedExternalExternal: blueskyEmbedExternal.external))
-
         case .blueskyEmbedExternalView(let blueskyEmbedExternalView):
             self = .externalView(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
-
-        case .blueskyEmbedImages(let blueskyEmbedImages):
-            self = .images(blueskyEmbedImages.images.map { PoastPostEmbedExternalImageModel(blueskyEmbedImagesImage: $0) })
 
         case .blueskyEmbedImagesView(let blueskyEmbedImagesView):
             self = .imagesView(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
@@ -95,7 +86,6 @@ struct PoastPostEmbedRecordWithMediaModel: Hashable {
 }
 
 enum PoastPostEmbedRecordEmbedModel: Hashable {
-    case unknown
     case external(PoastPostEmbedExternalModel)
     case images([PoastPostEmbedImageModel])
     case record(PoastPostEmbedRecordModel)

@@ -8,23 +8,11 @@
 import Foundation
 import SwiftBluesky
 
-//struct PoastFeedViewerState {
-//    let repost: String?
-//    let like: String?
-//    let replyDisabled: Bool?
-//
-//    init(blueskyFeedViewerState: BlueskyFeedViewerState) {
-//        self.repost = blueskyFeedViewerState.repost
-//        self.like = blueskyFeedViewerState.like
-//        self.replyDisabled = blueskyFeedViewerState.replyDisabled
-//    }
-//}
-
 enum PoastPostEmbedModel: Hashable {
-    case unknown
     case images([PoastPostEmbedImageModel])
-    case externalView(PoastPostEmbedExternalModel)
+    case external(PoastPostEmbedExternalModel)
     case record(PoastPostEmbedRecordModel)
+    case recordWithMedia(PoastPostEmbedRecordWithMediaModel)
 
     init(blueskyFeedPostViewEmbedType: BlueskyFeedPostViewEmbedType) {
         switch(blueskyFeedPostViewEmbedType) {
@@ -32,13 +20,13 @@ enum PoastPostEmbedModel: Hashable {
             self = .images(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
 
         case .blueskyEmbedExternalView(let blueskyEmbedExternalView):
-            self = .externalView(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
+            self = .external(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
 
         case .blueskyEmbedRecordView(let blueskyEmbedRecordView):
-            self = .record(PoastPostEmbedRecordModel(blueskyEmbedRecordViewRecordType: blueskyEmbedRecordView.record))
+            self = .record(PoastPostEmbedRecordModel(blueskyEmbedRecordView: blueskyEmbedRecordView))
 
-        default:
-            self = .unknown
+        case .blueskyEmbedRecordWithMediaView(let blueskyEmbedRecordWithMediaView):
+            self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(blueskyEmbedRecordWithMediaView: blueskyEmbedRecordWithMediaView))
         }
     }
 }

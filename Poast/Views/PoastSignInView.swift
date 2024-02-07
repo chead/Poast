@@ -36,8 +36,6 @@ struct PoastSignInView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Spacer()
-
             TextField("Host",
                       text: $host,
                       prompt: Text("Host").foregroundColor(.gray)
@@ -69,8 +67,6 @@ struct PoastSignInView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(.gray, lineWidth: 2)
             }.padding(.horizontal)
-
-            Spacer()
 
             Button {
                 Task {
@@ -131,6 +127,8 @@ struct PoastSignInView: View {
             .alert("Sign in failed", isPresented: $showUnknownErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
+
+            Spacer()
         }
         .disabled(self.loading)
         .blur(radius: self.loading ? 3 : 0)

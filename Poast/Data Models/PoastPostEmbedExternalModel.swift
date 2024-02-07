@@ -13,6 +13,12 @@ struct PoastPostEmbedExternalModel: Hashable {
     let description: String
     let thumb: String?
 
+    init(uri: String, description: String, thumb: String?) {
+        self.uri = uri
+        self.description = description
+        self.thumb = thumb
+    }
+
     init(blueskyEmbedExternalViewExternal: BlueskyEmbedExternalViewExternal) {
         self.uri = blueskyEmbedExternalViewExternal.uri
         self.description = blueskyEmbedExternalViewExternal.description
