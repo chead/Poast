@@ -14,11 +14,11 @@ enum PoastTimelineViewModelError: Error {
 }
 
 protocol PoastTimelineViewModeling {
-    func getTimeline(session: PoastSessionObject, cursor: Date?) async -> Result<PoastTimelineModel, PoastTimelineViewModelError>
+    func getTimeline(session: PoastSessionObject, cursor: Date) async -> Result<PoastTimelineModel, PoastTimelineViewModelError>
 }
 
 class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
-    func getTimeline(session: PoastSessionObject, cursor: Date?) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
+    func getTimeline(session: PoastSessionObject, cursor: Date) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
         return .success(PoastTimelineModel(posts: [
             PoastFeedViewPostModel(
                 id: UUID(),
@@ -89,7 +89,7 @@ class PoastTimelineViewModel: PoastTimelineViewModeling {
         self.algorithm = algorithm
     }
 
-    func getTimeline(session: PoastSessionObject, cursor: Date?) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
+    func getTimeline(session: PoastSessionObject, cursor: Date) async -> Result<PoastTimelineModel, PoastTimelineViewModelError> {
         do {
             guard let sessionDid = session.did,
                   let accountUUID = session.accountUUID else {
@@ -113,7 +113,7 @@ class PoastTimelineViewModel: PoastTimelineViewModeling {
                                                                     refreshToken: credentials.refreshToken,
                                                                     algorithm: algorithm,
                                                                     limit: 50,
-                                                                    cursor: "")) {
+                                                                    cursor: cursor)) {
                     case .success(let getTimelineResponse):
                         return .success(PoastTimelineModel(blueskyFeedFeedViewPosts: getTimelineResponse.body.feed))
 

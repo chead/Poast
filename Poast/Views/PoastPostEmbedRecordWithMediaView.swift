@@ -21,10 +21,6 @@ struct PoastPostEmbedRecordWithMediaView: View {
         switch(record) {
         case .record(let recordRecord):
             VStack(alignment: .leading) {
-                PoastPostHeaderView(authorName: feedPostView?.author.name ?? "",
-                                    timeAgo: postViewModel.getTimeAgo(date: feedPostView?.date ?? Date()))
-                Text(feedPostView?.text ?? "")
-
                 if let media = media {
                     switch(media) {
                     case .imagesView(let images):
@@ -34,6 +30,10 @@ struct PoastPostEmbedRecordWithMediaView: View {
                         PoastPostEmbedExternalView(external: external)
                     }
                 }
+
+                PoastPostHeaderView(authorName: feedPostView?.author.name ?? "",
+                                    timeAgo: postViewModel.getTimeAgo(date: feedPostView?.date ?? Date()))
+                Text(feedPostView?.text ?? "")
             }
             .padding()
             .overlay(

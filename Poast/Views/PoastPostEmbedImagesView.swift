@@ -54,10 +54,5 @@ struct PoastPostEmbedImagesView: View {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
-        .padding()
-        .overlay(
-            RoundedRectangle(cornerRadius: 8.0)
-                .stroke(.gray, lineWidth: 1)
-        )
     }
 }

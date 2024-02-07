@@ -12,73 +12,52 @@ struct PoastTimelineView: View {
 
     let timelineViewModel: PoastTimelineViewModeling
 
-    @State var timeline: PoastTimelineModel?
-    @State var showingComposerView: Bool = false
+    @State var posts: [PoastFeedViewPostModel] = []
 
     var body: some View {
-        NavigationStack {
-            List(Array((timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
-                if let parent = post.parent {
-                    switch(parent) {
-                    case .post(let parentPost):
-                        PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
-                        
-                    case .notFound(_):
-                        Text("Post not found")
-                        
-                    case .blocked(_, _):
-                        Text("Blocked post")
-                    }
+        List(Array(posts.enumerated()), id: \.1.id) { (index, post) in
+            if let parent = post.parent {
+                switch(parent) {
+                case .post(let parentPost):
+                    PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
+                    
+                case .notFound(_):
+                    Text("Post not found")
+                    
+                case .blocked(_, _):
+                    Text("Blocked post")
                 }
-                
-                PoastPostView(postViewModel: PoastPostViewModel(), post: post)
-                    .onAppear {
-                        if index == (timeline?.posts ?? []).count - 1 {
-                            print("Bottom!")
+            }
+            
+            PoastPostView(postViewModel: PoastPostViewModel(), post: post)
+                .onAppear {
+                    Task {
+                        if index == posts.count - 1 {
+                            posts.append(contentsOf: await loadContent(cursor: post.date))
                         }
                     }
+                }
+        }
+        .listStyle(.plain)
+        .onAppear {
+            Task {
+                posts = await loadContent(cursor: Date())
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+        }
+    }
 
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
+    func loadContent(cursor: Date) async -> [PoastFeedViewPostModel] {
+        guard let accountSession = user.accountSession else {
+            return []
+        }
 
-                ToolbarItem(placement: .principal) {
-                    Text("Poast")
-                }
+        switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
+                                                        cursor: cursor)) {
+        case .success(let timeline):
+            return timeline.posts
 
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingComposerView = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .sheet(isPresented: $showingComposerView) {
-                        EmptyView()
-                    }
-                }
-            }
-            .listStyle(.plain)
-            .onAppear {
-                Task {
-                    guard let accountSession = user.accountSession else {
-                        return
-                    }
-
-                    switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
-                                                                    cursor: nil)) {
-                    case .success(let timeline):
-                        self.timeline = timeline
-
-                    case .failure(_):
-                        break
-                    }
-                }
-            }
+        case .failure(_):
+            return []
         }
     }
 }
