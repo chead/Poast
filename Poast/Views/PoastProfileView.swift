@@ -33,38 +33,38 @@ struct PoastProfileView: View {
                     Spacer()
 
                     Button("Posts") {
-                        self.feed = .posts
+                        feed = .posts
                     }
                     .padding(.horizontal, 12)
 
                     Button("Replies") {
-                        self.feed = .replies
+                        feed = .replies
                     }
                     .padding(.horizontal, 12)
 
                     Button("Media") {
-                        self.feed = .media
+                        feed = .media
                     }
                     .padding(.horizontal, 12)
 
                     Spacer()
 
                     Button("Likes") {
-                        self.feed = .likes
+                        feed = .likes
                     }
                     .padding(.horizontal, 12)
 
                     Spacer()
 
                     Button("Feeds") {
-                        self.feed = .feeds
+                        feed = .feeds
                     }
                     .padding(.horizontal, 12)
 
                     Spacer()
 
                     Button("Lists") {
-                        self.feed = .lists
+                        feed = .lists
                     }
                     .padding(.horizontal, 12)
 
@@ -73,9 +73,9 @@ struct PoastProfileView: View {
             }
             .padding(.top, 10)
 
-            switch(self.feed) {
+            switch(feed) {
             case .posts:
-                PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: self.profileViewModel.handle))
+                PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: profileViewModel.handle))
 
             case .replies:
                 Rectangle()

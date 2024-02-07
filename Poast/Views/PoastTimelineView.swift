@@ -17,7 +17,7 @@ struct PoastTimelineView: View {
 
     var body: some View {
         NavigationStack {
-            List(Array((self.timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
+            List(Array((timeline?.posts ?? []).enumerated()), id: \.1.id) { (index, post) in
                 if let parent = post.parent {
                     switch(parent) {
                     case .post(let parentPost):
@@ -33,7 +33,7 @@ struct PoastTimelineView: View {
                 
                 PoastPostView(postViewModel: PoastPostViewModel(), post: post)
                     .onAppear {
-                        if index == (self.timeline?.posts ?? []).count - 1 {
+                        if index == (timeline?.posts ?? []).count - 1 {
                             print("Bottom!")
                         }
                     }
@@ -53,7 +53,7 @@ struct PoastTimelineView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        self.showingComposerView = true
+                        showingComposerView = true
                     } label: {
                         Image(systemName: "plus")
                     }

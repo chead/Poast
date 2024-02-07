@@ -31,7 +31,7 @@ struct PoastSignInView: View {
     }
 
     var isSignInButtonDisabled: Bool {
-        self.loading == true || [host, handle, password].contains(where: \.isEmpty)
+        loading == true || [host, handle, password].contains(where: \.isEmpty)
     }
     
     var body: some View {
@@ -71,35 +71,35 @@ struct PoastSignInView: View {
             Button {
                 Task {
                     guard let hostURL = URL(string: self.host) else {
-                        self.showInvalidURLAlert = true
+                        showInvalidURLAlert = true
 
                         return
                     }
 
-                    self.loading = true
+                    loading = true
 
-                    switch(await self.signInViewModel.signIn(host: hostURL, handle: self.handle, password: self.password)) {
+                    switch(await signInViewModel.signIn(host: hostURL, handle: handle, password: password)) {
                     case .success(let accountSession):
                         user.accountSession = (account: accountSession.account, session: accountSession.session)
 
                     case .failure(let error):
-                        self.loading = false
+                        loading = false
 
                         switch(error) {
                         case .accountExists:
-                            self.showAccountExistsAlert = true
+                            showAccountExistsAlert = true
 
                         case .sessionExists:
-                            self.showSessionExistsAlert = true
+                            showSessionExistsAlert = true
 
                         case .unauthorized:
-                            self.showUnauthorizedAlert = true
+                            showUnauthorizedAlert = true
 
                         case .unavailable:
-                            self.showHostUnreachableAlert = true
+                            showHostUnreachableAlert = true
 
                         default:
-                            self.showUnknownErrorAlert = true
+                            showUnknownErrorAlert = true
                         }
                     }
                 }
@@ -130,10 +130,10 @@ struct PoastSignInView: View {
 
             Spacer()
         }
-        .disabled(self.loading)
-        .blur(radius: self.loading ? 3 : 0)
+        .disabled(loading)
+        .blur(radius: loading ? 3 : 0)
         .overlay {
-            if self.loading == true {
+            if loading == true {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
             }

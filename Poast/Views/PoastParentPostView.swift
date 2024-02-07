@@ -17,7 +17,7 @@ struct PoastParentPostView: View {
     var body: some View {
         HStack(alignment: .top) {
             VStack {
-                AsyncImage(url: URL(string: self.post.author.avatar ?? "")) { image in
+                AsyncImage(url: URL(string: post.author.avatar ?? "")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -35,12 +35,12 @@ struct PoastParentPostView: View {
             }
 
             VStack(alignment: .leading) {
-                PoastPostHeaderView(authorName: self.post.author.name,
-                                    timeAgo: self.postViewModel.getTimeAgo(date: self.post.date))
+                PoastPostHeaderView(authorName: post.author.name,
+                                    timeAgo: postViewModel.getTimeAgo(date: post.date))
 
                 Spacer()
 
-                if let replyTo = self.replyTo {
+                if let replyTo = replyTo {
                     HStack {
                         Image(systemName: "arrowshape.turn.up.backward.fill")
 
@@ -52,20 +52,20 @@ struct PoastParentPostView: View {
                     Spacer()
                 }
 
-                Text(self.post.text)
+                Text(post.text)
 
                 Spacer()
 
-                PoastPostInteractionView(postViewModel: self.$postViewModel,
-                                         replyCount: self.post.replyCount,
-                                         repostCount: self.post.repostCount,
-                                         likeCount: self.post.likeCount)
+                PoastPostInteractionView(postViewModel: $postViewModel,
+                                         replyCount: post.replyCount,
+                                         repostCount: post.repostCount,
+                                         likeCount: post.likeCount)
 
                 Spacer()
             }
         }
         .task {
-            if let parent = self.post.parent {
+            if let parent = post.parent {
                 guard let session = user.accountSession?.session else {
                     return
                 }
@@ -73,7 +73,7 @@ struct PoastParentPostView: View {
                 switch(await self.postViewModel.getPost(session: session, uri: parent.uri)) {
                 case .success(let grandParentPost):
                     if let grandParentPost = grandParentPost {
-                        self.replyTo = grandParentPost.author.name
+                        replyTo = grandParentPost.author.name
                     }
                 case .failure(_):
                     break

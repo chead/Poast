@@ -32,8 +32,8 @@ struct PoastPostView: View {
             VStack(alignment: .leading) {
                 Spacer()
 
-                PoastPostHeaderView(authorName: self.post.author.name,
-                                    timeAgo: self.postViewModel.getTimeAgo(date: self.post.date))
+                PoastPostHeaderView(authorName: post.author.name,
+                                    timeAgo: postViewModel.getTimeAgo(date: post.date))
 
                 if let repostedBy = self.post.repostedBy {
                     Spacer()
@@ -50,20 +50,20 @@ struct PoastPostView: View {
 
                 Spacer()
 
-                Text(self.post.text)
+                Text(post.text)
 
                 Spacer()
 
-                if let embed = self.post.embed {
+                if let embed = post.embed {
                     PoastPostEmbedView(postViewModel: self.$postViewModel, embed: embed)
                 }
 
                 Spacer()
 
-                PoastPostInteractionView(postViewModel: self.$postViewModel,
-                                         replyCount: self.post.replyCount,
-                                         repostCount: self.post.repostCount,
-                                         likeCount: self.post.likeCount)
+                PoastPostInteractionView(postViewModel: $postViewModel,
+                                         replyCount: post.replyCount,
+                                         repostCount: post.repostCount,
+                                         likeCount: post.likeCount)
 
                 Spacer()
             }

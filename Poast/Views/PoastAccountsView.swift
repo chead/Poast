@@ -37,19 +37,19 @@ struct PoastAccountsView: View {
                     }
                 }
                 .onDelete { indexSet in
-                    indexSet.forEach { self.accountsViewModel.deleteAccount(account: self.accounts[$0]) }
+                    indexSet.forEach { accountsViewModel.deleteAccount(account: self.accounts[$0]) }
 
                     self.accounts.remove(atOffsets: indexSet)
                 }
             }
-            .navigationDestination(item: self.$selectedAccount, destination: { account in
+            .navigationDestination(item: $selectedAccount, destination: { account in
                 PoastSignInView(host: account.host!.absoluteString, handle: account.handle!, signInViewModel: PoastSignInViewModel())
             })
             .navigationTitle("Accounts")
             .toolbar {
                 EditButton()
                 Button {
-                    self.showingSignInView = true
+                    showingSignInView = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -58,7 +58,7 @@ struct PoastAccountsView: View {
                 }
             }
             .onAppear {
-                self.accounts = self.accountsViewModel.getAccounts().sorted { $0.handle! > $1.handle! }
+                self.accounts = accountsViewModel.getAccounts().sorted { $0.handle! > $1.handle! }
             }
         }
     }

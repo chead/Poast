@@ -65,7 +65,7 @@ class PoastPostViewModel {
                             return .success(nil)
                         }
 
-                    case .failure(let error):
+                    case .failure(_):
                         return .failure(.unknown)
                     }
 

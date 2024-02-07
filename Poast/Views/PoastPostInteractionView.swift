@@ -19,7 +19,7 @@ struct PoastPostInteractionView: View {
             Button(action: {}, label: {
                 HStack {
                     Image(systemName: "bubble")
-                    Text("\(self.replyCount)")
+                    Text("\(replyCount)")
                 }
             })
 
@@ -28,7 +28,7 @@ struct PoastPostInteractionView: View {
             Button(action: {}, label: {
                 HStack {
                     Image(systemName: "repeat")
-                    Text("\(self.repostCount)")
+                    Text("\(repostCount)")
                 }
             })
 
@@ -37,7 +37,7 @@ struct PoastPostInteractionView: View {
             Button(action: {}, label: {
                 HStack {
                     Image(systemName: "heart")
-                    Text("\(self.likeCount)")
+                    Text("\(likeCount)")
                 }
             })
 

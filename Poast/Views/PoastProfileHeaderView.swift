@@ -13,7 +13,7 @@ struct PoastProfileHeaderView: View {
     var body: some View {
         VStack {
             ZStack {
-                AsyncImage(url: URL(string: self.profile?.banner ?? "")) { image in
+                AsyncImage(url: URL(string: profile?.banner ?? "")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -25,7 +25,7 @@ struct PoastProfileHeaderView: View {
                 .frame(height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: 10.0))
 
-                AsyncImage(url: URL(string: self.profile?.avatar ?? "")) { image in
+                AsyncImage(url: URL(string: profile?.avatar ?? "")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -41,33 +41,33 @@ struct PoastProfileHeaderView: View {
             }
             .padding(.bottom, 50)
 
-            Text(self.profile?.displayName ?? "")
+            Text(profile?.displayName ?? "")
                 .font(.title)
-            Text(self.profile?.handle ?? "")
+            Text(profile?.handle ?? "")
 
             HStack {
                 Spacer()
 
-                Text("\(self.profile?.followersCount ?? 0)")
+                Text("\(profile?.followersCount ?? 0)")
                     .bold()
                 Text("followers")
 
                 Spacer()
                 
-                Text("\(self.profile?.followsCount ?? 0)")
+                Text("\(profile?.followsCount ?? 0)")
                     .bold()
                 Text("following")
                 
                 Spacer()
                 
-                Text("\(self.profile?.postsCount ?? 0)")
+                Text("\(profile?.postsCount ?? 0)")
                     .bold()
                 Text("posts")
                 
                 Spacer()
             }
             ScrollView {
-                Text(self.profile?.description ?? "")
+                Text(profile?.description ?? "")
             }
         }
         .padding(.horizontal, 20)
