@@ -134,4 +134,46 @@ class PoastPostViewModel {
             return .failure(.unknown)
         }
     }
+
+    func unlikePost(session: PoastSessionObject, rkey: String) async -> PoastPostViewModelError? {
+        do {
+            guard let sessionDid = session.did,
+                  let accountUUID = session.accountUUID else {
+                return .session
+            }
+
+            switch(self.credentialsService.getCredentials(sessionDID: sessionDid)) {
+            case .success(let credentials):
+                guard let credentials = credentials else {
+                    return .credentials
+                }
+
+                switch(self.accountService.getAccount(uuid: accountUUID)) {
+                case .success(let account):
+                    guard let account = account else {
+                        return .account
+                    }
+
+                    if let deleteLikeError = try await self.blueskyClient.deleteLike(host: account.host!,
+                                                                                     accessToken: credentials.accessToken,
+                                                                                     refreshToken: credentials.refreshToken,
+                                                                                     repo: sessionDid,
+                                                                                     rkey: rkey) {
+                        return .unknown
+                    } else {
+                        return nil
+                    }
+
+                case .failure(_):
+                    return .unknown
+                }
+
+            case .failure(_):
+                return .unknown
+            }
+
+        } catch(_) {
+            return .unknown
+        }
+    }
 }

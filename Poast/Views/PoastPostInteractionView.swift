@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftATProto
 
 struct PoastPostInteractionView: View {
     @EnvironmentObject var user: PoastUser
@@ -15,7 +16,8 @@ struct PoastPostInteractionView: View {
     let post: PoastPostModel
 
     @State var repostDelta = 0
-    @State var likeDelta = 0
+
+    @State var like: ATProtoRepoStrongRef?
 
     var body: some View {
         HStack {
@@ -50,16 +52,30 @@ struct PoastPostInteractionView: View {
 
             Button(action: {
                 Task {
-                    if(post.like != nil || likeDelta > 0) {
+                    guard let accountSession = user.accountSession else { return }
 
+                    if(post.like != nil || like != nil) {
+                        var uri = ""
+
+                        if let postLike = post.like {
+                            uri = postLike
+                        } else if let localLike = like {
+                            uri = localLike.uri
+                        }
+
+                        let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
+
+                        if(await postViewModel.unlikePost(session: accountSession.session,
+                                                              rkey: String(rkey)) == nil) {
+                            like = nil
+                        }
                     } else {
-                        guard let accountSession = user.accountSession else { return }
-                        
                         switch(await postViewModel.likePost(session: accountSession.session,
                                                             uri: post.uri,
                                                             cid: post.cid)) {
-                        case.success(_):
-                            likeDelta += 1
+                        case.success(let likePostResponse):
+                            like = ATProtoRepoStrongRef(uri: likePostResponse.uri,
+                                                        cid: likePostResponse.cid)
 
                         case .failure(_):
                             break
@@ -68,14 +84,14 @@ struct PoastPostInteractionView: View {
                 }
             }, label: {
                 HStack {
-                    if(post.like != nil || likeDelta > 0) {
+                    if(post.like != nil || like != nil) {
                         Image(systemName: "heart.fill")
                             .foregroundColor(.red)
                     } else {
                         Image(systemName: "heart")
                     }
 
-                    Text("\(post.likeCount + likeDelta)")
+                    Text("\(post.likeCount + (like != nil ? 1 : 0))")
                 }
             })
 
