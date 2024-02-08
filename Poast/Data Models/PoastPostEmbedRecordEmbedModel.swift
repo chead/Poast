@@ -63,6 +63,7 @@ struct PoastPostEmbedExternalImageModel: Hashable {
 enum PoastPostEmbedRecordWithMediaMediaModel: Hashable {
     case externalView(PoastPostEmbedExternalModel)
     case imagesView([PoastPostEmbedImageModel])
+    case unknown
 
     init(blueskyEmbedRecordWithMediaViewMediaType: BlueskyEmbedRecordWithMediaViewMediaType) {
         switch(blueskyEmbedRecordWithMediaViewMediaType) {
@@ -71,6 +72,9 @@ enum PoastPostEmbedRecordWithMediaMediaModel: Hashable {
 
         case .blueskyEmbedImagesView(let blueskyEmbedImagesView):
             self = .imagesView(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
+
+        case .unknown:
+            self = .unknown
         }
     }
 }

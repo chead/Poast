@@ -56,10 +56,10 @@ struct PoastParentPostView: View {
 
                 Spacer()
 
-                PoastPostInteractionView(postViewModel: $postViewModel,
-                                         replyCount: post.replyCount,
-                                         repostCount: post.repostCount,
-                                         likeCount: post.likeCount)
+//                PoastPostInteractionView(postViewModel: $postViewModel,
+//                                         replyCount: post.replyCount,
+//                                         repostCount: post.repostCount,
+//                                         likeCount: post.likeCount)
 
                 Spacer()
             }
@@ -102,7 +102,10 @@ struct PoastParentPostView: View {
                                       repostCount: 10,
                                       root: nil,
                                       parent: nil,
-                                      date: Date())
+                                      date: Date(),
+                                      like: nil,
+                                      repost: nil,
+                                      replyDisabled: false)
 
     return PoastParentPostView(postViewModel: PoastPostViewModel(), post: post)
 }

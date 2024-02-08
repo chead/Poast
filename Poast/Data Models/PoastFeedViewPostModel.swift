@@ -26,8 +26,11 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
     let embed: PoastPostEmbedModel?
     let date: Date
     let repostedBy: PoastProfileModel?
+    let like: String?
+    let repost: String?
+    let replyDisabled: Bool
 
-    init(id: UUID, uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?) {
+    init(id: UUID, uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
         self.id = id
         self.uri = uri
         self.cid = cid
@@ -41,6 +44,9 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         self.embed = embed
         self.date = date
         self.repostedBy = repostedBy
+        self.like = like
+        self.repost = repost
+        self.replyDisabled = replyDisabled
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
@@ -85,6 +91,16 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
             }
         } else {
             self.repostedBy = nil
+        }
+
+        if let viewerState = blueskyFeedFeedViewPost.post.viewer {
+            self.like = viewerState.like
+            self.repost = viewerState.repost
+            self.replyDisabled = viewerState.replyDisabled ?? false
+        } else {
+            self.like = nil
+            self.repost = nil
+            self.replyDisabled = false
         }
     }
 }

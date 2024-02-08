@@ -28,6 +28,9 @@ struct PoastPostEmbedRecordWithMediaView: View {
 
                     case .externalView(let external):
                         PoastPostEmbedExternalView(external: external)
+
+                    case .unknown:
+                        EmptyView()
                     }
                 }
 

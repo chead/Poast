@@ -39,6 +39,9 @@ struct PoastTimelineView: View {
                 }
         }
         .listStyle(.plain)
+        .refreshable {
+            posts = await loadContent(cursor: Date())
+        }
         .onAppear {
             Task {
                 posts = await loadContent(cursor: Date())

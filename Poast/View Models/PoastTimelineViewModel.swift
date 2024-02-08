@@ -59,7 +59,10 @@ class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
                                                      repostCount: 0,
                                                      root: nil,
                                                      parent: nil,
-                                                     date: Date() - 1000)),
+                                                     date: Date() - 1000,
+                                                     like: nil,
+                                                     repost: nil,
+                                                     replyDisabled: false)),
                 embed: PoastPostEmbedModel.images([
                     PoastPostEmbedImageModel(fullsize: "",
                                              thumb: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ed1f8d6-5026-4dca-9726-e1a21945f876/db5dby9-17f63eb7-68b2-4468-9a4e-fdca0ed1fd66.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdlZDFmOGQ2LTUwMjYtNGRjYS05NzI2LWUxYTIxOTQ1Zjg3NlwvZGI1ZGJ5OS0xN2Y2M2ViNy02OGIyLTQ0NjgtOWE0ZS1mZGNhMGVkMWZkNjYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.zc5xkLwVNH_XO4hTBl7u-1-4WolXlaIfpInSRqSer4A",
@@ -73,7 +76,10 @@ class PoastTimelinePreviewViewModel: PoastTimelineViewModeling {
                                                                                           height: 250))
                 ]),
                 date: Date(timeIntervalSinceNow: -10),
-                repostedBy: nil)
+                repostedBy: nil,
+                like: nil,
+                repost: nil,
+                replyDisabled: false)
         ]))
     }
 }

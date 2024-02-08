@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftBluesky
+import SwiftATProto
 
 enum PoastPostViewModelError: Error {
     case session
@@ -64,6 +65,58 @@ class PoastPostViewModel {
                         } else {
                             return .success(nil)
                         }
+
+                    case .failure(_):
+                        return .failure(.unknown)
+                    }
+
+                case .failure(_):
+                    return .failure(.unknown)
+                }
+
+            case .failure(_):
+                return .failure(.unknown)
+            }
+
+        } catch(_) {
+            return .failure(.unknown)
+        }
+    }
+
+    func likePost(session: PoastSessionObject, uri: String, cid: String) async -> Result<ATProtoRepoStrongRef, PoastPostViewModelError> {
+        do {
+            guard let sessionDid = session.did,
+                  let accountUUID = session.accountUUID else {
+                return .failure(.session)
+            }
+
+            switch(self.credentialsService.getCredentials(sessionDID: sessionDid)) {
+            case .success(let credentials):
+                guard let credentials = credentials else {
+                    return .failure(.credentials)
+                }
+
+                switch(self.accountService.getAccount(uuid: accountUUID)) {
+                case .success(let account):
+                    guard let account = account else {
+                        return .failure(.account)
+                    }
+
+                    switch(try await self.blueskyClient.createLike(host: account.host!, 
+                                                                   accessToken: credentials.accessToken,
+                                                                   refreshToken: credentials.refreshToken,
+                                                                   repo: sessionDid,
+                                                                   uri: uri,
+                                                                   cid: cid)) {
+                    case .success(let createLikeResponse):
+                        if let credentials = createLikeResponse.credentials {
+                            _ = self.credentialsService.updateCredentials(did: session.did!,
+                                                                          accessToken: credentials.accessToken,
+                                                                          refreshToken: credentials.refreshToken)
+                        }
+
+                        return .success(ATProtoRepoStrongRef(uri: createLikeResponse.body.uri,
+                                                             cid: createLikeResponse.body.cid))
 
                     case .failure(_):
                         return .failure(.unknown)

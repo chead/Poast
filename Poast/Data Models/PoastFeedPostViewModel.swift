@@ -19,8 +19,11 @@ struct PoastFeedPostViewModel: Hashable {
     let root: PoastStrongReferenceModel?
     let parent: PoastStrongReferenceModel?
     let date: Date
+    let like: String?
+    let repost: String?
+    let replyDisabled: Bool
 
-    init(cid: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastStrongReferenceModel?, parent: PoastStrongReferenceModel?, date: Date) {
+    init(cid: String, uri: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastStrongReferenceModel?, parent: PoastStrongReferenceModel?, date: Date, like: String?, repost: String?, replyDisabled: Bool) {
         self.cid = cid
         self.uri = uri
         self.text = text
@@ -31,6 +34,9 @@ struct PoastFeedPostViewModel: Hashable {
         self.root = root
         self.parent = parent
         self.date = date
+        self.like = like
+        self.repost = repost
+        self.replyDisabled = replyDisabled
     }
 
     init(blueSkyFeedPostView: BlueskyFeedPostView) {
@@ -55,5 +61,15 @@ struct PoastFeedPostViewModel: Hashable {
         self.repostCount = blueSkyFeedPostView.repostCount ?? 0
         self.likeCount = blueSkyFeedPostView.likeCount ?? 0
         self.date = blueSkyFeedPostView.indexedAt
+
+        if let viewerState = blueSkyFeedPostView.viewer {
+            self.like = viewerState.like
+            self.repost = viewerState.repost
+            self.replyDisabled = viewerState.replyDisabled ?? false
+        } else {
+            self.like = nil
+            self.repost = nil
+            self.replyDisabled = false
+        }
     }
 }
