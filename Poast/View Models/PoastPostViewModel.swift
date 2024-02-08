@@ -33,7 +33,7 @@ class PoastPostViewModel {
         return formatter.localizedString(for: date, relativeTo: Date())
     }
 
-    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastFeedPostViewModel?, PoastPostViewModelError> {
+    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastPostModel?, PoastPostViewModelError> {
         do {
             guard let sessionDid = session.did,
                   let accountUUID = session.accountUUID else {
@@ -61,7 +61,7 @@ class PoastPostViewModel {
                         }
                         
                         if let post = getPostsResponse.body.posts.first {
-                            return .success(PoastFeedPostViewModel(blueSkyFeedPostView: post))
+                            return .success(PoastPostModel(blueskyFeedPostView: post))
                         } else {
                             return .success(nil)
                         }

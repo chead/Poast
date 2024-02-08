@@ -12,7 +12,7 @@ struct PoastTimelineView: View {
 
     let timelineViewModel: PoastTimelineViewModeling
 
-    @State var posts: [PoastFeedViewPostModel] = []
+    @State var posts: [PoastPostModel] = []
 
     var body: some View {
         List(Array(posts.enumerated()), id: \.1.id) { (index, post) in
@@ -20,7 +20,10 @@ struct PoastTimelineView: View {
                 switch(parent) {
                 case .post(let parentPost):
                     PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
-                    
+
+                case .reference(_):
+                    EmptyView()
+
                 case .notFound(_):
                     Text("Post not found")
                     
@@ -49,7 +52,7 @@ struct PoastTimelineView: View {
         }
     }
 
-    func loadContent(cursor: Date) async -> [PoastFeedViewPostModel] {
+    func loadContent(cursor: Date) async -> [PoastPostModel] {
         guard let accountSession = user.accountSession else {
             return []
         }

@@ -8,8 +8,8 @@
 import Foundation
 import SwiftBluesky
 
-struct PoastFeedViewPostModel: Hashable, Identifiable {
-    static func == (lhs: PoastFeedViewPostModel, rhs: PoastFeedViewPostModel) -> Bool {
+struct PoastPostModel: Hashable, Identifiable {
+    static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
         lhs.id == rhs.id
     }
 
@@ -94,6 +94,43 @@ struct PoastFeedViewPostModel: Hashable, Identifiable {
         }
 
         if let viewerState = blueskyFeedFeedViewPost.post.viewer {
+            self.like = viewerState.like
+            self.repost = viewerState.repost
+            self.replyDisabled = viewerState.replyDisabled ?? false
+        } else {
+            self.like = nil
+            self.repost = nil
+            self.replyDisabled = false
+        }
+    }
+
+    init(blueskyFeedPostView: BlueskyFeedPostView) {
+        self.id = UUID()
+        self.uri = blueskyFeedPostView.uri
+        self.cid = blueskyFeedPostView.cid
+
+        switch(blueskyFeedPostView.record) {
+        case .blueskyFeedPost(let blueskyFeedPost):
+            self.text = blueskyFeedPost.text
+
+            if let reply = blueskyFeedPost.reply {
+                self.root = .reference(PoastStrongReferenceModel(atProtoRepoStrongRef: reply.root))
+                self.parent = .reference(PoastStrongReferenceModel(atProtoRepoStrongRef: reply.parent))
+            } else {
+                self.root = nil
+                self.parent = nil
+            }
+        }
+
+        self.author = PoastProfileModel(blueskyActorProfileViewBasic: blueskyFeedPostView.author)
+        self.replyCount = blueskyFeedPostView.replyCount ?? 0
+        self.repostCount = blueskyFeedPostView.repostCount ?? 0
+        self.likeCount = blueskyFeedPostView.likeCount ?? 0
+        self.embed = nil
+        self.date = blueskyFeedPostView.indexedAt
+        self.repostedBy = nil
+
+        if let viewerState = blueskyFeedPostView.viewer {
             self.like = viewerState.like
             self.repost = viewerState.repost
             self.replyDisabled = viewerState.replyDisabled ?? false

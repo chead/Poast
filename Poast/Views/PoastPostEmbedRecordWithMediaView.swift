@@ -12,7 +12,7 @@ struct PoastPostEmbedRecordWithMediaView: View {
 
     @Binding var postViewModel: PoastPostViewModel
 
-    @State var feedPostView: PoastFeedPostViewModel? = nil
+    @State var feedPostView: PoastPostModel? = nil
 
     let record: PoastPostEmbedRecordModel
     let media: PoastPostEmbedRecordWithMediaMediaModel?

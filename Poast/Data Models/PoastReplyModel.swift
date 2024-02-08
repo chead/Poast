@@ -9,14 +9,15 @@ import Foundation
 import SwiftBluesky
 
 indirect enum PoastReplyModel: Hashable {
-    case post(PoastFeedPostViewModel)
+    case post(PoastPostModel)
+    case reference(PoastStrongReferenceModel)
     case notFound(uri: String)
     case blocked(uri: String, authorDid: String)
 
     init(feedReplyRef: BlueskyFeedReplyRefPostType) {
         switch(feedReplyRef) {
         case .blueskyFeedPostView(let blueskyFeedPostView):
-            self = .post(PoastFeedPostViewModel(blueSkyFeedPostView: blueskyFeedPostView))
+            self = .post(PoastPostModel(blueskyFeedPostView: blueskyFeedPostView))
 
         case .blueskyFeedNotFoundPost(let blueskyFeedNotFoundPost):
             self = .notFound(uri: blueskyFeedNotFoundPost.uri)
