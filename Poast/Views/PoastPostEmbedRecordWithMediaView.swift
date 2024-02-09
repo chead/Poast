@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastPostEmbedRecordWithMediaView: View {
     @EnvironmentObject var user: PoastUser
 
-    @Binding var postViewModel: PoastPostViewModel
+    @ObservedObject var postViewModel: PoastPostViewModel
 
     @State var feedPostView: PoastPostModel? = nil
 
@@ -35,7 +35,8 @@ struct PoastPostEmbedRecordWithMediaView: View {
                 }
 
                 PoastPostHeaderView(authorName: feedPostView?.author.name ?? "",
-                                    timeAgo: postViewModel.getTimeAgo(date: feedPostView?.date ?? Date()))
+                                    timeAgo: postViewModel.timeAgoString)
+                
                 Text(feedPostView?.text ?? "")
             }
             .padding()

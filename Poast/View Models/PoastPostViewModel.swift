@@ -16,21 +16,25 @@ enum PoastPostViewModelError: Error {
     case unknown
 }
 
-class PoastPostViewModel {
+@MainActor class PoastPostViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var accountService: PoastAccountService
     @Dependency private var blueskyClient: BlueskyClient
 
-    func getTimeAgo(date: Date) -> String {
-        guard date.timeIntervalSinceNow.rounded() != 0 else {
-            return "now"
-        }
+    @Published var post: PoastPostModel
+
+    init(post: PoastPostModel) {
+        self.post = post
+    }
+
+    var timeAgoString: String {
+        guard post.date.timeIntervalSinceNow.rounded() != 0 else { return "now" }
 
         let formatter = RelativeDateTimeFormatter()
 
         formatter.unitsStyle = .full
 
-        return formatter.localizedString(for: date, relativeTo: Date())
+        return formatter.localizedString(for: post.date, relativeTo: Date())
     }
 
     func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastPostModel?, PoastPostViewModelError> {
@@ -154,11 +158,11 @@ class PoastPostViewModel {
                         return .account
                     }
 
-                    if let deleteLikeError = try await self.blueskyClient.deleteLike(host: account.host!,
-                                                                                     accessToken: credentials.accessToken,
-                                                                                     refreshToken: credentials.refreshToken,
-                                                                                     repo: sessionDid,
-                                                                                     rkey: rkey) {
+                    if(try await self.blueskyClient.deleteLike(host: account.host!,
+                                                               accessToken: credentials.accessToken,
+                                                               refreshToken: credentials.refreshToken,
+                                                               repo: sessionDid,
+                                                               rkey: rkey) != nil) {
                         return .unknown
                     } else {
                         return nil

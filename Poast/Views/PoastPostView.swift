@@ -10,14 +10,13 @@ import SwiftUI
 fileprivate let avatarWidth = 50.0
 
 struct PoastPostView: View {
-    @State var postViewModel: PoastPostViewModel
-
-    @State var post: PoastPostModel
+    @ObservedObject var postViewModel: PoastPostViewModel
+    @ObservedObject var timelineViewModel: PoastTimelineViewModel
 
     var body: some View {
         HStack(alignment: .top) {
             VStack {
-                AsyncImage(url: URL(string: self.post.author.avatar ?? "")) { image in
+                AsyncImage(url: URL(string: postViewModel.post.author.avatar ?? "")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -33,10 +32,10 @@ struct PoastPostView: View {
             VStack(alignment: .leading) {
                 Spacer()
 
-                PoastPostHeaderView(authorName: post.author.name,
-                                    timeAgo: postViewModel.getTimeAgo(date: post.date))
+                PoastPostHeaderView(authorName: postViewModel.post.author.name,
+                                    timeAgo: postViewModel.timeAgoString)
 
-                if let repostedBy = self.post.repostedBy {
+                if let repostedBy = postViewModel.post.repostedBy {
                     Spacer()
 
                     HStack {
@@ -51,18 +50,18 @@ struct PoastPostView: View {
 
                 Spacer()
 
-                Text(post.text)
+                Text(postViewModel.post.text)
 
                 Spacer()
 
-                if let embed = post.embed {
-                    PoastPostEmbedView(postViewModel: $postViewModel, embed: embed)
+                if let embed = postViewModel.post.embed {
+                    PoastPostEmbedView(postViewModel: postViewModel, embed: embed)
                 }
 
                 Spacer()
 
-                PoastPostInteractionView(postViewModel: $postViewModel,
-                                         post: post)
+                PoastPostInteractionView(postViewModel: postViewModel,
+                                         timelineViewModel: timelineViewModel)
 
                 Spacer()
             }
@@ -135,5 +134,8 @@ struct PoastPostView: View {
         repost: nil,
         replyDisabled: false)
 
-    return PoastPostView(postViewModel: PoastPostViewModel(), post: post)
+    let timelineViewModel = PoastTimelineViewModel(algorithm: "")
+
+    return PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                         timelineViewModel: timelineViewModel)
 }

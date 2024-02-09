@@ -25,6 +25,7 @@ struct PoastPostEmbedExternalView: View {
             }
 
             Link(external.description, destination: URL(string: external.uri)!)
+                .buttonStyle(.plain)
         }
         .padding()
         .overlay(

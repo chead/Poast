@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastSettingsView: View {
     @EnvironmentObject var user: PoastUser
 
-    let accountSettingsViewModel: PoastSettingsViewModel
+    let settingsViewModel: PoastSettingsViewModel
 
     var body: some View {
         VStack {
@@ -27,7 +27,7 @@ struct PoastSettingsView: View {
                     return
                 }
 
-                accountSettingsViewModel.signOut(session: session)
+                settingsViewModel.signOut(session: session)
 
                 user.accountSession = nil
             }
@@ -38,5 +38,5 @@ struct PoastSettingsView: View {
 }
 
 #Preview {
-    PoastSettingsView(accountSettingsViewModel: PoastSettingsViewModel())
+    PoastSettingsView(settingsViewModel: PoastSettingsViewModel())
 }

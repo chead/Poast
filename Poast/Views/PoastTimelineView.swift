@@ -10,16 +10,15 @@ import SwiftUI
 struct PoastTimelineView: View {
     @EnvironmentObject var user: PoastUser
 
-    let timelineViewModel: PoastTimelineViewModeling
-
-    @State var posts: [PoastPostModel] = []
+    @ObservedObject var timelineViewModel: PoastTimelineViewModel
 
     var body: some View {
-        List(Array(posts.enumerated()), id: \.1.id) { (index, post) in
+        List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
             if let parent = post.parent {
                 switch(parent) {
                 case .post(let parentPost):
-                    PoastParentPostView(postViewModel: PoastPostViewModel(), post: parentPost)
+                    PoastParentPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                        timelineViewModel: timelineViewModel)
 
                 case .reference(_):
                     EmptyView()
@@ -32,38 +31,30 @@ struct PoastTimelineView: View {
                 }
             }
             
-            PoastPostView(postViewModel: PoastPostViewModel(), post: post)
+            PoastPostView(postViewModel: PoastPostViewModel(post: post), 
+                          timelineViewModel: timelineViewModel)
                 .onAppear {
                     Task {
-                        if index == posts.count - 1 {
-                            posts.append(contentsOf: await loadContent(cursor: post.date))
+                        if index == timelineViewModel.posts.count - 1 {
+                            if let accountSession = user.accountSession {
+                                _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: post.date)
+                            }
                         }
                     }
                 }
         }
         .listStyle(.plain)
         .refreshable {
-            posts = await loadContent(cursor: Date())
+            if let accountSession = user.accountSession {
+                _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+            }
         }
         .onAppear {
             Task {
-                posts = await loadContent(cursor: Date())
+                if let accountSession = user.accountSession {
+                    _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+                }
             }
-        }
-    }
-
-    func loadContent(cursor: Date) async -> [PoastPostModel] {
-        guard let accountSession = user.accountSession else {
-            return []
-        }
-
-        switch(await self.timelineViewModel.getTimeline(session: accountSession.session,
-                                                        cursor: cursor)) {
-        case .success(let timeline):
-            return timeline.posts
-
-        case .failure(_):
-            return []
         }
     }
 }
@@ -88,6 +79,6 @@ struct PoastTimelineView: View {
 
     user.accountSession = (account: account, session: session)
 
-    return PoastTimelineView(timelineViewModel: PoastTimelinePreviewViewModel())
+    return PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
         .environmentObject(user)
 }

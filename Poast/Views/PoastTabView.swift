@@ -56,7 +56,7 @@ struct PoastTabView: View {
                     .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
 
-            PoastSettingsView(accountSettingsViewModel: PoastSettingsViewModel())
+            PoastSettingsView(settingsViewModel: PoastSettingsViewModel())
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }

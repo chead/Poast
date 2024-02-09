@@ -11,13 +11,11 @@ import SwiftATProto
 struct PoastPostInteractionView: View {
     @EnvironmentObject var user: PoastUser
 
-    @Binding var postViewModel: PoastPostViewModel
+    @ObservedObject var postViewModel: PoastPostViewModel
+    @ObservedObject var timelineViewModel: PoastTimelineViewModel
 
-    let post: PoastPostModel
-
-    @State var repostDelta = 0
-
-    @State var like: ATProtoRepoStrongRef?
+    @State var showingRepostDialog: Bool = false
+    @State var showingMoreDialog: Bool = false
 
     var body: some View {
         HStack {
@@ -26,27 +24,36 @@ struct PoastPostInteractionView: View {
             }, label: {
                 HStack {
                     Image(systemName: "bubble")
-                    Text("\(post.replyCount)")
+                    Text("\(postViewModel.post.replyCount)")
                 }
             })
-            .disabled(post.replyDisabled)
+            .buttonStyle(.plain)
+            .disabled(postViewModel.post.replyDisabled)
 
             Spacer()
 
             Button(action: {
-                
+                showingRepostDialog = true
             }, label: {
                 HStack {
-                    if(post.repost != nil || repostDelta > 0) {
+                    if(postViewModel.post.repost != nil) {
                         Image(systemName: "repeat")
                             .foregroundColor(.green)
                     } else {
                         Image(systemName: "repeat")
                     }
 
-                    Text("\(post.repostCount + repostDelta)")
+                    Text("\(postViewModel.post.repostCount)")
                 }
             })
+            .buttonStyle(.plain)
+            .confirmationDialog("Repost",
+                                isPresented: $showingRepostDialog,
+                                titleVisibility: .hidden) {
+                Button("Repost") {}
+                Button("Quote Post") {}
+            }
+
 
             Spacer()
 
@@ -54,28 +61,45 @@ struct PoastPostInteractionView: View {
                 Task {
                     guard let accountSession = user.accountSession else { return }
 
-                    if(post.like != nil || like != nil) {
-                        var uri = ""
-
-                        if let postLike = post.like {
-                            uri = postLike
-                        } else if let localLike = like {
-                            uri = localLike.uri
-                        }
-
-                        let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
+                    if(postViewModel.post.like != nil) {
+                        let rkey = postViewModel.post.like?.split(separator: ":").last?.split(separator: "/").last ?? ""
 
                         if(await postViewModel.unlikePost(session: accountSession.session,
                                                               rkey: String(rkey)) == nil) {
-                            like = nil
+                            let mutablePost = PoastMutablePost(postModel: postViewModel.post)
+
+                            mutablePost.like = nil
+                            mutablePost.likeCount -= 1
+
+                            let mutatedPost = mutablePost.immutableCopy
+
+                            let index = timelineViewModel.posts.firstIndex { $0 == postViewModel.post }
+
+                            if let index = index {
+                                timelineViewModel.posts.remove(at: index)
+                                timelineViewModel.posts.insert(mutatedPost, at: index)
+                            }
                         }
                     } else {
                         switch(await postViewModel.likePost(session: accountSession.session,
-                                                            uri: post.uri,
-                                                            cid: post.cid)) {
-                        case.success(let likePostResponse):
-                            like = ATProtoRepoStrongRef(uri: likePostResponse.uri,
-                                                        cid: likePostResponse.cid)
+                                                            uri: postViewModel.post.uri,
+                                                            cid: postViewModel.post.cid)) {
+                        case.success(let like):
+                            let mutablePost = PoastMutablePost(postModel: postViewModel.post)
+
+                            mutablePost.like = like.uri
+                            mutablePost.likeCount += 1
+
+                            let mutatedPost = mutablePost.immutableCopy
+
+                            let index = timelineViewModel.posts.firstIndex { $0 == postViewModel.post }
+
+                            if let index = index {
+                                timelineViewModel.posts.remove(at: index)
+                                timelineViewModel.posts.insert(mutatedPost, at: index)
+                            }
+
+                            break
 
                         case .failure(_):
                             break
@@ -84,25 +108,48 @@ struct PoastPostInteractionView: View {
                 }
             }, label: {
                 HStack {
-                    if(post.like != nil || like != nil) {
+                    if(postViewModel.post.like != nil) {
                         Image(systemName: "heart.fill")
                             .foregroundColor(.red)
                     } else {
                         Image(systemName: "heart")
                     }
 
-                    Text("\(post.likeCount + (like != nil ? 1 : 0))")
+                    Text("\(postViewModel.post.likeCount)")
                 }
             })
+            .buttonStyle(.plain)
 
             Spacer()
 
-            Button(action: {}, label: {
+            Button(action: {
+                showingMoreDialog = true
+            }, label: {
                 Image(systemName: "ellipsis")
             })
-        }
-        .task {
-
+            .buttonStyle(.plain)
+            .confirmationDialog("More",
+                                isPresented: $showingMoreDialog,
+                                titleVisibility: .hidden) {
+                Button(action: {}, label: {
+                    Text("Translate")
+                })
+                Button(action: {}, label: {
+                    Text("Copy post text")
+                })
+                Button(action: {}, label: {
+                    Text("Share")
+                })
+                Button(action: {}, label: {
+                    Text("Mute thread")
+                })
+                Button(action: {}, label: {
+                    Text("Hide post")
+                })
+                Button(action: {}, label: {
+                    Text("Report post")
+                })
+            }
         }
     }
 }
@@ -168,10 +215,13 @@ struct PoastPostInteractionView: View {
         ]),
         date: Date(timeIntervalSinceNow: -10),
         repostedBy: nil,
-        like: "foo",
+        like: nil,
         repost: nil,
         replyDisabled: false)
 
-    return PoastPostInteractionView(postViewModel: .constant(PoastPostViewModel()),
-                                    post: post)
+    let postViewModel = PoastPostViewModel(post: post)
+    let timelineViewModel = PoastTimelineViewModel(algorithm: "")
+
+    return PoastPostInteractionView(postViewModel: postViewModel,
+                                    timelineViewModel: timelineViewModel)
 }

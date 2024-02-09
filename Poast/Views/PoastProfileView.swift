@@ -75,7 +75,8 @@ struct PoastProfileView: View {
 
             switch(feed) {
             case .posts:
-                PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: profileViewModel.handle))
+                Rectangle()
+                    .fill(.yellow)
 
             case .replies:
                 Rectangle()
