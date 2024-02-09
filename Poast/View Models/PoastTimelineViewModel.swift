@@ -26,6 +26,10 @@ enum PoastTimelineViewModelError: Error {
         self.algorithm = algorithm
     }
 
+    func clearTimeline() {
+        posts.removeAll()
+    }
+
     func getTimeline(session: PoastSessionObject, cursor: Date) async -> PoastTimelineViewModelError? {
         do {
             guard let sessionDid = session.did,

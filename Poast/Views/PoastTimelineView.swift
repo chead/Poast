@@ -46,6 +46,8 @@ struct PoastTimelineView: View {
         .listStyle(.plain)
         .refreshable {
             if let accountSession = user.accountSession {
+                timelineViewModel.clearTimeline()
+
                 _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
             }
         }
