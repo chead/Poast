@@ -50,7 +50,46 @@ struct PoastPostInteractionView: View {
             .confirmationDialog("Repost",
                                 isPresented: $showingRepostDialog,
                                 titleVisibility: .hidden) {
-                Button("Repost") {}
+                Button(postViewModel.post.repost != nil ? "Undo repost" : "Repost") {
+                    Task {
+                        guard let accountSession = user.accountSession else { return }
+
+                        if(postViewModel.post.repost != nil) {
+                            if(await postViewModel.unrepostPost(session: accountSession.session,
+                                                                uri: postViewModel.post.repost ?? "") == nil) {
+                                let mutablePost = PoastMutablePost(postModel: postViewModel.post)
+
+                                mutablePost.repost = nil
+                                mutablePost.repostCount -= 1
+
+                                let mutatedPost = mutablePost.immutableCopy
+
+                                timelineViewModel.replacePost(post: postViewModel.post,
+                                                              with: mutatedPost)
+                            }
+                        } else {
+                            switch(await postViewModel.repostPost(session: accountSession.session,
+                                                                  uri: postViewModel.post.uri,
+                                                                  cid: postViewModel.post.cid)) {
+                            case.success(let repost):
+                                let mutablePost = PoastMutablePost(postModel: postViewModel.post)
+
+                                mutablePost.repost = repost.uri
+                                mutablePost.repostCount += 1
+
+                                let mutatedPost = mutablePost.immutableCopy
+
+                                timelineViewModel.replacePost(post: postViewModel.post,
+                                                              with: mutatedPost)
+
+                                break
+
+                            case .failure(_):
+                                break
+                            }
+                        }
+                    }
+                }
                 Button("Quote Post") {}
             }
 
@@ -62,10 +101,8 @@ struct PoastPostInteractionView: View {
                     guard let accountSession = user.accountSession else { return }
 
                     if(postViewModel.post.like != nil) {
-                        let rkey = postViewModel.post.like?.split(separator: ":").last?.split(separator: "/").last ?? ""
-
                         if(await postViewModel.unlikePost(session: accountSession.session,
-                                                              rkey: String(rkey)) == nil) {
+                                                          uri: postViewModel.post.like ?? "") == nil) {
                             let mutablePost = PoastMutablePost(postModel: postViewModel.post)
 
                             mutablePost.like = nil
@@ -73,12 +110,8 @@ struct PoastPostInteractionView: View {
 
                             let mutatedPost = mutablePost.immutableCopy
 
-                            let index = timelineViewModel.posts.firstIndex { $0 == postViewModel.post }
-
-                            if let index = index {
-                                timelineViewModel.posts.remove(at: index)
-                                timelineViewModel.posts.insert(mutatedPost, at: index)
-                            }
+                            timelineViewModel.replacePost(post: postViewModel.post,
+                                                          with: mutatedPost)
                         }
                     } else {
                         switch(await postViewModel.likePost(session: accountSession.session,
@@ -92,12 +125,8 @@ struct PoastPostInteractionView: View {
 
                             let mutatedPost = mutablePost.immutableCopy
 
-                            let index = timelineViewModel.posts.firstIndex { $0 == postViewModel.post }
-
-                            if let index = index {
-                                timelineViewModel.posts.remove(at: index)
-                                timelineViewModel.posts.insert(mutatedPost, at: index)
-                            }
+                            timelineViewModel.replacePost(post: postViewModel.post,
+                                                          with: mutatedPost)
 
                             break
 

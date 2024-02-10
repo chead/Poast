@@ -10,8 +10,7 @@ import SwiftUI
 struct PoastParentPostView: View {
     @EnvironmentObject var user: PoastUser
 
-    @State var postViewModel: PoastPostViewModel
-
+    @ObservedObject var postViewModel: PoastPostViewModel
     @ObservedObject var timelineViewModel: PoastTimelineViewModel
 
     @State var replyTo: String?
