@@ -40,6 +40,7 @@ struct PoastSignInView: View {
                       text: $host,
                       prompt: Text("Host").foregroundColor(.gray)
             )
+            .textInputAutocapitalization(.never)
             .padding(10)
             .overlay {
                 RoundedRectangle(cornerRadius: 10)
@@ -51,6 +52,7 @@ struct PoastSignInView: View {
                       text: $handle,
                       prompt: Text("Handle").foregroundColor(.gray)
             )
+            .textInputAutocapitalization(.never)
             .padding(10)
             .overlay {
                 RoundedRectangle(cornerRadius: 10)

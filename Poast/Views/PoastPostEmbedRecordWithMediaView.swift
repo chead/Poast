@@ -12,6 +12,8 @@ struct PoastPostEmbedRecordWithMediaView: View {
 
     @ObservedObject var postViewModel: PoastPostViewModel
 
+    @Binding var selectedPost: PoastPostModel?
+
     @State var feedPostView: PoastPostModel? = nil
 
     let record: PoastPostEmbedRecordModel
@@ -20,30 +22,34 @@ struct PoastPostEmbedRecordWithMediaView: View {
     var body: some View {
         switch(record) {
         case .record(let recordRecord):
-            VStack(alignment: .leading) {
-                if let media = media {
-                    switch(media) {
-                    case .imagesView(let images):
-                        PoastPostEmbedImagesView(images: images)
+            Button {
+                selectedPost = feedPostView ?? nil
+            } label: {
+                VStack(alignment: .leading) {
+                    if let media = media {
+                        switch(media) {
+                        case .imagesView(let images):
+                            PoastPostEmbedImagesView(images: images)
 
-                    case .externalView(let external):
-                        PoastPostEmbedExternalView(external: external)
+                        case .externalView(let external):
+                            PoastPostEmbedExternalView(external: external)
 
-                    case .unknown:
-                        EmptyView()
+                        case .unknown:
+                            EmptyView()
+                        }
                     }
-                }
 
-                PoastPostHeaderView(authorName: feedPostView?.author.name ?? "",
-                                    timeAgo: postViewModel.timeAgoString)
-                
-                Text(feedPostView?.text ?? "")
+                    PoastPostHeaderView(authorName: feedPostView?.author.name ?? "",
+                                        timeAgo: postViewModel.timeAgoString)
+
+                    Text(feedPostView?.text ?? "")
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8.0)
+                        .stroke(.gray, lineWidth: 1)
+                )
             }
-            .padding()
-            .overlay(
-                RoundedRectangle(cornerRadius: 8.0)
-                    .stroke(.gray, lineWidth: 1)
-            )
             .task {
                 guard let session = user.accountSession?.session else {
                     return

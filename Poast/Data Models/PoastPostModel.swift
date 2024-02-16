@@ -65,13 +65,13 @@ struct PoastPostModel: Hashable, Identifiable {
         self.likeCount = blueskyFeedFeedViewPost.post.likeCount ?? 0
 
         if let parent = blueskyFeedFeedViewPost.reply?.parent {
-            self.parent = PoastReplyModel(feedReplyRef: parent)
+            self.parent = PoastReplyModel(blueskyFeedReplyRefPostType: parent)
         } else {
             self.parent = nil
         }
 
         if let root = blueskyFeedFeedViewPost.reply?.root {
-            self.root = PoastReplyModel(feedReplyRef: root)
+            self.root = PoastReplyModel(blueskyFeedReplyRefPostType: root)
         } else {
             self.root = nil
         }

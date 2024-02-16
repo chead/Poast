@@ -24,26 +24,21 @@ struct PoastProfileHeaderView: View {
                 }
                 .frame(height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: 10.0))
+                .padding(.horizontal, 20)
 
-                AsyncImage(url: URL(string: profile?.avatar ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(.green)
-                        .frame(width: 100, height: 100)
-                }
-                .frame(width: 100, height: 100)
-                .clipShape(Circle())
+                PoastAvatarView(size: .large, 
+                                url: profile?.avatar ?? "")
                 .offset(y: 50)
 
             }
             .padding(.bottom, 50)
 
-            Text(profile?.displayName ?? "")
-                .font(.title)
-            Text(profile?.handle ?? "")
+            VStack {
+                Text(profile?.displayName ?? "")
+                    .font(.title)
+                Text(profile?.handle ?? "")
+            }
+            .padding(.horizontal, 20)
 
             HStack {
                 Spacer()
@@ -66,11 +61,14 @@ struct PoastProfileHeaderView: View {
                 
                 Spacer()
             }
+            .padding(.horizontal, 20)
             ScrollView {
                 Text(profile?.description ?? "")
+                    .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
+                    .padding(.horizontal, 20)
             }
+            .frame(height: 100)
         }
-        .padding(.horizontal, 20)
     }
 }
 

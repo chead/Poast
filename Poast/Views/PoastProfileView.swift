@@ -19,87 +19,87 @@ enum PoastProfileViewFeed {
 struct PoastProfileView: View {
     @EnvironmentObject var user: PoastUser
 
-    var profileViewModel: PostProfileViewModeling
+    @ObservedObject var profileViewModel: PoastProfileViewModel
 
-    @State var profile: PoastProfileModel?
     @State var feed: PoastProfileViewFeed = .posts
 
     var body: some View {
         VStack {
-            PoastProfileHeaderView(profile: profile)
-                    
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    Spacer()
+            if let profile = profileViewModel.profile {
+                PoastProfileHeaderView(profile: profileViewModel.profile)
 
-                    Button("Posts") {
-                        feed = .posts
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        Spacer()
+
+                        Button("Posts") {
+                            feed = .posts
+                        }
+                        .padding(.horizontal, 12)
+
+                        Button("Replies") {
+                            feed = .replies
+                        }
+                        .padding(.horizontal, 12)
+
+                        Button("Media") {
+                            feed = .media
+                        }
+                        .padding(.horizontal, 12)
+
+                        Spacer()
+
+                        Button("Likes") {
+                            feed = .likes
+                        }
+                        .padding(.horizontal, 12)
+
+                        Spacer()
+
+                        Button("Feeds") {
+                            feed = .feeds
+                        }
+                        .padding(.horizontal, 12)
+
+                        Spacer()
+
+                        Button("Lists") {
+                            feed = .lists
+                        }
+                        .padding(.horizontal, 12)
+
+                        Spacer()
                     }
-                    .padding(.horizontal, 12)
-
-                    Button("Replies") {
-                        feed = .replies
-                    }
-                    .padding(.horizontal, 12)
-
-                    Button("Media") {
-                        feed = .media
-                    }
-                    .padding(.horizontal, 12)
-
-                    Spacer()
-
-                    Button("Likes") {
-                        feed = .likes
-                    }
-                    .padding(.horizontal, 12)
-
-                    Spacer()
-
-                    Button("Feeds") {
-                        feed = .feeds
-                    }
-                    .padding(.horizontal, 12)
-
-                    Spacer()
-
-                    Button("Lists") {
-                        feed = .lists
-                    }
-                    .padding(.horizontal, 12)
-
-                    Spacer()
                 }
+
+                Spacer()
+                switch(feed) {
+                case .posts:
+                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: profile.handle))
+
+                case .replies:
+                    Rectangle()
+                        .fill(.blue)
+
+                case .media:
+                    Rectangle()
+                        .fill(.green)
+
+                case .likes:
+                    Rectangle()
+                        .fill(.purple)
+
+                case .feeds:
+                    Rectangle()
+                        .fill(.pink)
+
+                case .lists:
+                    Rectangle()
+                        .fill(.yellow)
+                }
+
+                Spacer()
             }
-            .padding(.top, 10)
-
-            switch(feed) {
-            case .posts:
-                Rectangle()
-                    .fill(.yellow)
-
-            case .replies:
-                Rectangle()
-                    .fill(.blue)
-
-            case .media:
-                Rectangle()
-                    .fill(.green)
-
-            case .likes:
-                Rectangle()
-                    .fill(.purple)
-
-            case .feeds:
-                Rectangle()
-                    .fill(.pink)
-
-            case .lists:
-                Rectangle()
-                    .fill(.yellow)
-            }
-
-            Spacer()
         }
         .onAppear() {
             Task {
@@ -107,13 +107,7 @@ struct PoastProfileView: View {
                     return
                 }
 
-                switch(await self.profileViewModel.getProfile(session: session)) {
-                case .success(let profile):
-                    self.profile = profile
-
-                case .failure(_):
-                    break
-                }
+                _ = await self.profileViewModel.getProfile(session: session)
             }
         }
     }
@@ -135,6 +129,9 @@ struct PoastProfileView: View {
     session.accountUUID = account.uuid!
     session.did = ""
 
-    return PoastProfileView(profileViewModel: PoastProfileViewPreviewModel(handle: "Foobar"))
+    let user = PoastUser()
+
+    return PoastProfileView(profileViewModel: PoastProfileViewModel(handle: "Foobar"))
         .environmentObject(session)
+        .environmentObject(user)
 }

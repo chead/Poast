@@ -7,69 +7,148 @@
 
 import SwiftUI
 
-fileprivate let avatarWidth = 50.0
+struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollectionHosting>: View {
+    @EnvironmentObject var user: PoastUser
 
-struct PoastPostView: View {
     @ObservedObject var postViewModel: PoastPostViewModel
-    @ObservedObject var timelineViewModel: PoastTimelineViewModel
+    @ObservedObject var postCollectionViewModel: PostCollectionViewModel
+
+    @Binding var selectedPost: PoastPostModel?
+
+    @State var replyTo: String?
+    @State var showingProfileView: Bool = false
+
+    let isParent: Bool
 
     var body: some View {
         HStack(alignment: .top) {
-            VStack {
-                AsyncImage(url: URL(string: postViewModel.post.author.avatar ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(.green)
-                        .frame(width: avatarWidth, height: avatarWidth)
-                }
-                .frame(width: avatarWidth, height: avatarWidth)
-                .clipShape(Circle())
-            }
+            Button {
+                showingProfileView = true
+            } label: {
+                VStack {
+                    PoastAvatarView(size: .small,
+                                    url: postViewModel.post.author.avatar ?? "")
+                    .padding(.bottom, 10)
+                    .padding(.top, 10)
 
-            VStack(alignment: .leading) {
-                Spacer()
-
-                PoastPostHeaderView(authorName: postViewModel.post.author.name,
-                                    timeAgo: postViewModel.timeAgoString)
-
-                if let repostedBy = postViewModel.post.repostedBy {
-                    Spacer()
-
-                    HStack {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .bold()
-
-                        Text(repostedBy.name)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
+                    if(isParent == true) {
+                        Rectangle()
+                            .fill(.gray)
+                            .frame(width: 2)
                     }
                 }
+            }
 
-                Spacer()
+            Button {
+                selectedPost = self.postViewModel.post
+            } label: {
+                VStack(alignment: .leading) {
+                    Spacer()
 
-                Text(postViewModel.post.text)
+                    PoastPostHeaderView(authorName: postViewModel.post.author.name,
+                                        timeAgo: postViewModel.timeAgoString)
 
-                Spacer()
+                    if let replyTo = replyTo {
+                        HStack {
+                            Image(systemName: "arrowshape.turn.up.backward.fill")
 
-                if let embed = postViewModel.post.embed {
-                    PoastPostEmbedView(postViewModel: postViewModel, embed: embed)
+                            Text(replyTo)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+
+                        Spacer()
+                    } else if let repostedBy = postViewModel.post.repostedBy {
+                        Spacer()
+
+                        HStack {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .bold()
+
+                            Text(repostedBy.name)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+                    }
+
+                    Spacer()
+
+                    Text(postViewModel.post.text)
+
+                    Spacer()
+
+                    if let embed = postViewModel.post.embed {
+                        PoastPostEmbedView(postViewModel: postViewModel,
+                                           selectedPost: $selectedPost,
+                                           embed: embed)
+                    }
+
+                    Spacer()
+
+                    PoastPostInteractionView(postViewModel: postViewModel,
+                                             postCollectionViewModel: postCollectionViewModel)
+
+                    Spacer()
                 }
-
-                Spacer()
-
-                PoastPostInteractionView(postViewModel: postViewModel,
-                                         timelineViewModel: timelineViewModel)
-
-                Spacer()
+            }.buttonStyle(.plain)
+        }
+        .navigationDestination(isPresented: $showingProfileView) {
+            PoastProfileView(profileViewModel: PoastProfileViewModel(handle: postViewModel.post.author.handle))
+        }
+        .task {
+            if(isParent == true) {
+                if let parent = postViewModel.post.parent {
+                    guard let session = user.accountSession?.session else {
+                        return
+                    }
+                    
+                    var uri = ""
+                    
+                    switch(parent) {
+                    case .post(let post):
+                        uri = post.uri
+                        
+                    case .reference(let reference):
+                        uri = reference.uri
+                        
+                    default:
+                        break
+                    }
+                    
+                    switch(await postViewModel.getPost(session: session, uri: uri)) {
+                    case .success(let grandParentPost):
+                        if let grandParentPost = grandParentPost {
+                            replyTo = grandParentPost.author.name
+                        }
+                    case .failure(_):
+                        break
+                    }
+                }
             }
         }
     }
 }
 
 #Preview {
+    let managedObjectContext = PersistenceController.preview.container.viewContext
+
+    let account = PoastAccountObject(context: managedObjectContext)
+
+    account.uuid = UUID()
+    account.created = Date()
+    account.handle = "@foobar.baz"
+    account.host = URL(string: "https://bsky.social")!
+
+    let session = PoastSessionObject(context: managedObjectContext)
+
+    session.created = Date()
+    session.accountUUID = account.uuid
+    session.did = ""
+
+    let user = PoastUser()
+
+    user.accountSession = (account: account, session: session)
+
     let post = PoastPostModel(
         id: UUID(),
         uri: "",
@@ -134,8 +213,11 @@ struct PoastPostView: View {
         repost: nil,
         replyDisabled: false)
 
-    let timelineViewModel = PoastTimelineViewModel(algorithm: "")
+    let timelineViewModel = PoastFeedTimelineViewModel(algorithm: "")
 
     return PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                         timelineViewModel: timelineViewModel)
+                         postCollectionViewModel: timelineViewModel,
+                         selectedPost: .constant(nil),
+                         isParent: false)
+    .environmentObject(user)
 }

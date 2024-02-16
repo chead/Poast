@@ -15,7 +15,7 @@ struct PoastTabView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                PoastTimelineView(timelineViewModel: PoastTimelineViewModel(algorithm: ""))
+                PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {
@@ -41,6 +41,7 @@ struct PoastTabView: View {
                         }
                     }
             }
+            .toolbarBackground(.blue)
             .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
 
             Rectangle()

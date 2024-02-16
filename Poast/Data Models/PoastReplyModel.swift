@@ -14,8 +14,8 @@ indirect enum PoastReplyModel: Hashable {
     case notFound(uri: String)
     case blocked(uri: String, authorDid: String)
 
-    init(feedReplyRef: BlueskyFeedReplyRefPostType) {
-        switch(feedReplyRef) {
+    init(blueskyFeedReplyRefPostType: BlueskyFeedReplyRefPostType) {
+        switch(blueskyFeedReplyRefPostType) {
         case .blueskyFeedPostView(let blueskyFeedPostView):
             self = .post(PoastPostModel(blueskyFeedPostView: blueskyFeedPostView))
 

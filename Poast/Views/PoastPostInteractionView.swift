@@ -8,11 +8,11 @@
 import SwiftUI
 import SwiftATProto
 
-struct PoastPostInteractionView: View {
+struct PoastPostInteractionView<PostCollectionViewModel: ObservableObject & PoastPostCollectionHosting>: View {
     @EnvironmentObject var user: PoastUser
 
     @ObservedObject var postViewModel: PoastPostViewModel
-    @ObservedObject var timelineViewModel: PoastTimelineViewModel
+    @ObservedObject var postCollectionViewModel: PostCollectionViewModel
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreDialog: Bool = false
@@ -64,7 +64,7 @@ struct PoastPostInteractionView: View {
 
                                 let mutatedPost = mutablePost.immutableCopy
 
-                                timelineViewModel.replacePost(post: postViewModel.post,
+                                await postCollectionViewModel.replacePost(post: postViewModel.post,
                                                               with: mutatedPost)
                             }
                         } else {
@@ -79,7 +79,7 @@ struct PoastPostInteractionView: View {
 
                                 let mutatedPost = mutablePost.immutableCopy
 
-                                timelineViewModel.replacePost(post: postViewModel.post,
+                                await postCollectionViewModel.replacePost(post: postViewModel.post,
                                                               with: mutatedPost)
 
                                 break
@@ -110,7 +110,7 @@ struct PoastPostInteractionView: View {
 
                             let mutatedPost = mutablePost.immutableCopy
 
-                            timelineViewModel.replacePost(post: postViewModel.post,
+                            await postCollectionViewModel.replacePost(post: postViewModel.post,
                                                           with: mutatedPost)
                         }
                     } else {
@@ -125,7 +125,7 @@ struct PoastPostInteractionView: View {
 
                             let mutatedPost = mutablePost.immutableCopy
 
-                            timelineViewModel.replacePost(post: postViewModel.post,
+                            await postCollectionViewModel.replacePost(post: postViewModel.post,
                                                           with: mutatedPost)
 
                             break
@@ -249,8 +249,8 @@ struct PoastPostInteractionView: View {
         replyDisabled: false)
 
     let postViewModel = PoastPostViewModel(post: post)
-    let timelineViewModel = PoastTimelineViewModel(algorithm: "")
+    let timelineViewModel = PoastFeedTimelineViewModel(algorithm: "")
 
     return PoastPostInteractionView(postViewModel: postViewModel,
-                                    timelineViewModel: timelineViewModel)
+                                    postCollectionViewModel: timelineViewModel)
 }

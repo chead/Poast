@@ -1,25 +1,29 @@
 //
-//  PoastAuthorTimelineViewModel.swift
+//  PoastThreadViewModel.swift
 //  Poast
 //
-//  Created by Christopher Head on 9/24/23.
+//  Created by Christopher Head on 2/11/24.
 //
 
 import Foundation
 import SwiftBluesky
 
-class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
+@MainActor class PoastThreadViewModel: ObservableObject, PoastPostCollectionHosting {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var accountService: PoastAccountService
     @Dependency private var blueskyClient: BlueskyClient
-    
-    let actor: String
 
-    init(actor: String) {
-        self.actor = actor
+    @Published var threadPost: PoastThreadPostModel? = nil
+
+    let uri: String
+
+    init(uri: String) {
+        self.uri = uri
     }
 
-    override func getTimeline(session: PoastSessionObject, cursor: Date) async -> PoastTimelineViewModelError? {
+    func replacePost(post: PoastPostModel, with: PoastPostModel) async {}
+
+    func getThread(session: PoastSessionObject) async -> PoastTimelineViewModelError? {
         do {
             guard session.did != nil,
                   session.accountUUID != nil
@@ -39,20 +43,18 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
                         return .unknown
                     }
 
-                    switch(try await self.blueskyClient.getAuthorFeed(host: account.host!, 
+                    switch(try await self.blueskyClient.getPostThread(host: account.host!, 
                                                                       accessToken: credentials.accessToken,
                                                                       refreshToken: credentials.refreshToken,
-                                                                      actor: actor,
-                                                                      limit: 50,
-                                                                      cursor: cursor)) {
-                    case .success(let getAuthorFeedResponse):
-                        if let credentials = getAuthorFeedResponse.credentials {
+                                                                      uri: uri)) {
+                    case .success(let getThreadResponse):
+                        if let credentials = getThreadResponse.credentials {
                             _ = self.credentialsService.updateCredentials(did: session.did!,
                                                                           accessToken: credentials.accessToken,
                                                                           refreshToken: credentials.refreshToken)
                         }
 
-                        posts.append(contentsOf: getAuthorFeedResponse.body.feed.map { PoastPostModel(blueskyFeedFeedViewPost: $0) })
+                        threadPost = PoastThreadPostModel(blueskyFeedThreadViewPost: getThreadResponse.body.thread)
 
                     case .failure(_):
                         return .unknown
