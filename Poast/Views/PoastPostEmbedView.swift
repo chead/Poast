@@ -12,8 +12,6 @@ struct PoastPostEmbedView: View {
 
     @ObservedObject var postViewModel: PoastPostViewModel
 
-    @Binding var selectedPost: PoastPostModel?
-
     @State var embed: PoastPostEmbedModel
 
     var body: some View {
@@ -26,13 +24,11 @@ struct PoastPostEmbedView: View {
 
         case .record(let record):
             PoastPostEmbedRecordWithMediaView(postViewModel: postViewModel,
-                                              selectedPost: $selectedPost,
                                               record: record,
                                               media: nil)
 
         case .recordWithMedia(let recordWithMedia):
             PoastPostEmbedRecordWithMediaView(postViewModel: postViewModel,
-                                              selectedPost: $selectedPost,
                                               record: recordWithMedia.record,
                                               media: recordWithMedia.media)
         }

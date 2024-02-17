@@ -13,10 +13,9 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
     @ObservedObject var postViewModel: PoastPostViewModel
     @ObservedObject var postCollectionViewModel: PostCollectionViewModel
 
-    @Binding var selectedPost: PoastPostModel?
-
     @State var replyTo: String?
     @State var showingProfileView: Bool = false
+    @State var showingThreadView: Bool = false
 
     let isParent: Bool
 
@@ -37,10 +36,10 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
                             .frame(width: 2)
                     }
                 }
-            }
+            }.buttonStyle(.plain)
 
             Button {
-                selectedPost = self.postViewModel.post
+                showingThreadView = true
             } label: {
                 VStack(alignment: .leading) {
                     Spacer()
@@ -79,7 +78,6 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
 
                     if let embed = postViewModel.post.embed {
                         PoastPostEmbedView(postViewModel: postViewModel,
-                                           selectedPost: $selectedPost,
                                            embed: embed)
                     }
 
@@ -94,6 +92,9 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
         }
         .navigationDestination(isPresented: $showingProfileView) {
             PoastProfileView(profileViewModel: PoastProfileViewModel(handle: postViewModel.post.author.handle))
+        }
+        .navigationDestination(isPresented: $showingThreadView) {
+            PoastThreadView(threadViewModel: PoastThreadViewModel(uri: postViewModel.post.uri))
         }
         .task {
             if(isParent == true) {
@@ -217,7 +218,6 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
 
     return PoastPostView(postViewModel: PoastPostViewModel(post: post),
                          postCollectionViewModel: timelineViewModel,
-                         selectedPost: .constant(nil),
                          isParent: false)
     .environmentObject(user)
 }

@@ -12,33 +12,31 @@ struct PoastTimelineView: View {
 
     @ObservedObject var timelineViewModel: PoastTimelineViewModel
 
-    @State var selectedPost: PoastPostModel? = nil
-
     var body: some View {
-        List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
-            if let parent = post.parent {
-                switch(parent) {
-                case .post(let parentPost):
-                    PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
-                                  postCollectionViewModel: timelineViewModel,
-                                  selectedPost: $selectedPost,
-                                  isParent: true)
+        NavigationStack {
+            List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
+                if let parent = post.parent {
+                    switch(parent) {
+                    case .post(let parentPost):
+                        PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                      postCollectionViewModel: timelineViewModel,
+                                      isParent: true)
 
-                case .reference(_):
-                    EmptyView()
+                    case .reference(_):
+                        EmptyView()
 
-                case .notFound(_):
-                    Text("Post not found")
-                    
-                case .blocked(_, _):
-                    Text("Blocked post")
+                    case .notFound(_):
+                        Text("Post not found")
+
+                    case .blocked(_, _):
+                        Text("Blocked post")
+                    }
                 }
-            }
-            
-            PoastPostView(postViewModel: PoastPostViewModel(post: post), 
-                          postCollectionViewModel: timelineViewModel,
-                          selectedPost: $selectedPost,
-                          isParent: false)
+
+
+                PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                              postCollectionViewModel: timelineViewModel,
+                              isParent: false)
                 .onAppear {
                     Task {
                         if index == timelineViewModel.posts.count - 1 {
@@ -48,16 +46,14 @@ struct PoastTimelineView: View {
                         }
                     }
                 }
-        }
-        .listStyle(.plain)
-        .navigationDestination(item: $selectedPost, destination: { post in
-            PoastThreadView(threadViewModel: PoastThreadViewModel(uri: post.uri))
-        })
-        .refreshable {
-            if let accountSession = user.accountSession {
-                timelineViewModel.clearTimeline()
+            }
+            .listStyle(.plain)
+            .refreshable {
+                if let accountSession = user.accountSession {
+                    timelineViewModel.clearTimeline()
 
-                _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+                    _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+                }
             }
         }
         .task {

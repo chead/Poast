@@ -19,8 +19,24 @@ struct PoastThreadView: View {
             if let threadPost = threadViewModel.threadPost {
                 PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
                               postCollectionViewModel: threadViewModel,
-                              selectedPost: $selectedPost,
                               isParent: false)
+
+                if let replies = threadPost.replies {
+                    ForEach(replies) { reply in
+                        switch(reply) {
+                        case .threadPost(let childThreadPost):
+                            PoastPostView(postViewModel: PoastPostViewModel(post: childThreadPost.post),
+                                          postCollectionViewModel: threadViewModel,
+                                          isParent: false)
+
+                        case .notFound(_):
+                            Text("Post not found.")
+
+                        case .blocked(_):
+                            Text("Post blocked.")
+                        }
+                    }
+                }
             } else {
                 EmptyView()
             }
