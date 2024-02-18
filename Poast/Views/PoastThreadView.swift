@@ -12,8 +12,6 @@ struct PoastThreadView: View {
 
     @ObservedObject var threadViewModel: PoastThreadViewModel
 
-    @State var selectedPost: PoastPostModel? = nil
-
     var body: some View {
         List {
             if let threadPost = threadViewModel.threadPost {
