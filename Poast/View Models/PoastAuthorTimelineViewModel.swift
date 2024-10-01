@@ -9,10 +9,6 @@ import Foundation
 import SwiftBluesky
 
 class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
-    @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var accountService: PoastAccountService
-    @Dependency private var blueskyClient: BlueskyClient
-    
     let actor: String
 
     init(actor: String) {

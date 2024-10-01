@@ -8,6 +8,7 @@
 import Foundation
 import SwiftBluesky
 
+
 indirect enum PoastThreadModel: Hashable, Identifiable {
     var id: Self { self }
 
@@ -25,28 +26,6 @@ indirect enum PoastThreadModel: Hashable, Identifiable {
 
         case .blueskyFeedBlockedPost(let blueskyFeedBlockedPost):
             self = .blocked(PoastBlockedPostModel(uri: blueskyFeedBlockedPost.uri, authorDid: blueskyFeedBlockedPost.author.did))
-        }
-    }
-}
-
-struct PoastThreadPostModel: Hashable {
-    let post: PoastPostModel
-    let parent: PoastThreadModel?
-    let replies: [PoastThreadModel]?
-
-    init(blueskyFeedThreadViewPost: BlueskyFeedThreadViewPost) {
-        self.post = PoastPostModel(blueskyFeedPostView: blueskyFeedThreadViewPost.post)
-
-        if let parent = blueskyFeedThreadViewPost.parent {
-            self.parent = PoastThreadModel(blueskyFeedThreadViewPostPostType: parent)
-        } else {
-            self.parent = nil
-        }
-
-        if let replies = blueskyFeedThreadViewPost.replies {
-            self.replies = replies.map { PoastThreadModel(blueskyFeedThreadViewPostPostType: $0) }
-        } else {
-            self.replies = []
         }
     }
 }

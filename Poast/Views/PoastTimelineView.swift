@@ -10,7 +10,11 @@ import SwiftUI
 struct PoastTimelineView: View {
     @EnvironmentObject var user: PoastUser
 
-    @ObservedObject var timelineViewModel: PoastTimelineViewModel
+    @StateObject var timelineViewModel: PoastTimelineViewModel
+
+    @State var showingComposerView: Bool = false
+    @State var showingProfileHandle: String? = nil
+    @State var showingThreadURI: String? = nil
 
     var body: some View {
         NavigationStack {
@@ -19,8 +23,19 @@ struct PoastTimelineView: View {
                     switch(parent) {
                     case .post(let parentPost):
                         PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
-                                      postCollectionViewModel: timelineViewModel,
-                                      isParent: true)
+                                      isParent: true,
+                                      action: { action in
+                            switch action {
+                            case .profile(let handle):
+                                showingProfileHandle = handle
+
+                            case .thread(let uri):
+                                showingThreadURI = uri
+                            }
+                        },
+                                      interaction: { interaction in
+                            await handlePostInteraction(interaction: interaction)
+                        })
 
                     case .reference(_):
                         EmptyView()
@@ -33,10 +48,20 @@ struct PoastTimelineView: View {
                     }
                 }
 
-
                 PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                              postCollectionViewModel: timelineViewModel,
-                              isParent: false)
+                              isParent: false,
+                              action: { action in
+                    switch action {
+                    case .profile(let handle):
+                        showingProfileHandle = handle
+
+                    case .thread(let uri):
+                        showingThreadURI = uri
+                    }
+                },
+                              interaction: { interaction in
+                    await handlePostInteraction(interaction: interaction)
+                })
                 .onAppear {
                     Task {
                         if index == timelineViewModel.posts.count - 1 {
@@ -55,11 +80,58 @@ struct PoastTimelineView: View {
                     _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("Poast")
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingComposerView = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .sheet(isPresented: $showingComposerView) {
+                        EmptyView()
+                    }
+                }
+            }
+            .navigationDestination(item: $showingProfileHandle) { profileHandle in
+                PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
+            }
+            .navigationDestination(item: $showingThreadURI) { threadURI in
+                PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI))
+            }
         }
         .task {
             if let accountSession = user.accountSession {
                 _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
             }
+        }
+    }
+
+    func handlePostInteraction(interaction: PoastPoastInteractionViewAction) async -> Void {
+        switch interaction {
+        case .like(let post):
+            guard let accountSession = user.accountSession else { break }
+
+            await timelineViewModel.toggleLikePost(session: accountSession.session, post: post)
+
+        case .repost(let post):
+            guard let accountSession = user.accountSession else { break }
+
+            await timelineViewModel.toggleRepostPost(session: accountSession.session, post: post)
+
+        default:
+            break
         }
     }
 }

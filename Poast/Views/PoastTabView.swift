@@ -10,38 +10,9 @@ import SwiftUI
 struct PoastTabView: View {
     @EnvironmentObject var user: PoastUser
 
-    @State var showingComposerView: Bool = false
-
     var body: some View {
         TabView {
-
-                PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-
-                            } label: {
-                                Image(systemName: "magnifyingglass")
-                            }
-                        }
-
-                        ToolbarItem(placement: .principal) {
-                            Text("Poast")
-                        }
-
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                showingComposerView = true
-                            } label: {
-                                Image(systemName: "plus")
-                            }
-                            .sheet(isPresented: $showingComposerView) {
-                                EmptyView()
-                            }
-                        }
-                    }
-            
-            .toolbarBackground(.blue)
+            PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
             .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
 
             Rectangle()

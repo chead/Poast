@@ -23,6 +23,8 @@
 		C22BE4D72B72F71600C24372 /* PoastPostEmbedImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22BE4D62B72F71600C24372 /* PoastPostEmbedImagesView.swift */; };
 		C22BE4D92B72F7AB00C24372 /* PoastPostEmbedExternalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22BE4D82B72F7AB00C24372 /* PoastPostEmbedExternalView.swift */; };
 		C22BE4DB2B72FF9100C24372 /* PoastPostEmbedRecordWithMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22BE4DA2B72FF9100C24372 /* PoastPostEmbedRecordWithMediaView.swift */; };
+		C22CEDBF2CA0BA4300FD7CBB /* PoastPostEmbedVideoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22CEDBE2CA0BA4300FD7CBB /* PoastPostEmbedVideoModel.swift */; };
+		C22CEDC12CA0BB5F00FD7CBB /* PoastPostEmbedAspectRatioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22CEDC02CA0BB5F00FD7CBB /* PoastPostEmbedAspectRatioModel.swift */; };
 		C22D62012B5DCFC500A1E1B4 /* SwiftATProto in Frameworks */ = {isa = PBXBuildFile; productRef = C22D62002B5DCFC500A1E1B4 /* SwiftATProto */; };
 		C22D62042B5DD47B00A1E1B4 /* SwiftATProto in Frameworks */ = {isa = PBXBuildFile; productRef = C22D62032B5DD47B00A1E1B4 /* SwiftATProto */; };
 		C22D62072B5DD8AD00A1E1B4 /* SwiftBluesky in Frameworks */ = {isa = PBXBuildFile; productRef = C22D62062B5DD8AD00A1E1B4 /* SwiftBluesky */; };
@@ -41,6 +43,7 @@
 		C24213C72A7567A70012950B /* PoastUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213C62A7567A70012950B /* PoastUITests.swift */; };
 		C24213C92A7567A70012950B /* PoastUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24213C82A7567A70012950B /* PoastUITestsLaunchTests.swift */; };
 		C277717C2B7FC9010060FDAD /* PoastAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277717B2B7FC9010060FDAD /* PoastAvatarView.swift */; };
+		C27771B32B82E9B70060FDAD /* PoastThreadPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27771B22B82E9B70060FDAD /* PoastThreadPostModel.swift */; };
 		C28EFC272B76854A009DB7A3 /* PoastMutablePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC262B76854A009DB7A3 /* PoastMutablePost.swift */; };
 		C28EFC292B784628009DB7A3 /* PoastTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC282B784628009DB7A3 /* PoastTimelineViewModel.swift */; };
 		C28EFC2D2B796B70009DB7A3 /* PoastThreadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC2C2B796B70009DB7A3 /* PoastThreadViewModel.swift */; };
@@ -119,6 +122,8 @@
 		C22BE4D62B72F71600C24372 /* PoastPostEmbedImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostEmbedImagesView.swift; sourceTree = "<group>"; };
 		C22BE4D82B72F7AB00C24372 /* PoastPostEmbedExternalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostEmbedExternalView.swift; sourceTree = "<group>"; };
 		C22BE4DA2B72FF9100C24372 /* PoastPostEmbedRecordWithMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostEmbedRecordWithMediaView.swift; sourceTree = "<group>"; };
+		C22CEDBE2CA0BA4300FD7CBB /* PoastPostEmbedVideoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostEmbedVideoModel.swift; sourceTree = "<group>"; };
+		C22CEDC02CA0BB5F00FD7CBB /* PoastPostEmbedAspectRatioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostEmbedAspectRatioModel.swift; sourceTree = "<group>"; };
 		C22D620B2B5DD96300A1E1B4 /* PoastLabelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastLabelModel.swift; sourceTree = "<group>"; };
 		C23D92482B6D5F7C0014F4D9 /* PoastStrongReferenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastStrongReferenceModel.swift; sourceTree = "<group>"; };
 		C24104E92B6DA7D300EAA66C /* PoastPostHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostHeaderView.swift; sourceTree = "<group>"; };
@@ -135,6 +140,7 @@
 		C24213C62A7567A70012950B /* PoastUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastUITests.swift; sourceTree = "<group>"; };
 		C24213C82A7567A70012950B /* PoastUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C277717B2B7FC9010060FDAD /* PoastAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastAvatarView.swift; sourceTree = "<group>"; };
+		C27771B22B82E9B70060FDAD /* PoastThreadPostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastThreadPostModel.swift; sourceTree = "<group>"; };
 		C28EFC262B76854A009DB7A3 /* PoastMutablePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastMutablePost.swift; sourceTree = "<group>"; };
 		C28EFC282B784628009DB7A3 /* PoastTimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastTimelineViewModel.swift; sourceTree = "<group>"; };
 		C28EFC2C2B796B70009DB7A3 /* PoastThreadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastThreadViewModel.swift; sourceTree = "<group>"; };
@@ -325,9 +331,12 @@
 				C2EDB3FF2B67409400C31720 /* PoastPostEmbedModel.swift */,
 				C22BE4A02B6E02BD00C24372 /* PoastPostEmbedExternalModel.swift */,
 				C22BE49A2B6DD3EF00C24372 /* PoastPostEmbedImageModel.swift */,
+				C22CEDBE2CA0BA4300FD7CBB /* PoastPostEmbedVideoModel.swift */,
+				C22CEDC02CA0BB5F00FD7CBB /* PoastPostEmbedAspectRatioModel.swift */,
 				C22BE49E2B6DFBED00C24372 /* PoastPostEmbedRecordModel.swift */,
 				C22BE4A82B6ED87C00C24372 /* PoastPostEmbedRecordEmbedModel.swift */,
 				C28EFC2E2B796B9D009DB7A3 /* PoastThreadModel.swift */,
+				C27771B22B82E9B70060FDAD /* PoastThreadPostModel.swift */,
 				C22BE4A42B6EA77400C24372 /* PoastReferenceModel.swift */,
 				C22BE49C2B6DEA8800C24372 /* PoastBlockedProfileModel.swift */,
 				C22BE4A22B6EA75000C24372 /* PoastBlobModel.swift */,
@@ -544,6 +553,7 @@
 				C297FDEA2A82A4CE00BA78CD /* PoastAccountService.swift in Sources */,
 				C2D044E62A78A33D001DC946 /* PoastCredentialsModel.swift in Sources */,
 				C293623D2B5B17C4002BE99E /* PoastAccountsViewModel.swift in Sources */,
+				C22CEDC12CA0BB5F00FD7CBB /* PoastPostEmbedAspectRatioModel.swift in Sources */,
 				C22BE4A12B6E02BD00C24372 /* PoastPostEmbedExternalModel.swift in Sources */,
 				C29362492B5C2177002BE99E /* PoastSettingsView.swift in Sources */,
 				C277717C2B7FC9010060FDAD /* PoastAvatarView.swift in Sources */,
@@ -556,6 +566,7 @@
 				C2FA38CD2B6D9D510001A8C1 /* PoastPostInteractionView.swift in Sources */,
 				C2D0458E2A7AC750001DC946 /* UtilityProviding.swift in Sources */,
 				C22BE4A72B6EAE3A00C24372 /* PoastImageBlobModel.swift in Sources */,
+				C27771B32B82E9B70060FDAD /* PoastThreadPostModel.swift in Sources */,
 				C29362432B5B674F002BE99E /* PoastLandingView.swift in Sources */,
 				C2A8D6CA2A7BFE69005D9235 /* PoastSignInView.swift in Sources */,
 				C2D045422A798AEA001DC946 /* ServiceProviding.swift in Sources */,
@@ -572,6 +583,7 @@
 				C22BE4D92B72F7AB00C24372 /* PoastPostEmbedExternalView.swift in Sources */,
 				C28EFC292B784628009DB7A3 /* PoastTimelineViewModel.swift in Sources */,
 				C2D045442A798AF5001DC946 /* ServiceProvider.swift in Sources */,
+				C22CEDBF2CA0BA4300FD7CBB /* PoastPostEmbedVideoModel.swift in Sources */,
 				C24213A72A7567A40012950B /* PoastApp.swift in Sources */,
 				C28EFC2F2B796B9D009DB7A3 /* PoastThreadModel.swift in Sources */,
 				C297FDEC2A82A61B00BA78CD /* PoastCredentialsService.swift in Sources */,

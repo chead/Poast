@@ -7,22 +7,26 @@
 
 import SwiftUI
 
-struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollectionHosting>: View {
+enum PoastPoastViewAction {
+    case thread(String)
+    case profile(String)
+}
+
+struct PoastPostView: View {
     @EnvironmentObject var user: PoastUser
 
     @ObservedObject var postViewModel: PoastPostViewModel
-    @ObservedObject var postCollectionViewModel: PostCollectionViewModel
 
     @State var replyTo: String?
-    @State var showingProfileView: Bool = false
-    @State var showingThreadView: Bool = false
 
     let isParent: Bool
+    let action: (PoastPoastViewAction) -> Void
+    let interaction: (PoastPoastInteractionViewAction) async -> Void
 
     var body: some View {
         HStack(alignment: .top) {
             Button {
-                showingProfileView = true
+                action(.profile(postViewModel.post.author.handle))
             } label: {
                 VStack {
                     PoastAvatarView(size: .small,
@@ -39,7 +43,7 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
             }.buttonStyle(.plain)
 
             Button {
-                showingThreadView = true
+                action(.thread(postViewModel.post.uri))
             } label: {
                 VStack(alignment: .leading) {
                     Spacer()
@@ -84,17 +88,12 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
                     Spacer()
 
                     PoastPostInteractionView(postViewModel: postViewModel,
-                                             postCollectionViewModel: postCollectionViewModel)
+                                             action: interaction)
 
                     Spacer()
                 }
-            }.buttonStyle(.plain)
-        }
-        .navigationDestination(isPresented: $showingProfileView) {
-            PoastProfileView(profileViewModel: PoastProfileViewModel(handle: postViewModel.post.author.handle))
-        }
-        .navigationDestination(isPresented: $showingThreadView) {
-            PoastThreadView(threadViewModel: PoastThreadViewModel(uri: postViewModel.post.uri))
+            }
+            .buttonStyle(.plain)
         }
         .task {
             if(isParent == true) {
@@ -214,10 +213,9 @@ struct PoastPostView<PostCollectionViewModel: ObservableObject & PoastPostCollec
         repost: nil,
         replyDisabled: false)
 
-    let timelineViewModel = PoastFeedTimelineViewModel(algorithm: "")
-
     return PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                         postCollectionViewModel: timelineViewModel,
-                         isParent: false)
+                         isParent: false,
+                         action: { _ in },
+                         interaction: { _ in })
     .environmentObject(user)
 }

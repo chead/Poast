@@ -17,11 +17,7 @@ struct PoastBlockedPostModel: Hashable {
     var authorDid: String
 }
 
-struct PoastPostModel: Hashable, Identifiable {
-    static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
-        lhs.id == rhs.id
-    }
-
+class PoastPostModel: Hashable, Identifiable {
     let id: UUID
     let uri: String
     let cid: String
@@ -148,5 +144,13 @@ struct PoastPostModel: Hashable, Identifiable {
             self.repost = nil
             self.replyDisabled = false
         }
+    }
+
+    static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

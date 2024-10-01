@@ -8,14 +8,21 @@
 import SwiftUI
 import SwiftATProto
 
-struct PoastPostInteractionView<PostCollectionViewModel: ObservableObject & PoastPostCollectionHosting>: View {
+enum PoastPoastInteractionViewAction {
+    case reply(PoastPostModel)
+    case repost(PoastPostModel)
+    case like(PoastPostModel)
+}
+
+struct PoastPostInteractionView: View {
     @EnvironmentObject var user: PoastUser
 
     @ObservedObject var postViewModel: PoastPostViewModel
-    @ObservedObject var postCollectionViewModel: PostCollectionViewModel
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreDialog: Bool = false
+
+    let action: (PoastPoastInteractionViewAction) async -> Void
 
     var body: some View {
         HStack {
@@ -52,88 +59,17 @@ struct PoastPostInteractionView<PostCollectionViewModel: ObservableObject & Poas
                                 titleVisibility: .hidden) {
                 Button(postViewModel.post.repost != nil ? "Undo repost" : "Repost") {
                     Task {
-                        guard let accountSession = user.accountSession else { return }
-
-                        if(postViewModel.post.repost != nil) {
-                            if(await postViewModel.unrepostPost(session: accountSession.session,
-                                                                uri: postViewModel.post.repost ?? "") == nil) {
-                                let mutablePost = PoastMutablePost(postModel: postViewModel.post)
-
-                                mutablePost.repost = nil
-                                mutablePost.repostCount -= 1
-
-                                let mutatedPost = mutablePost.immutableCopy
-
-                                await postCollectionViewModel.replacePost(post: postViewModel.post,
-                                                              with: mutatedPost)
-                            }
-                        } else {
-                            switch(await postViewModel.repostPost(session: accountSession.session,
-                                                                  uri: postViewModel.post.uri,
-                                                                  cid: postViewModel.post.cid)) {
-                            case.success(let repost):
-                                let mutablePost = PoastMutablePost(postModel: postViewModel.post)
-
-                                mutablePost.repost = repost.uri
-                                mutablePost.repostCount += 1
-
-                                let mutatedPost = mutablePost.immutableCopy
-
-                                await postCollectionViewModel.replacePost(post: postViewModel.post,
-                                                              with: mutatedPost)
-
-                                break
-
-                            case .failure(_):
-                                break
-                            }
-                        }
+                        await action(.repost(postViewModel.post))
                     }
                 }
                 Button("Quote Post") {}
             }
 
-
             Spacer()
 
             Button(action: {
                 Task {
-                    guard let accountSession = user.accountSession else { return }
-
-                    if(postViewModel.post.like != nil) {
-                        if(await postViewModel.unlikePost(session: accountSession.session,
-                                                          uri: postViewModel.post.like ?? "") == nil) {
-                            let mutablePost = PoastMutablePost(postModel: postViewModel.post)
-
-                            mutablePost.like = nil
-                            mutablePost.likeCount -= 1
-
-                            let mutatedPost = mutablePost.immutableCopy
-
-                            await postCollectionViewModel.replacePost(post: postViewModel.post,
-                                                          with: mutatedPost)
-                        }
-                    } else {
-                        switch(await postViewModel.likePost(session: accountSession.session,
-                                                            uri: postViewModel.post.uri,
-                                                            cid: postViewModel.post.cid)) {
-                        case.success(let like):
-                            let mutablePost = PoastMutablePost(postModel: postViewModel.post)
-
-                            mutablePost.like = like.uri
-                            mutablePost.likeCount += 1
-
-                            let mutatedPost = mutablePost.immutableCopy
-
-                            await postCollectionViewModel.replacePost(post: postViewModel.post,
-                                                          with: mutatedPost)
-
-                            break
-
-                        case .failure(_):
-                            break
-                        }
-                    }
+                    await action(.like(postViewModel.post))
                 }
             }, label: {
                 HStack {
@@ -252,5 +188,5 @@ struct PoastPostInteractionView<PostCollectionViewModel: ObservableObject & Poas
     let timelineViewModel = PoastFeedTimelineViewModel(algorithm: "")
 
     return PoastPostInteractionView(postViewModel: postViewModel,
-                                    postCollectionViewModel: timelineViewModel)
+                                    action: { _ in })
 }

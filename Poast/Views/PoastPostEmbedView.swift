@@ -31,6 +31,9 @@ struct PoastPostEmbedView: View {
             PoastPostEmbedRecordWithMediaView(postViewModel: postViewModel,
                                               record: recordWithMedia.record,
                                               media: recordWithMedia.media)
+
+        case .video(let poastPostEmbedVideoModel):
+            EmptyView()
         }
     }
 }

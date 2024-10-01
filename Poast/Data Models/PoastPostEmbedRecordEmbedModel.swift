@@ -94,6 +94,7 @@ enum PoastPostEmbedRecordEmbedModel: Hashable {
     case images([PoastPostEmbedImageModel])
     case record(PoastPostEmbedRecordModel)
     case recordWithMedia(PoastPostEmbedRecordWithMediaModel)
+    case video(PoastPostEmbedVideoModel)
 
     init(blueskyEmbedRecordViewRecordEmbedType: BlueskyEmbedRecordViewRecordEmbedType) {
         switch(blueskyEmbedRecordViewRecordEmbedType) {
@@ -108,6 +109,9 @@ enum PoastPostEmbedRecordEmbedModel: Hashable {
 
         case .blueskyEmbedRecordWithMediaView(let blueskyEmbedRecordWithMediaView):
             self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(blueskyEmbedRecordWithMediaView: blueskyEmbedRecordWithMediaView))
+
+        case .blueskyEmbedVideoView(let blueskyEmbedVideoView):
+            self = .video(PoastPostEmbedVideoModel(blueskyEmbedVideoView: blueskyEmbedVideoView))
         }
     }
 }
