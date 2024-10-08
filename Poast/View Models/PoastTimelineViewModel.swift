@@ -19,9 +19,9 @@ enum PoastTimelineViewModelError: Error {
     @Dependency internal var accountService: PoastAccountService
     @Dependency internal var blueskyClient: BlueskyClient
 
-    @Published var posts: [PoastPostModel] = []
+    @Published var posts: [PoastVisiblePostModel] = []
 
-    func replacePost(post: PoastPostModel, with: PoastPostModel) {}
+    func replacePost(post: PoastVisiblePostModel, with: PoastVisiblePostModel) {}
 
     func clearTimeline() {
         posts.removeAll()

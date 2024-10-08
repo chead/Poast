@@ -9,18 +9,18 @@ import Foundation
 import SwiftBluesky
 
 struct PoastThreadPostModel: Hashable {
-    let post: PoastPostModel
+    let post: PoastVisiblePostModel
     let parent: PoastThreadModel?
     let replies: [PoastThreadModel]?
 
-    init(post: PoastPostModel, parent: PoastThreadModel?, replies: [PoastThreadModel]?) {
+    init(post: PoastVisiblePostModel, parent: PoastThreadModel?, replies: [PoastThreadModel]?) {
         self.post = post
         self.parent = parent
         self.replies = replies
     }
 
     init(blueskyFeedThreadViewPost: BlueskyFeedThreadViewPost) {
-        self.post = PoastPostModel(blueskyFeedPostView: blueskyFeedThreadViewPost.post)
+        self.post = PoastVisiblePostModel(blueskyFeedPostView: blueskyFeedThreadViewPost.post)
 
         if let parent = blueskyFeedThreadViewPost.parent {
             self.parent = PoastThreadModel(blueskyFeedThreadViewPostPostType: parent)

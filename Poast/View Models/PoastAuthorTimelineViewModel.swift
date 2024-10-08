@@ -48,7 +48,7 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
                                                                           refreshToken: credentials.refreshToken)
                         }
 
-                        posts.append(contentsOf: getAuthorFeedResponse.body.feed.map { PoastPostModel(blueskyFeedFeedViewPost: $0) })
+                        posts.append(contentsOf: getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
 
                     case .failure(_):
                         return .unknown

@@ -8,16 +8,7 @@
 import Foundation
 import SwiftBluesky
 
-struct PoastNotFoundPostModel: Hashable {
-    var uri: String
-}
-
-struct PoastBlockedPostModel: Hashable {
-    var uri: String
-    var authorDid: String
-}
-
-struct PoastPostModel: Hashable, Identifiable {
+struct PoastVisiblePostModel: Hashable, Identifiable {
     let id = UUID()
     var uri: String
     var cid: String
@@ -147,7 +138,7 @@ struct PoastPostModel: Hashable, Identifiable {
         hasher.combine(uri)
     }
     
-    static func ==(lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
+    static func ==(lhs: PoastVisiblePostModel, rhs: PoastVisiblePostModel) -> Bool {
         return lhs.uri == rhs.uri
     }
 }

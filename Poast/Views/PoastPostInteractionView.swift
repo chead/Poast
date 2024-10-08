@@ -9,9 +9,9 @@ import SwiftUI
 import SwiftATProto
 
 enum PoastPoastInteractionViewAction {
-    case reply(PoastPostModel)
-    case repost(PoastPostModel)
-    case like(PoastPostModel)
+    case reply(PoastVisiblePostModel)
+    case repost(PoastVisiblePostModel)
+    case like(PoastVisiblePostModel)
 }
 
 struct PoastPostInteractionView: View {
@@ -120,7 +120,7 @@ struct PoastPostInteractionView: View {
 }
 
 #Preview {
-    let post = PoastPostModel(
+    let post = PoastVisiblePostModel(
         uri: "",
         cid: "",
         text: "Child post",
@@ -139,7 +139,7 @@ struct PoastPostInteractionView: View {
         likeCount: 0,
         repostCount: 10,
         root: nil,
-        parent: .post(PoastPostModel(uri: "",
+        parent: .post(PoastVisiblePostModel(uri: "",
                                      cid: "",
                                      text: "Parent post",
                                      author: PoastProfileModel(

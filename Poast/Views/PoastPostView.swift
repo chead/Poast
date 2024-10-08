@@ -161,7 +161,7 @@ struct PoastPostView: View {
                     postsCount: 4123,
                     labels: [])
 
-    let post = PoastPostModel(uri: "",
+    let post = PoastVisiblePostModel(uri: "",
                                    cid: "",
                                    text: "Child post",
                                    author: profile,
@@ -169,7 +169,7 @@ struct PoastPostView: View {
                                    likeCount: 0,
                                    repostCount: 10,
                                    root: nil,
-                                   parent: .post(PoastPostModel(uri: "",
+                                   parent: .post(PoastVisiblePostModel(uri: "",
                                                                 cid: "",
                                                                 text: "Parent post",
                                                                 author: profile,

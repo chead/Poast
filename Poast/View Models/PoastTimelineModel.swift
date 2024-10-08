@@ -9,13 +9,13 @@ import Foundation
 import SwiftBluesky
 
 struct PoastTimelineModel {
-    let posts: [PoastPostModel]
+    let posts: [PoastVisiblePostModel]
 
-    init(posts: [PoastPostModel]) {
+    init(posts: [PoastVisiblePostModel]) {
         self.posts = posts
     }
 
     init(blueskyFeedFeedViewPosts: [BlueskyFeedFeedViewPost]) {
-        self.posts = blueskyFeedFeedViewPosts.map { PoastPostModel(blueskyFeedFeedViewPost: $0) }
+        self.posts = blueskyFeedFeedViewPosts.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) }
     }
 }

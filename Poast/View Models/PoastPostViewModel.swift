@@ -21,9 +21,9 @@ enum PoastPostViewModelError: Error {
     @Dependency private var accountService: PoastAccountService
     @Dependency private var blueskyClient: BlueskyClient
 
-    @Published var post: PoastPostModel
+    @Published var post: PoastVisiblePostModel
 
-    init(post: PoastPostModel) {
+    init(post: PoastVisiblePostModel) {
         self.post = post
     }
 
@@ -37,7 +37,7 @@ enum PoastPostViewModelError: Error {
         return formatter.localizedString(for: post.date, relativeTo: Date())
     }
 
-    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastPostModel?, PoastPostViewModelError> {
+    func getPost(session: PoastSessionObject, uri: String) async -> Result<PoastVisiblePostModel?, PoastPostViewModelError> {
         do {
             guard let sessionDid = session.did,
                   let accountUUID = session.accountUUID else {
@@ -65,7 +65,7 @@ enum PoastPostViewModelError: Error {
                         }
                         
                         if let post = getPostsResponse.body.posts.first {
-                            return .success(PoastPostModel(blueskyFeedPostView: post))
+                            return .success(PoastVisiblePostModel(blueskyFeedPostView: post))
                         } else {
                             return .success(nil)
                         }
