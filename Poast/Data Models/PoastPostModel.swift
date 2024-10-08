@@ -9,12 +9,10 @@ import Foundation
 import SwiftBluesky
 
 struct PoastNotFoundPostModel: Hashable {
-    let id = UUID()
     var uri: String
 }
 
-struct PoastBlockedPostModel: Hashable, Identifiable {
-    let id = UUID()
+struct PoastBlockedPostModel: Hashable {
     var uri: String
     var authorDid: String
 }
