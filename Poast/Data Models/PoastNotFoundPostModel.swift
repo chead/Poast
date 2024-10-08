@@ -6,5 +6,5 @@
 //
 
 struct PoastNotFoundPostModel: Hashable {
-    var uri: String
+    let uri: String
 }

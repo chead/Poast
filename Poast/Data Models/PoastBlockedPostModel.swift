@@ -6,6 +6,6 @@
 //
 
 struct PoastBlockedPostModel: Hashable {
-    var uri: String
-    var authorDid: String
+    let uri: String
+    let authorDid: String
 }

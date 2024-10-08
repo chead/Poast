@@ -9,16 +9,16 @@ import Foundation
 import SwiftBluesky
 
 struct PoastProfileModel: Hashable {
-    var did: String
-    var handle: String
-    var displayName: String?
-    var desc: String?
-    var avatar: String?
-    var banner: String?
-    var followsCount: Int?
-    var followersCount: Int?
-    var postsCount: Int?
-    var labels: [PoastLabelModel]?
+    let did: String
+    let handle: String
+    let displayName: String?
+    let desc: String?
+    let avatar: String?
+    let banner: String?
+    let followsCount: Int?
+    let followersCount: Int?
+    let postsCount: Int?
+    let labels: [PoastLabelModel]?
 
     var name: String {
         return self.displayName ?? "@\(self.handle)"

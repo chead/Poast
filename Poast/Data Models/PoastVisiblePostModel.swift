@@ -10,21 +10,21 @@ import SwiftBluesky
 
 struct PoastVisiblePostModel: Hashable, Identifiable {
     let id = UUID()
-    var uri: String
-    var cid: String
-    var text: String
-    var author: PoastProfileModel
-    var replyCount: Int
-    var likeCount: Int
-    var repostCount: Int
-    var root: PoastReplyModel?
-    var parent: PoastReplyModel?
-    var embed: PoastPostEmbedModel?
-    var date: Date
-    var repostedBy: PoastProfileModel?
-    var like: String?
-    var repost: String?
-    var replyDisabled: Bool
+    let uri: String
+    let cid: String
+    let text: String
+    let author: PoastProfileModel
+    let replyCount: Int
+    let likeCount: Int
+    let repostCount: Int
+    let root: PoastReplyModel?
+    let parent: PoastReplyModel?
+    let embed: PoastPostEmbedModel?
+    let date: Date
+    let repostedBy: PoastProfileModel?
+    let like: String?
+    let repost: String?
+    let replyDisabled: Bool
 
     init(uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
         self.uri = uri
