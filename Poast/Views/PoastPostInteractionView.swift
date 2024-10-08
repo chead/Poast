@@ -121,7 +121,6 @@ struct PoastPostInteractionView: View {
 
 #Preview {
     let post = PoastPostModel(
-        id: UUID(),
         uri: "",
         cid: "",
         text: "Child post",
@@ -129,7 +128,7 @@ struct PoastPostInteractionView: View {
             did: "",
             handle: "foobar.net",
             displayName: "Fooooooooooooooo bar",
-            description: "Lorem Ipsum",
+            desc: "Lorem Ipsum",
             avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
             banner: "",
             followsCount: 10,
@@ -140,15 +139,14 @@ struct PoastPostInteractionView: View {
         likeCount: 0,
         repostCount: 10,
         root: nil,
-        parent: .post(PoastPostModel(id: UUID(),
-                                     uri: "",
+        parent: .post(PoastPostModel(uri: "",
                                      cid: "",
                                      text: "Parent post",
                                      author: PoastProfileModel(
                                         did: "",
                                         handle: "barbaz.net",
                                         displayName: "Barbaz",
-                                        description: "Lorem Ipsum",
+                                        desc: "Lorem Ipsum",
                                         avatar: "https://i.ytimg.com/vi/uk5gQlBDCaw/maxresdefault.jpg",
                                         banner: "",
                                         followsCount: 1,
@@ -187,6 +185,6 @@ struct PoastPostInteractionView: View {
     let postViewModel = PoastPostViewModel(post: post)
     let timelineViewModel = PoastFeedTimelineViewModel(algorithm: "")
 
-    return PoastPostInteractionView(postViewModel: postViewModel,
+    PoastPostInteractionView(postViewModel: postViewModel,
                                     action: { _ in })
 }

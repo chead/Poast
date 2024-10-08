@@ -8,8 +8,7 @@
 import Foundation
 import SwiftBluesky
 
-struct PoastPostEmbedVideoModel: Hashable, Identifiable {
-    let id: UUID = UUID()
+struct PoastPostEmbedVideoModel: Hashable {
     let playlist: String
     let thumbnail: String?
     let alt: String?

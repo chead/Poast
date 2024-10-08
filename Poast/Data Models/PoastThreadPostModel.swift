@@ -8,24 +8,6 @@
 import Foundation
 import SwiftBluesky
 
-class PoastMutableThreadPost {
-    var post: PoastPostModel
-    var parent: PoastThreadModel?
-    var replies: [PoastThreadModel]?
-
-    init(threadPostModel: PoastThreadPostModel) {
-        self.post = threadPostModel.post
-        self.parent = threadPostModel.parent
-        self.replies = threadPostModel.replies
-    }
-
-    var immutableCopy: PoastThreadPostModel {
-        return PoastThreadPostModel(post: post,
-                                    parent: parent,
-                                    replies: replies)
-    }
-}
-
 struct PoastThreadPostModel: Hashable {
     let post: PoastPostModel
     let parent: PoastThreadModel?

@@ -9,32 +9,35 @@ import Foundation
 import SwiftBluesky
 
 struct PoastNotFoundPostModel: Hashable {
+    let id = UUID()
     var uri: String
 }
 
-struct PoastBlockedPostModel: Hashable {
+struct PoastBlockedPostModel: Hashable, Identifiable {
+    let id = UUID()
     var uri: String
     var authorDid: String
 }
 
-class PoastPostModel: Hashable, Identifiable {
-    let uri: String
-    let cid: String
-    let text: String
-    let author: PoastProfileModel
-    let replyCount: Int
-    let likeCount: Int
-    let repostCount: Int
-    let root: PoastReplyModel?
-    let parent: PoastReplyModel?
-    let embed: PoastPostEmbedModel?
-    let date: Date
-    let repostedBy: PoastProfileModel?
-    let like: String?
-    let repost: String?
-    let replyDisabled: Bool
+struct PoastPostModel: Hashable, Identifiable {
+    let id = UUID()
+    var uri: String
+    var cid: String
+    var text: String
+    var author: PoastProfileModel
+    var replyCount: Int
+    var likeCount: Int
+    var repostCount: Int
+    var root: PoastReplyModel?
+    var parent: PoastReplyModel?
+    var embed: PoastPostEmbedModel?
+    var date: Date
+    var repostedBy: PoastProfileModel?
+    var like: String?
+    var repost: String?
+    var replyDisabled: Bool
 
-    init(id: UUID, uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
+    init(uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
         self.uri = uri
         self.cid = cid
         self.text = text
@@ -142,11 +145,11 @@ class PoastPostModel: Hashable, Identifiable {
         }
     }
 
-    static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
-        lhs.uri == rhs.uri
-    }
-
     func hash(into hasher: inout Hasher) {
         hasher.combine(uri)
+    }
+    
+    static func ==(lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
+        return lhs.uri == rhs.uri
     }
 }

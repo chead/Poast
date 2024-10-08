@@ -63,7 +63,7 @@ struct PoastProfileHeaderView: View {
             }
             .padding(.horizontal, 20)
             ScrollView {
-                Text(profile?.description ?? "")
+                Text(profile?.desc ?? "")
                     .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
                     .padding(.horizontal, 20)
             }
@@ -76,7 +76,7 @@ struct PoastProfileHeaderView: View {
     let profile = PoastProfileModel(did: "0",
                                     handle: "foobar",
                                     displayName: "FOOBAR",
-                                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus risus non massa mollis, eget interdum ante volutpat. Sed cursus risus non massa mollis, eget interdum ante volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a tortor dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a felis sit amet elit viverra porttitor. In hac habitasse platea dictumst. Nulla mollis luctus sagittis. Vestibulum volutpat ipsum vel elit accumsan dapibus. Vivamus quis erat consequat, auctor est id, malesuada sem.",
+                                    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus risus non massa mollis, eget interdum ante volutpat. Sed cursus risus non massa mollis, eget interdum ante volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a tortor dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a felis sit amet elit viverra porttitor. In hac habitasse platea dictumst. Nulla mollis luctus sagittis. Vestibulum volutpat ipsum vel elit accumsan dapibus. Vivamus quis erat consequat, auctor est id, malesuada sem.",
                                     avatar: "",
                                     banner: "",
                                     followsCount: 0,
@@ -84,5 +84,5 @@ struct PoastProfileHeaderView: View {
                                     postsCount: 2,
                                     labels: [])
 
-    return PoastProfileHeaderView(profile: profile)
+    PoastProfileHeaderView(profile: profile)
 }

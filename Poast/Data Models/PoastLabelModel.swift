@@ -9,8 +9,8 @@ import Foundation
 import SwiftATProto
 
 struct PoastLabelModel: Hashable {
-    let id: String
-    let val: String
+    var id: String
+    var val: String
 
     init(atProtoLabel: ATProtoLabel) {
         self.id = atProtoLabel.cid ?? ""

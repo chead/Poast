@@ -23,8 +23,7 @@ struct PoastEmbedImageModelAspectRatio: Hashable {
     }
 }
 
-struct PoastPostEmbedImageModel: Hashable, Identifiable {
-    let id: UUID = UUID()
+struct PoastPostEmbedImageModel: Hashable {
     let fullsize: String
     let thumb: String
     let alt: String

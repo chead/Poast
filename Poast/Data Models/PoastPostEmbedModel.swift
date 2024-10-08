@@ -8,7 +8,7 @@
 import Foundation
 import SwiftBluesky
 
-enum PoastPostEmbedModel: Hashable {
+enum PoastPostEmbedModel {
     case images([PoastPostEmbedImageModel])
     case external(PoastPostEmbedExternalModel)
     case record(PoastPostEmbedRecordModel)

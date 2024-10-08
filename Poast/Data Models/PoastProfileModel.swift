@@ -9,30 +9,26 @@ import Foundation
 import SwiftBluesky
 
 struct PoastProfileModel: Hashable {
-    let did: String
-    let handle: String
-    let displayName: String?
-    let description: String?
-    let avatar: String?
-    let banner: String?
-    let followsCount: Int?
-    let followersCount: Int?
-    let postsCount: Int?
-    let labels: [PoastLabelModel]?
-
-    static func == (lhs: PoastProfileModel, rhs: PoastProfileModel) -> Bool {
-        lhs.did == rhs.did
-    }
+    var did: String
+    var handle: String
+    var displayName: String?
+    var desc: String?
+    var avatar: String?
+    var banner: String?
+    var followsCount: Int?
+    var followersCount: Int?
+    var postsCount: Int?
+    var labels: [PoastLabelModel]?
 
     var name: String {
         return self.displayName ?? "@\(self.handle)"
     }
 
-    init(did: String, handle: String, displayName: String, description: String, avatar: String, banner: String, followsCount: Int, followersCount: Int, postsCount: Int, labels: [PoastLabelModel]) {
+    init(did: String, handle: String, displayName: String?, desc: String?, avatar: String?, banner: String?, followsCount: Int?, followersCount: Int?, postsCount: Int?, labels: [PoastLabelModel]?) {
         self.did = did
         self.handle = handle
         self.displayName = displayName
-        self.description = description
+        self.desc = desc
         self.avatar = avatar
         self.banner = banner
         self.followsCount = followsCount
@@ -40,12 +36,12 @@ struct PoastProfileModel: Hashable {
         self.postsCount = postsCount
         self.labels = labels
     }
-    
+
     init(blueskyActorProfileViewBasic: BlueskyActorProfileViewBasic) {
         self.did = blueskyActorProfileViewBasic.did
         self.handle = blueskyActorProfileViewBasic.handle
         self.displayName = blueskyActorProfileViewBasic.displayName
-        self.description = nil
+        self.desc = nil
         self.avatar = blueskyActorProfileViewBasic.avatar
         self.banner = nil
         self.followsCount = nil
@@ -58,7 +54,7 @@ struct PoastProfileModel: Hashable {
         self.did = blueskyActorProfileViewDetailed.did
         self.handle = blueskyActorProfileViewDetailed.handle
         self.displayName = blueskyActorProfileViewDetailed.displayName
-        self.description = blueskyActorProfileViewDetailed.description
+        self.desc = blueskyActorProfileViewDetailed.description
         self.avatar = blueskyActorProfileViewDetailed.avatar
         self.banner = blueskyActorProfileViewDetailed.banner
         self.followsCount = blueskyActorProfileViewDetailed.followsCount
