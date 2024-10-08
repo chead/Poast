@@ -8,7 +8,7 @@
 import Foundation
 import SwiftBluesky
 
-@MainActor class PoastThreadViewModel: ObservableObject, PoastPostHosting {
+@MainActor class PoastThreadViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
     @Dependency internal var accountService: PoastAccountService
     @Dependency internal var blueskyClient: BlueskyClient
@@ -19,21 +19,6 @@ import SwiftBluesky
 
     init(uri: String) {
         self.uri = uri
-    }
-
-    func replacePost(post: PoastPostModel, with: PoastPostModel) {
-        guard let threadPost = threadPost else { return }
-
-        if post == post {
-            let mutableThreadPost = PoastMutableThreadPost(threadPostModel: threadPost)
-
-            mutableThreadPost.post = with
-
-            self.threadPost = mutableThreadPost.immutableCopy
-        } else {
-            
-
-        }
     }
 
     func getThread(session: PoastSessionObject) async -> PoastTimelineViewModelError? {

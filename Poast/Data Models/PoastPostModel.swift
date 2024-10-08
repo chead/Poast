@@ -18,7 +18,6 @@ struct PoastBlockedPostModel: Hashable {
 }
 
 class PoastPostModel: Hashable, Identifiable {
-    let id: UUID
     let uri: String
     let cid: String
     let text: String
@@ -36,7 +35,6 @@ class PoastPostModel: Hashable, Identifiable {
     let replyDisabled: Bool
 
     init(id: UUID, uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
-        self.id = id
         self.uri = uri
         self.cid = cid
         self.text = text
@@ -55,7 +53,6 @@ class PoastPostModel: Hashable, Identifiable {
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
-        self.id = UUID()
         self.uri = blueskyFeedFeedViewPost.post.uri
         self.cid = blueskyFeedFeedViewPost.post.cid
 
@@ -110,7 +107,6 @@ class PoastPostModel: Hashable, Identifiable {
     }
 
     init(blueskyFeedPostView: BlueskyFeedPostView) {
-        self.id = UUID()
         self.uri = blueskyFeedPostView.uri
         self.cid = blueskyFeedPostView.cid
 
@@ -147,10 +143,10 @@ class PoastPostModel: Hashable, Identifiable {
     }
 
     static func == (lhs: PoastPostModel, rhs: PoastPostModel) -> Bool {
-        lhs.id == rhs.id
+        lhs.uri == rhs.uri
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(uri)
     }
 }

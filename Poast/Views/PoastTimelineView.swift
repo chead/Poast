@@ -123,12 +123,12 @@ struct PoastTimelineView: View {
         case .like(let post):
             guard let accountSession = user.accountSession else { break }
 
-            await timelineViewModel.toggleLikePost(session: accountSession.session, post: post)
+            break
 
         case .repost(let post):
             guard let accountSession = user.accountSession else { break }
 
-            await timelineViewModel.toggleRepostPost(session: accountSession.session, post: post)
+            break
 
         default:
             break
