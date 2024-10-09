@@ -126,8 +126,6 @@ struct PoastProfileView: View {
 
     let user = PoastUser()
 
-    user.session = session
-
     return PoastProfileView(profileViewModel: PoastProfileViewModel(handle: "Foobar"))
         .environmentObject(user)
 }
