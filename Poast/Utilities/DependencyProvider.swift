@@ -36,12 +36,4 @@ class DependencyProvider: DependencyProviding {
     static func resolve() -> PoastCredentialsStore {
         return UtilityProvider.resolve()
     }
-    
-    static func resolve() -> PoastSessionStore {
-        return UtilityProvider.resolve()
-    }
-    
-    static func resolve() -> PoastAccountStore {
-        return UtilityProvider.resolve()
-    }
 }

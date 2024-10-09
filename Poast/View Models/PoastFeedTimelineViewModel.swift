@@ -15,37 +15,23 @@ class PoastFeedTimelineViewModel: PoastTimelineViewModel {
         self.algorithm = algorithm
     }
 
-    override func getTimeline(session: PoastSessionObject, cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {
         do {
-            guard let sessionDid = session.did,
-                  let accountUUID = session.accountUUID else {
-                return .session
-            }
-
-            switch(self.credentialsService.getCredentials(sessionDID: sessionDid)) {
+            switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
                 guard let credentials = credentials else {
                     return .unknown
                 }
 
-                switch(self.accountService.getAccount(uuid: accountUUID)) {
-                case .success(let account):
-                    guard let account = account else {
-                        return .unknown
-                    }
 
-                    switch(try await self.blueskyClient.getTimeline(host: account.host!,
-                                                                    accessToken: credentials.accessToken,
-                                                                    refreshToken: credentials.refreshToken,
-                                                                    algorithm: algorithm,
-                                                                    limit: 50,
-                                                                    cursor: cursor)) {
-                    case .success(let getTimelineResponse):
-                        self.posts.append(contentsOf: getTimelineResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
-
-                    case .failure(_):
-                        return .unknown
-                    }
+                switch(try await self.blueskyClient.getTimeline(host: session.account.host,
+                                                                accessToken: credentials.accessToken,
+                                                                refreshToken: credentials.refreshToken,
+                                                                algorithm: algorithm,
+                                                                limit: 50,
+                                                                cursor: cursor)) {
+                case .success(let getTimelineResponse):
+                    self.posts.append(contentsOf: getTimelineResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
 
                 case .failure(_):
                     return .unknown

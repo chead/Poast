@@ -6,16 +6,26 @@
 //
 
 import Foundation
+import SwiftData
 
 class PoastSettingsViewModel {
-    @Dependency private var sessionService: PoastSessionService
     @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var preferencesService: PoastPreferencesService
 
-    func signOut(session: PoastSessionObject) {
-        _ = self.credentialsService.deleteCredentials(sessionDID: session.did!)
-        
-        self.sessionService.setActiveSession(session: nil)
-        
-        _ = self.sessionService.deleteSession(sessionDID: session.did!)
+    private var modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func signOut(session: PoastSessionModel) {
+        _ = self.credentialsService.deleteCredentials(sessionDID: session.did)
+
+        try? preferencesService.setActiveSession(session: nil)
+
+        modelContext.delete(session)
+
+        try? modelContext.save()
     }
 }
+

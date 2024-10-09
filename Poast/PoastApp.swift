@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 import SwiftBluesky
 
 class PoastUser: ObservableObject {
-    @Published var accountSession: (account: PoastAccountObject,
-                                    session: PoastSessionObject)?
+    @Published var session: PoastSessionModel?
+
+    init(session: PoastSessionModel? = nil) {
+        self.session = session
+    }
 }
 
 @main
@@ -18,39 +22,34 @@ struct PoastApp: App {
     let user: PoastUser
 
     init() {
-        let sessionService = PoastSessionService()
-        let accountService = PoastAccountService()
+        let preferencesService = PoastPreferencesService()
 
-        user = PoastUser()
-
-        switch(sessionService.getActiveSession()) {
-        case .success(let session):
-            if let session = session {
-                switch(accountService.getAccount(uuid: session.accountUUID!)) {
-                case .success(let account):
-                    if let account = account {
-                        user.accountSession = (account: account, session: session)
-                    }
-
-                case .failure(_):
-                    break
-                }
-            }
-
-        case .failure(_):
-            break
-        }
+        self.user = PoastUser(session: try? preferencesService.getActiveSession())
 
         DependencyProvider.register(BlueskyClient())
-        DependencyProvider.register(sessionService)
-        DependencyProvider.register(accountService)
         DependencyProvider.register(PoastCredentialsService())
+        DependencyProvider.register(preferencesService)
     }
+
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            PoastAccountModel.self
+        ])
+
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
 
     var body: some Scene {
         WindowGroup {
             PoastLandingView(landingViewModel: PoastLandingViewModel())
                 .environmentObject(user)
+                .modelContainer(sharedModelContainer)
         }
     }
 }

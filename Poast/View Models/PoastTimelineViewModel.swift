@@ -16,7 +16,6 @@ enum PoastTimelineViewModelError: Error {
 
 @MainActor class PoastTimelineViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
-    @Dependency internal var accountService: PoastAccountService
     @Dependency internal var blueskyClient: BlueskyClient
 
     @Published var posts: [PoastVisiblePostModel] = []
@@ -27,7 +26,7 @@ enum PoastTimelineViewModelError: Error {
         posts.removeAll()
     }
 
-    func getTimeline(session: PoastSessionObject, cursor: Date) async -> PoastTimelineViewModelError? {
+    func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {
         return nil
     }
 }

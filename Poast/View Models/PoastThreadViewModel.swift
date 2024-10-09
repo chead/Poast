@@ -10,7 +10,6 @@ import SwiftBluesky
 
 @MainActor class PoastThreadViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
-    @Dependency internal var accountService: PoastAccountService
     @Dependency internal var blueskyClient: BlueskyClient
 
     @Published var threadPost: PoastThreadPostModel? = nil
@@ -21,42 +20,26 @@ import SwiftBluesky
         self.uri = uri
     }
 
-    func getThread(session: PoastSessionObject) async -> PoastTimelineViewModelError? {
+    func getThread(session: PoastSessionModel) async -> PoastTimelineViewModelError? {
         do {
-            guard session.did != nil,
-                  session.accountUUID != nil
-            else {
-                return .session
-            }
-
-            switch(self.credentialsService.getCredentials(sessionDID: session.did!)) {
+            switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
                 guard let credentials = credentials else {
                     return .unknown
                 }
 
-                switch(self.accountService.getAccount(uuid: session.accountUUID!)) {
-                case .success(let account):
-                    guard let account = account else {
-                        return .unknown
-                    }
-
-                    switch(try await self.blueskyClient.getPostThread(host: account.host!, 
+                switch(try await self.blueskyClient.getPostThread(host: session.account.host,
                                                                       accessToken: credentials.accessToken,
                                                                       refreshToken: credentials.refreshToken,
                                                                       uri: uri)) {
-                    case .success(let getThreadResponse):
-                        if let credentials = getThreadResponse.credentials {
-                            _ = self.credentialsService.updateCredentials(did: session.did!,
-                                                                          accessToken: credentials.accessToken,
-                                                                          refreshToken: credentials.refreshToken)
-                        }
-                        
-                        self.threadPost = PoastThreadPostModel(blueskyFeedThreadViewPost: getThreadResponse.body.thread)
-
-                    case .failure(_):
-                        return .unknown
+                case .success(let getThreadResponse):
+                    if let credentials = getThreadResponse.credentials {
+                        _ = self.credentialsService.updateCredentials(did: session.did,
+                                                                      accessToken: credentials.accessToken,
+                                                                      refreshToken: credentials.refreshToken)
                     }
+                        
+                    self.threadPost = PoastThreadPostModel(blueskyFeedThreadViewPost: getThreadResponse.body.thread)
 
                 case .failure(_):
                     return .unknown
@@ -65,7 +48,6 @@ import SwiftBluesky
             case .failure(_):
                 return .unknown
             }
-
         } catch(_) {
             return .unknown
         }

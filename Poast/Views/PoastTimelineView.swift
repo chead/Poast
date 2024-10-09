@@ -65,8 +65,8 @@ struct PoastTimelineView: View {
                 .onAppear {
                     Task {
                         if index == timelineViewModel.posts.count - 1 {
-                            if let accountSession = user.accountSession {
-                                _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: post.date)
+                            if let session = user.session {
+                                _ = await timelineViewModel.getTimeline(session: session, cursor: post.date)
                             }
                         }
                     }
@@ -74,10 +74,10 @@ struct PoastTimelineView: View {
             }
             .listStyle(.plain)
             .refreshable {
-                if let accountSession = user.accountSession {
+                if let session = user.session {
                     timelineViewModel.clearTimeline()
 
-                    _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+                    _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
                 }
             }
             .toolbar {
@@ -112,8 +112,8 @@ struct PoastTimelineView: View {
             }
         }
         .task {
-            if let accountSession = user.accountSession {
-                _ = await timelineViewModel.getTimeline(session: accountSession.session, cursor: Date())
+            if let session = user.session {
+                _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
             }
         }
     }
@@ -121,12 +121,12 @@ struct PoastTimelineView: View {
     func handlePostInteraction(interaction: PoastPoastInteractionViewAction) async -> Void {
         switch interaction {
         case .like(let post):
-            guard let accountSession = user.accountSession else { break }
+            guard let session = user.session else { break }
 
             break
 
         case .repost(let post):
-            guard let accountSession = user.accountSession else { break }
+            guard let session = user.session else { break }
 
             break
 
@@ -137,24 +137,19 @@ struct PoastTimelineView: View {
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
+    let account = PoastAccountModel(uuid: UUID(),
+                                    created: Date(),
+                                    handle: "@foobar.baz",
+                                    host: URL(string: "https://bsky.social")!,
+                                    session: nil)
 
-    let account = PoastAccountObject(context: managedObjectContext)
-
-    account.uuid = UUID()
-    account.created = Date()
-    account.handle = "@foobar.baz"
-    account.host = URL(string: "https://bsky.social")!
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = account.uuid
-    session.did = ""
+    let session = PoastSessionModel(account: account,
+                                    did: "",
+                                    created: Date())
 
     let user = PoastUser()
 
-    user.accountSession = (account: account, session: session)
+    user.session = session
 
     return PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
         .environmentObject(user)

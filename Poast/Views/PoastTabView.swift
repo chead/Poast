@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PoastTabView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @EnvironmentObject var user: PoastUser
 
     var body: some View {
@@ -23,36 +25,31 @@ struct PoastTabView: View {
                 .fill(.red)
                 .tabItem { Label("Notifications", systemImage: "bell") }
 
-            if let handle = user.accountSession?.account.handle {
+            if let handle = user.session?.account.handle {
                 PoastProfileView(profileViewModel: PoastProfileViewModel(handle: handle))
                     .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
 
-            PoastSettingsView(settingsViewModel: PoastSettingsViewModel())
+            PoastSettingsView(settingsViewModel: PoastSettingsViewModel(modelContext: modelContext))
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
+    let account = PoastAccountModel(uuid: UUID(),
+                                    created: Date(),
+                                    handle: "@foobar.baz",
+                                    host: URL(string: "https://bsky.social")!,
+                                    session: nil)
 
-    let account = PoastAccountObject(context: managedObjectContext)
-
-    account.uuid = UUID()
-    account.created = Date()
-    account.handle = "@foobar.baz"
-    account.host = URL(string: "https://bsky.social")!
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = account.uuid
-    session.did = ""
+    let session = PoastSessionModel(account: account,
+                                    did: "",
+                                    created: Date())
 
     let user = PoastUser()
 
-    user.accountSession = (account: account, session: session)
+    user.session = session
 
     return PoastTabView()
         .environmentObject(user)

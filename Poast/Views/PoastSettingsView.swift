@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PoastSettingsView: View {
     @EnvironmentObject var user: PoastUser
@@ -17,19 +18,16 @@ struct PoastSettingsView: View {
             Spacer()
 
             Button("Switch Account") {
-                user.accountSession = nil
+                user.session = nil
             }
 
             Spacer()
 
             Button("Sign Out") {
-                guard let session = user.accountSession?.session else {
-                    return
+                if let session = user.session {
+                    settingsViewModel.signOut(session: session)
+                    user.session = nil
                 }
-
-                settingsViewModel.signOut(session: session)
-
-                user.accountSession = nil
             }
 
             Spacer()
@@ -38,5 +36,8 @@ struct PoastSettingsView: View {
 }
 
 #Preview {
-    PoastSettingsView(settingsViewModel: PoastSettingsViewModel())
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+
+    PoastSettingsView(settingsViewModel: PoastSettingsViewModel(modelContext: container.mainContext))
 }

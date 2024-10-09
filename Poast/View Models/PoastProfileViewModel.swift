@@ -20,7 +20,6 @@ enum PoastProfileViewModelError: Error {
 
 @MainActor class PoastProfileViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var accountService: PoastAccountService
     @Dependency private var blueskyClient: BlueskyClient
 
     @Published var profile: PoastProfileModel? = nil
@@ -31,44 +30,30 @@ enum PoastProfileViewModelError: Error {
         self.handle = handle
     }
 
-    func getProfile(session: PoastSessionObject) async -> PoastProfileViewModelError? {
-        guard session.did != nil,
-              session.accountUUID != nil
-        else {
-            return .session
-        }
+    func getProfile(session: PoastSessionModel) async -> PoastProfileViewModelError? {
 
-        switch(self.credentialsService.getCredentials(sessionDID: session.did!)) {
+
+        switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
                 return .unknown
             }
 
-            switch(self.accountService.getAccount(uuid: session.accountUUID!)) {
-            case .success(let account):
-                guard let account = account else {
-                    return .unknown
-                }
-
-                do {
-                    switch(try await self.blueskyClient.getProfiles(host: account.host!, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
-                    case .success(let getProfilesResponse):
-                        if let credentials = getProfilesResponse.credentials {
-                            _ = self.credentialsService.updateCredentials(did: session.did!,
-                                                                          accessToken: credentials.accessToken,
-                                                                          refreshToken: credentials.refreshToken)
-                        }
-
-                        profile = getProfilesResponse.body.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first
-
-                    case .failure(_):
-                        return .unknown
+            do {
+            switch(try await self.blueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
+                case .success(let getProfilesResponse):
+                    if let credentials = getProfilesResponse.credentials {
+                        _ = self.credentialsService.updateCredentials(did: session.did,
+                                                                      accessToken: credentials.accessToken,
+                                                                      refreshToken: credentials.refreshToken)
                     }
-                } catch(_) {
+
+                    profile = getProfilesResponse.body.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first
+
+                case .failure(_):
                     return .unknown
                 }
-
-            case .failure(_):
+            } catch(_) {
                 return .unknown
             }
 

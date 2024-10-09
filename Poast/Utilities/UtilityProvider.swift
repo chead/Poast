@@ -41,32 +41,4 @@ final class UtilityProvider: UtilityProviding {
 
         return credentialsStore
     }
-
-    static func resolve() -> PoastSessionStore {
-        let key = "\(PoastSessionStore.self)"
-
-        guard let sessionStore = shared.instances[key] as? PoastSessionStore else {
-            let sessionStore = PoastSessionStore()
-            
-            shared.instances[key] = sessionStore
-            
-            return sessionStore
-        }
-
-        return sessionStore
-    }
-    
-    static func resolve() -> PoastAccountStore {
-        let key = "\(PoastAccountStore.self)"
-
-        guard let accountStore = shared.instances[key] as? PoastAccountStore else {
-            let accountStore = PoastAccountStore()
-            
-            shared.instances[key] = accountStore
-            
-            return accountStore
-        }
-
-        return accountStore
-    }
 }

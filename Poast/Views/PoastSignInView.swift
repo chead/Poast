@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PoastSignInView: View {
     @EnvironmentObject var user: PoastUser
@@ -81,8 +82,8 @@ struct PoastSignInView: View {
                     loading = true
 
                     switch(await signInViewModel.signIn(host: hostURL, handle: handle, password: password)) {
-                    case .success(let accountSession):
-                        user.accountSession = (account: accountSession.account, session: accountSession.session)
+                    case .success(let session):
+                        user.session = session
 
                     case .failure(let error):
                         loading = false
@@ -146,6 +147,9 @@ struct PoastSignInView: View {
 }
 
 #Preview {
-    PoastSignInView(signInViewModel: PoastSignInViewModel())
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+
+    PoastSignInView(signInViewModel: PoastSignInViewModel(modelContext: container.mainContext))
         .environmentObject(PoastUser())
 }

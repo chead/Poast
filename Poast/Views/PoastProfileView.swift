@@ -103,7 +103,7 @@ struct PoastProfileView: View {
         }
         .onAppear() {
             Task {
-                guard let session = user.accountSession?.session else {
+                guard let session = user.session else {
                     return
                 }
 
@@ -114,24 +114,20 @@ struct PoastProfileView: View {
 }
 
 #Preview {
-    let managedObjectContext = PersistenceController.preview.container.viewContext
+    let account = PoastAccountModel(uuid: UUID(),
+                                    created: Date(),
+                                    handle: "@foobar.baz",
+                                    host: URL(string: "https://bsky.social")!,
+                                    session: nil)
 
-    let account = PoastAccountObject(context: managedObjectContext)
-
-    account.created = Date()
-    account.handle = "Foobar"
-    account.host = URL(string: "https://bsky.social")!
-    account.uuid = UUID()
-
-    let session = PoastSessionObject(context: managedObjectContext)
-
-    session.created = Date()
-    session.accountUUID = account.uuid!
-    session.did = ""
+    let session = PoastSessionModel(account: account,
+                                    did: "",
+                                    created: Date())
 
     let user = PoastUser()
 
+    user.session = session
+
     return PoastProfileView(profileViewModel: PoastProfileViewModel(handle: "Foobar"))
-        .environmentObject(session)
         .environmentObject(user)
 }

@@ -8,30 +8,13 @@
 import Foundation
 
 enum PoastLandingViewModelError: Error {
-    case unknown
+    case preferencesService
 }
 
 class PoastLandingViewModel {
-    @Dependency private var accountService: PoastAccountService
-    @Dependency private var sessionService: PoastSessionService
+    @Dependency private var preferencesService: PoastPreferencesService
 
-    func getActiveSession() -> Result<PoastSessionObject?, PoastLandingViewModelError> {
-        switch(self.sessionService.getActiveSession()) {
-        case .success(let session):
-            return .success(session)
-
-        case .failure(_):
-            return .failure(.unknown)
-        }
-    }
-
-    func getAccount(session: PoastSessionObject) -> Result<PoastAccountObject?, PoastLandingViewModelError> {
-        switch(self.accountService.getAccount(uuid: session.accountUUID!)) {
-        case .success(let account):
-            return .success(account)
-
-        case .failure(_):
-            return .failure(.unknown)
-        }
+    func getActiveSession() -> PoastSessionModel? {
+        return try? self.preferencesService.getActiveSession()
     }
 }

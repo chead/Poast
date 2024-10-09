@@ -12,6 +12,4 @@ import SwiftBluesky
 protocol UtilityProviding {
     static func resolve() -> BlueskyClient
     static func resolve() -> PoastCredentialsStore
-    static func resolve() -> PoastSessionStore
-    static func resolve() -> PoastAccountStore
 }

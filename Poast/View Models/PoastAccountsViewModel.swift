@@ -6,44 +6,47 @@
 //
 
 import Foundation
+import SwiftData
 
 enum PoastAccountsViewModelError: Error {
+    case preferences
+    case database
     case unknown
 }
 
 class PoastAccountsViewModel {
-    @Dependency private var accountService: PoastAccountService
-    @Dependency private var sessionService: PoastSessionService
+    @Dependency private var preferencesService: PoastPreferencesService
     @Dependency private var credentialsService: PoastCredentialsService
 
-    func getAccounts() -> Set<PoastAccountObject> {
-        switch(self.accountService.getAccounts()) {
-        case .success(let accounts):
-            return accounts
-        case .failure(_):
-            return []
-        }
+    private var modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
-    func getSessions(account: PoastAccountObject) -> Set<PoastSessionObject> {
-        switch(self.sessionService.getSessions(account: account)) {
-        case .success(let sessions):
-            return sessions
-        case .failure(_):
-            return []
-        }
-    }
-
-    func deleteAccount(account: PoastAccountObject) {
-        for session in self.getSessions(account: account) {
-            _ = self.credentialsService.deleteCredentials(sessionDID: session.did!)
-            _ = self.sessionService.deleteSession(sessionDID: session.did!)
+    func deleteAccount(account: PoastAccountModel) -> PoastAccountsViewModelError? {
+        if let session = account.session {
+            _ = self.credentialsService.deleteCredentials(sessionDID: session.did)
         }
 
-        _ = self.accountService.deleteAccount(account: account)
+        modelContext.delete(account)
+
+        do {
+            try modelContext.save()
+        } catch {
+            return .database
+        }
+
+        return nil
     }
 
-    func setActiveSession(session: PoastSessionObject?) {
-        self.sessionService.setActiveSession(session: session)
+    func setActiveSession(session: PoastSessionModel?) -> PoastAccountsViewModelError? {
+        do {
+            try self.preferencesService.setActiveSession(session: session)
+        } catch {
+            return .preferences
+        }
+
+        return nil
     }
 }

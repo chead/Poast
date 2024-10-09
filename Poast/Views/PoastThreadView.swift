@@ -158,8 +158,8 @@ struct PoastThreadView: View {
             }
         }
         .task {
-            if let accountSession = user.accountSession {
-                _ = await threadViewModel.getThread(session: accountSession.session)
+            if let session = user.session {
+                _ = await threadViewModel.getThread(session: session)
             }
         }
     }
@@ -167,13 +167,9 @@ struct PoastThreadView: View {
     func handlePostInteraction(interaction: PoastPoastInteractionViewAction) async -> Void {
         switch interaction {
         case .like(let post):
-            guard let accountSession = user.accountSession else { break }
-
             break
 
         case .repost(let post):
-            guard let accountSession = user.accountSession else { break }
-
             break
 
         default:

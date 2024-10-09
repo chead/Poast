@@ -44,7 +44,7 @@ struct PoastPostEmbedRecordWithMediaView: View {
                 RoundedRectangle(cornerRadius: 8.0)
                     .stroke(.gray, lineWidth: 1))
             .task {
-                guard let session = user.accountSession?.session else {
+                guard let session = user.session else {
                     return
                 }
 
