@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastPostEmbedRecordWithMediaView: View {
     @EnvironmentObject var user: PoastUser
 
-    @ObservedObject var postViewModel: PoastPostViewModel
+    let postViewModel: PoastPostViewModel
 
     @State var feedPostView: PoastVisiblePostModel? = nil
 

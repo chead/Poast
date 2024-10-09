@@ -13,15 +13,16 @@ enum PoastPoastViewAction {
 }
 
 struct PoastPostView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @EnvironmentObject var user: PoastUser
 
-    @ObservedObject var postViewModel: PoastPostViewModel
+    var postViewModel: PoastPostViewModel
 
     @State var replyTo: String?
 
     let isParent: Bool
     let action: (PoastPoastViewAction) -> Void
-    let interaction: (PoastPoastInteractionViewAction) async -> Void
 
     var body: some View {
         HStack(alignment: .top) {
@@ -87,8 +88,7 @@ struct PoastPostView: View {
 
                     Spacer()
 
-                    PoastPostInteractionView(postViewModel: postViewModel,
-                                             action: interaction)
+                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext: modelContext, post: postViewModel.post))
 
                     Spacer()
                 }
@@ -195,9 +195,6 @@ struct PoastPostView: View {
 
     PoastPostView(postViewModel: PoastPostViewModel(post: post),
                          isParent: false,
-                         action: { _ in },
-                         interaction: { _ in })
+                         action: { _ in })
     .environmentObject(user)
-
-    EmptyView()
 }

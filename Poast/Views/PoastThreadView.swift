@@ -14,15 +14,12 @@ struct PoastThreadParentPostView: View {
     @Binding var showingThreadURI: String?
 
     let posts: [PoastThreadModel]
-    let interaction: (PoastPoastInteractionViewAction) async -> Void
 
-    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, threadPost: PoastThreadPostModel, interaction: @escaping (PoastPoastInteractionViewAction) async -> Void) {
+    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, threadPost: PoastThreadPostModel) {
         self.threadViewModel = threadViewModel
 
         self._showingProfileHandle = showingProfileHandle
         self._showingThreadURI = showingThreadURI
-
-        self.interaction = interaction
 
         var posts: [PoastThreadModel] = []
         var parent = threadPost.parent
@@ -62,8 +59,7 @@ struct PoastThreadParentPostView: View {
                     case .thread(let uri):
                         showingThreadURI = uri
                     }
-                },
-                              interaction: interaction)
+                })
             }
         }
     }
@@ -76,7 +72,6 @@ struct PoastThreadPostView: View {
     @Binding var showingThreadURI: String?
 
     let threadPost: PoastThreadPostModel
-    let interaction: (PoastPoastInteractionViewAction) async -> Void
 
     var body: some View {
         PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
@@ -91,8 +86,7 @@ struct PoastThreadPostView: View {
                     showingThreadURI = uri
                 }
             }
-        },
-                      interaction: interaction)
+        })
         .id(1)
 
         ForEach(threadPost.replies ?? []) { reply in
@@ -107,8 +101,7 @@ struct PoastThreadPostView: View {
                 PoastThreadPostView(threadViewModel: threadViewModel,
                                     showingProfileHandle: $showingProfileHandle,
                                     showingThreadURI: $showingThreadURI,
-                                    threadPost: threadPost,
-                                    interaction: interaction)
+                                    threadPost: threadPost)
 
                 .padding(.leading, 25)
             }
@@ -132,18 +125,12 @@ struct PoastThreadView: View {
                     PoastThreadParentPostView(threadViewModel: threadViewModel,
                                               showingProfileHandle: $showingProfileHandle,
                                               showingThreadURI: $showingThreadURI,
-                                              threadPost: threadPost,
-                                              interaction: { interaction in
-                        await handlePostInteraction(interaction: interaction)
-                    })
+                                              threadPost: threadPost)
 
                     PoastThreadPostView(threadViewModel: threadViewModel,
                                         showingProfileHandle: $showingProfileHandle,
                                         showingThreadURI: $showingThreadURI,
-                                        threadPost: threadPost,
-                                        interaction: { interaction in
-                        await handlePostInteraction(interaction: interaction)
-                    })
+                                        threadPost: threadPost)
                 }
             }
             .listStyle(.plain)
@@ -161,19 +148,6 @@ struct PoastThreadView: View {
             if let session = user.session {
                 _ = await threadViewModel.getThread(session: session)
             }
-        }
-    }
-
-    func handlePostInteraction(interaction: PoastPoastInteractionViewAction) async -> Void {
-        switch interaction {
-        case .like(let post):
-            break
-
-        case .repost(let post):
-            break
-
-        default:
-            break
         }
     }
 }

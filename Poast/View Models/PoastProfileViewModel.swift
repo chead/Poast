@@ -31,8 +31,6 @@ enum PoastProfileViewModelError: Error {
     }
 
     func getProfile(session: PoastSessionModel) async -> PoastProfileViewModelError? {
-
-
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
@@ -40,7 +38,7 @@ enum PoastProfileViewModelError: Error {
             }
 
             do {
-            switch(try await self.blueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
+                switch(try await self.blueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
                 case .success(let getProfilesResponse):
                     if let credentials = getProfilesResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,

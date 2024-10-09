@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastPostEmbedView: View {
     @EnvironmentObject var user: PoastUser
 
-    @ObservedObject var postViewModel: PoastPostViewModel
+    let postViewModel: PoastPostViewModel
 
     @State var embed: PoastPostEmbedModel
 

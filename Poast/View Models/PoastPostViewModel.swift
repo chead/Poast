@@ -16,11 +16,11 @@ enum PoastPostViewModelError: Error {
     case unknown
 }
 
-@MainActor class PoastPostViewModel: ObservableObject {
+@MainActor class PoastPostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var blueskyClient: BlueskyClient
 
-    @Published var post: PoastVisiblePostModel
+    let post: PoastVisiblePostModel
 
     init(post: PoastVisiblePostModel) {
         self.post = post

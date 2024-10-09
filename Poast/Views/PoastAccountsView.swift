@@ -58,8 +58,8 @@ struct PoastAccountsView: View {
 }
 
 #Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+    let modelConfiguration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let modelContainer = try! ModelContainer(for: PoastAccountModel.self, configurations: modelConfiguration)
 
-    PoastAccountsView(accountsViewModel: PoastAccountsViewModel(modelContext: container.mainContext))
+    PoastAccountsView(accountsViewModel: PoastAccountsViewModel(modelContext: modelContainer.mainContext))
 }

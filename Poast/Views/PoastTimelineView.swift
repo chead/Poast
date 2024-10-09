@@ -32,9 +32,6 @@ struct PoastTimelineView: View {
                             case .thread(let uri):
                                 showingThreadURI = uri
                             }
-                        },
-                                      interaction: { interaction in
-                            await handlePostInteraction(interaction: interaction)
                         })
 
                     case .reference(_):
@@ -58,9 +55,6 @@ struct PoastTimelineView: View {
                     case .thread(let uri):
                         showingThreadURI = uri
                     }
-                },
-                              interaction: { interaction in
-                    await handlePostInteraction(interaction: interaction)
                 })
                 .onAppear {
                     Task {
@@ -115,23 +109,6 @@ struct PoastTimelineView: View {
             if let session = user.session {
                 _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
             }
-        }
-    }
-
-    func handlePostInteraction(interaction: PoastPoastInteractionViewAction) async -> Void {
-        switch interaction {
-        case .like(let post):
-            guard let session = user.session else { break }
-
-            break
-
-        case .repost(let post):
-            guard let session = user.session else { break }
-
-            break
-
-        default:
-            break
         }
     }
 }
