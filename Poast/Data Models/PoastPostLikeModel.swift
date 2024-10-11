@@ -8,13 +8,7 @@
 import Foundation
 import SwiftData
 
-@Model
-class PoastPostLikeModel {
-    var interaction: PoastPostInteractionModel
-    var date: Date
-
-    init(interaction: PoastPostInteractionModel, date: Date) {
-        self.interaction = interaction
-        self.date = date
-    }
+enum PoastPostLikeModel: Int, Codable {
+    case unliked = -1
+    case liked = 1
 }

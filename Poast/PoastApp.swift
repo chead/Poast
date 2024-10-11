@@ -34,7 +34,7 @@ struct PoastApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             PoastAccountModel.self,
-            PoastPostInteractionModel.self
+            PoastPostLikeInteractionModel.self
         ])
 
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)

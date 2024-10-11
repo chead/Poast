@@ -20,8 +20,6 @@ enum PoastTimelineViewModelError: Error {
 
     @Published var posts: [PoastVisiblePostModel] = []
 
-    func replacePost(post: PoastVisiblePostModel, with: PoastVisiblePostModel) {}
-
     func clearTimeline() {
         posts.removeAll()
     }

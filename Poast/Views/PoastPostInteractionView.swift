@@ -16,6 +16,8 @@ struct PoastPostInteractionView: View {
     @State var showingRepostDialog: Bool = false
     @State var showingMoreDialog: Bool = false
 
+    @Binding var interacted: Bool
+
     var body: some View {
         HStack {
             Button(action: {
@@ -58,6 +60,7 @@ struct PoastPostInteractionView: View {
                         await postInteractionViewModel.toggleRepostPost(session: session)
                     }
                 }
+
                 Button("Quote Post") {}
             }
 
@@ -71,6 +74,8 @@ struct PoastPostInteractionView: View {
 
                     await postInteractionViewModel.toggleLikePost(session: session)
                 }
+
+                interacted.toggle()
             }, label: {
                 HStack {
                     if(postInteractionViewModel.isLiked()) {
@@ -115,6 +120,9 @@ struct PoastPostInteractionView: View {
                     Text("Report post")
                 })
             }
+        }
+        .onAppear {
+            postInteractionViewModel.getLikeInteraction()
         }
     }
 }

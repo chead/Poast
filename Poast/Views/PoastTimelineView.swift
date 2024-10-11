@@ -7,6 +7,20 @@
 
 import SwiftUI
 
+struct ButtonView: View {
+    @Binding var interacted: Bool
+
+    var body: some View {
+        Button(action: {
+            interacted.toggle()
+
+            print(interacted)
+        }, label: {
+            Text("Flip")
+        })
+    }
+}
+
 struct PoastTimelineView: View {
     @EnvironmentObject var user: PoastUser
 
@@ -15,14 +29,19 @@ struct PoastTimelineView: View {
     @State var showingComposerView: Bool = false
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
+    @State var interacted: Bool = false
 
     var body: some View {
         NavigationStack {
+            ButtonView(interacted: $interacted)
+            Text(interacted ? "On" : "Off")
+
             List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
                 if let parent = post.parent {
                     switch(parent) {
                     case .post(let parentPost):
                         PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                      interacted: $interacted,
                                       isParent: true,
                                       action: { action in
                             switch action {
@@ -46,6 +65,7 @@ struct PoastTimelineView: View {
                 }
 
                 PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                              interacted: $interacted,
                               isParent: false,
                               action: { action in
                     switch action {
@@ -102,7 +122,8 @@ struct PoastTimelineView: View {
                 PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in
-                PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI))
+                PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
+                                interacted: $interacted)
             }
         }
         .task {

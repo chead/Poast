@@ -21,6 +21,8 @@ struct PoastPostView: View {
 
     @State var replyTo: String?
 
+    @Binding var interacted: Bool
+
     let isParent: Bool
     let action: (PoastPoastViewAction) -> Void
 
@@ -88,7 +90,9 @@ struct PoastPostView: View {
 
                     Spacer()
 
-                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext: modelContext, post: postViewModel.post))
+                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext: modelContext,
+                                                                                                     post: postViewModel.post),
+                                             interacted: $interacted)
 
                     Spacer()
                 }
@@ -194,7 +198,8 @@ struct PoastPostView: View {
                                    replyDisabled: false)
 
     PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                         isParent: false,
-                         action: { _ in })
+                  interacted: .constant(false),
+                  isParent: false,
+                  action: { _ in })
     .environmentObject(user)
 }
