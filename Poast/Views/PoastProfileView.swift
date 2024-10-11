@@ -17,6 +17,8 @@ enum PoastProfileViewFeed {
 }
 
 struct PoastProfileView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @EnvironmentObject var user: PoastUser
 
     @ObservedObject var profileViewModel: PoastProfileViewModel
@@ -75,7 +77,7 @@ struct PoastProfileView: View {
                 Spacer()
                 switch(feed) {
                 case .posts:
-                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(actor: profile.handle))
+                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(modelContext: modelContext, actor: profile.handle))
 
                 case .replies:
                     Rectangle()

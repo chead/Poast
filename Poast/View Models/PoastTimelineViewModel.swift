@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 import SwiftATProto
 import SwiftBluesky
 
@@ -20,8 +21,20 @@ enum PoastTimelineViewModelError: Error {
 
     @Published var posts: [PoastVisiblePostModel] = []
 
+    private var modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func deleteInteractions() {
+        try? modelContext.delete(model: PoastPostLikeInteractionModel.self)
+    }
+
     func clearTimeline() {
         posts.removeAll()
+
+        deleteInteractions()
     }
 
     func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {

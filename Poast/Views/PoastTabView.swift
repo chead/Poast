@@ -14,7 +14,7 @@ struct PoastTabView: View {
 
     var body: some View {
         TabView {
-            PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
+            PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(modelContext: modelContext, algorithm: ""))
             .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
 
             Rectangle()

@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import SwiftData
 import SwiftBluesky
 
 class PoastFeedTimelineViewModel: PoastTimelineViewModel {
     let algorithm: String
 
-    init(algorithm: String) {
+    init(modelContext: ModelContext, algorithm: String) {
         self.algorithm = algorithm
+
+        super.init(modelContext: modelContext)
     }
 
     override func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {

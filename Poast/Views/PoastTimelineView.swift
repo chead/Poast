@@ -33,9 +33,6 @@ struct PoastTimelineView: View {
 
     var body: some View {
         NavigationStack {
-            ButtonView(interacted: $interacted)
-            Text(interacted ? "On" : "Off")
-
             List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
                 if let parent = post.parent {
                     switch(parent) {
@@ -129,26 +126,28 @@ struct PoastTimelineView: View {
         .task {
             if let session = user.session {
                 _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
+
+                
             }
         }
     }
 }
 
-#Preview {
-    let account = PoastAccountModel(uuid: UUID(),
-                                    created: Date(),
-                                    handle: "@foobar.baz",
-                                    host: URL(string: "https://bsky.social")!,
-                                    session: nil)
-
-    let session = PoastSessionModel(account: account,
-                                    did: "",
-                                    created: Date())
-
-    let user = PoastUser()
-
-    user.session = session
-
-    return PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
-        .environmentObject(user)
-}
+//#Preview {
+//    let account = PoastAccountModel(uuid: UUID(),
+//                                    created: Date(),
+//                                    handle: "@foobar.baz",
+//                                    host: URL(string: "https://bsky.social")!,
+//                                    session: nil)
+//
+//    let session = PoastSessionModel(account: account,
+//                                    did: "",
+//                                    created: Date())
+//
+//    let user = PoastUser()
+//
+//    user.session = session
+//
+//    return PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
+//        .environmentObject(user)
+//}

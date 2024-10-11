@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class PoastPostLikeInteractionModel {
+final class PoastPostLikeInteractionModel {
     @Attribute(.unique)
     var postUri: String
     var interaction: PoastPostLikeModel
