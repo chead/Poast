@@ -51,7 +51,7 @@ struct PoastPostInteractionView: View {
             .confirmationDialog("Repost",
                                 isPresented: $showingRepostDialog,
                                 titleVisibility: .hidden) {
-                Button(postInteractionViewModel.post.repost != nil ? "Undo repost" : "Repost") {
+                Button(postInteractionViewModel.isReposted() ? "Undo repost" : "Repost") {
                     Task {
                         guard let session = user.session else {
                             return
