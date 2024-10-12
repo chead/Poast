@@ -12,11 +12,11 @@ struct PoastThreadParentPostView: View {
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
-    @Binding var interacted: Bool
+    @Binding var interacted: Date
 
     let posts: [PoastThreadModel]
 
-    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Bool>, threadPost: PoastThreadPostModel) {
+    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, threadPost: PoastThreadPostModel) {
         self._interacted = interacted
         self.threadViewModel = threadViewModel
 
@@ -73,7 +73,7 @@ struct PoastThreadPostView: View {
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
-    @Binding var interacted: Bool
+    @Binding var interacted: Date
 
     let threadPost: PoastThreadPostModel
 
@@ -124,7 +124,7 @@ struct PoastThreadView: View {
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
 
-    @Binding var interacted: Bool
+    @Binding var interacted: Date
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -165,5 +165,5 @@ struct PoastThreadView: View {
 
 #Preview {
     PoastThreadView(threadViewModel: PoastThreadViewModel(uri: ""),
-                    interacted: .constant(false))
+                    interacted: .constant(Date()))
 }

@@ -26,16 +26,65 @@ enum PoastPostInteractionViewModelError: Error {
     let post: PoastVisiblePostModel
 
     @Published var likeInteraction: PoastPostLikeInteractionModel? = nil
+    @Published var repostInteraction: PoastPostRepostInteractionModel? = nil
 
     init(modelContext: ModelContext, post: PoastVisiblePostModel) {
         self.modelContext = modelContext
         self.post = post
 
-        getLikeInteraction()
-
+        getInteractions()
     }
 
-    func getLikeInteraction() {
+    func getInteractions() {
+        getLikeInteraction()
+        getRepostInteraction()
+    }
+
+    func toggleLikePost(session: PoastSessionModel) async {
+        switch((likeInteraction, post.like)) {
+        case (.some(let likeInteraction), _):
+            deleteLikeInteraction(likeInteraction: likeInteraction)
+
+        case(nil, .some(_)):
+            if(await unlikePost(session: session, uri: post.uri) == nil) {
+                createLikeInteraction(interaction: .unliked)
+            }
+
+        case(nil, nil):
+            if(await likePost(session: session, uri: post.uri, cid: post.cid) == nil) {
+                createLikeInteraction(interaction: .liked)
+            }
+        }
+    }
+
+    func isLiked() -> Bool {
+        switch((post.like, likeInteraction?.interaction)) {
+        case(.some, .none):
+            return true
+
+        case (_, .some(let likeInteraction)) where likeInteraction == .liked:
+            return true
+
+        case (_, .some(let likeInteraction)) where likeInteraction == .unliked:
+            return false
+
+        default:
+            return false
+        }
+    }
+
+    func getLikeCount() -> Int {
+        switch((post.like, likeInteraction?.interaction)) {
+        case (.none, .some(let likeInteraction)) where likeInteraction == .liked,
+             (.some, .some(let likeInteraction)) where likeInteraction == .unliked:
+            return post.likeCount + likeInteraction.rawValue
+
+        default:
+            return post.likeCount
+        }
+    }
+
+    private func getLikeInteraction() {
         let postUri = post.uri
 
         let likeInteractionsDescriptor = FetchDescriptor<PoastPostLikeInteractionModel>(predicate: #Predicate { interaction in
@@ -47,7 +96,7 @@ enum PoastPostInteractionViewModelError: Error {
         likeInteraction = likeInteractions?.first
     }
 
-    func createLikeInteraction(interaction: PoastPostLikeModel) {
+    private func createLikeInteraction(interaction: PoastPostLikeModel) {
         if let likeInteraction = likeInteraction {
             modelContext.delete(likeInteraction)
         }
@@ -63,7 +112,7 @@ enum PoastPostInteractionViewModelError: Error {
         } catch {}
     }
 
-    func deleteLikeInteraction(likeInteraction: PoastPostLikeInteractionModel) {
+    private func deleteLikeInteraction(likeInteraction: PoastPostLikeInteractionModel) {
         modelContext.delete(likeInteraction)
 
         do {
@@ -73,31 +122,7 @@ enum PoastPostInteractionViewModelError: Error {
         } catch {}
     }
 
-    func getLikeCount() -> Int {
-        switch((post.like, likeInteraction?.interaction)) {
-        case (.none, .some(let likeInteraction)) where likeInteraction == .liked,
-             (.some, .some(let likeInteraction)) where likeInteraction == .unliked:
-            return post.likeCount + likeInteraction.rawValue
-
-        default:
-            return post.likeCount
-        }
-    }
-
-    func isLiked() -> Bool {
-        switch((post.like, likeInteraction?.interaction)) {
-        case(.some, .none):
-            return true
-
-        case (.none, .some(let likeInteraction)) where likeInteraction == .liked:
-            return true
-
-        default:
-            return false
-        }
-    }
-
-    func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
+    private func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
@@ -132,7 +157,51 @@ enum PoastPostInteractionViewModelError: Error {
         }
     }
 
-    func unlikePost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    func toggleRepostPost(session: PoastSessionModel) async {
+        switch((repostInteraction, post.repost)) {
+        case (.some(let repostInteraction), _):
+            deleteRepostInteraction(repostInteraction: repostInteraction)
+
+        case(nil, .some(_)):
+            if(await unrepostPost(session: session, uri: post.uri) == nil) {
+                createRepostInteraction(interaction: .unreposted)
+            }
+
+        case(nil, nil):
+            if(await repostPost(session: session, uri: post.uri, cid: post.cid) == nil) {
+                createRepostInteraction(interaction: .reposted)
+            }
+        }
+    }
+
+    func isReposted() -> Bool {
+        switch((post.repost, repostInteraction?.interaction)) {
+        case(.some, .none):
+            return true
+
+        case (_, .some(let repostInteraction)) where repostInteraction == .reposted:
+            return true
+
+        case (_, .some(let repostInteraction)) where repostInteraction == .unreposted:
+            return false
+
+        default:
+            return false
+        }
+    }
+
+    func getRepostCount() -> Int {
+        switch((post.repost, repostInteraction?.interaction)) {
+        case (.none, .some(let repostInteraction)) where repostInteraction == .reposted,
+             (.some, .some(let repostInteraction)) where repostInteraction == .unreposted:
+            return post.repostCount + repostInteraction.rawValue
+
+        default:
+            return post.repostCount
+        }
+    }
+
+    private func unlikePost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
@@ -160,28 +229,49 @@ enum PoastPostInteractionViewModelError: Error {
         }
     }
 
-    func toggleLikePost(session: PoastSessionModel) async {
-        switch((likeInteraction, post.like)) {
-        case (.some(let likeInteraction), _):
-            deleteLikeInteraction(likeInteraction: likeInteraction)
+    private func getRepostInteraction() {
+        let postUri = post.uri
 
-        case(nil, .some(_)):
-            if(await unlikePost(session: session, uri: post.uri) == nil) {
-                createLikeInteraction(interaction: .unliked)
-            }
+        let repostInteractionsDescriptor = FetchDescriptor<PoastPostRepostInteractionModel>(predicate: #Predicate { interaction in
+            return interaction.postUri == postUri
+        })
 
-        case(nil, nil):
-            if(await likePost(session: session, uri: post.uri, cid: post.cid) == nil) {
-                createLikeInteraction(interaction: .liked)
-            }
-        }
+        let repostInteractions = try? modelContext.fetch(repostInteractionsDescriptor)
+
+        self.repostInteraction = repostInteractions?.first
     }
 
-    func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> Result<ATProtoRepoStrongRef, PoastPostViewModelError> {
+    private func createRepostInteraction(interaction: PoastPostRepostModel) {
+        if let repostInteraction = repostInteraction {
+            modelContext.delete(repostInteraction)
+        }
+
+        let repostInteraction = PoastPostRepostInteractionModel(postUri: post.uri, interaction: interaction)
+
+        modelContext.insert(repostInteraction)
+
+        do {
+            try modelContext.save()
+
+            self.repostInteraction = repostInteraction
+        } catch {}
+    }
+
+    private func deleteRepostInteraction(repostInteraction: PoastPostRepostInteractionModel) {
+        modelContext.delete(repostInteraction)
+
+        do {
+            try modelContext.save()
+
+            self.repostInteraction = nil
+        } catch {}
+    }
+
+    private func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .failure(.credentials)
+                return .credentials
             }
 
             do {
@@ -198,22 +288,21 @@ enum PoastPostInteractionViewModelError: Error {
                                                                  refreshToken: credentials.refreshToken)
                     }
 
-                    return .success(ATProtoRepoStrongRef(uri: createLikeResponse.body.uri,
-                                                         cid: createLikeResponse.body.cid))
+                    return nil
 
                 case .failure(_):
-                    return .failure(.unknown)
+                    return .unknown
                 }
             } catch {
-                return .failure(.unknown)
+                return .unknown
             }
 
         case .failure(_):
-            return .failure(.unknown)
+            return .unknown
         }
     }
 
-    func unrepostPost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    private func unrepostPost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
@@ -240,6 +329,4 @@ enum PoastPostInteractionViewModelError: Error {
             return .unknown
         }
     }
-
-    func toggleRepostPost(session: PoastSessionModel) async {}
 }

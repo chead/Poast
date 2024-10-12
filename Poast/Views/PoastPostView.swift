@@ -21,7 +21,7 @@ struct PoastPostView: View {
 
     @State var replyTo: String?
 
-    @Binding var interacted: Bool
+    @Binding var interacted: Date
 
     let isParent: Bool
     let action: (PoastPoastViewAction) -> Void
@@ -198,7 +198,7 @@ struct PoastPostView: View {
                                    replyDisabled: false)
 
     PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                  interacted: .constant(false),
+                  interacted: .constant(Date()),
                   isParent: false,
                   action: { _ in })
     .environmentObject(user)

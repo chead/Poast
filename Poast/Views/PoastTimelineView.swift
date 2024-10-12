@@ -15,7 +15,7 @@ struct PoastTimelineView: View {
     @State var showingComposerView: Bool = false
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
-    @State var interacted: Bool = false
+    @State var interacted: Date = Date()
 
     var body: some View {
         NavigationStack {
@@ -112,7 +112,7 @@ struct PoastTimelineView: View {
         .task {
             if let session = user.session {
                 if(await timelineViewModel.getTimeline(session: session, cursor: Date()) == nil) {
-                    interacted = false
+                    interacted = Date()
                 }
             }
         }
