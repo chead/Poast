@@ -7,20 +7,6 @@
 
 import SwiftUI
 
-struct ButtonView: View {
-    @Binding var interacted: Bool
-
-    var body: some View {
-        Button(action: {
-            interacted.toggle()
-
-            print(interacted)
-        }, label: {
-            Text("Flip")
-        })
-    }
-}
-
 struct PoastTimelineView: View {
     @EnvironmentObject var user: PoastUser
 
@@ -125,9 +111,9 @@ struct PoastTimelineView: View {
         }
         .task {
             if let session = user.session {
-                _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
-
-                
+                if(await timelineViewModel.getTimeline(session: session, cursor: Date()) == nil) {
+                    interacted = false
+                }
             }
         }
     }

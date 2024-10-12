@@ -48,6 +48,10 @@ enum PoastPostInteractionViewModelError: Error {
     }
 
     func createLikeInteraction(interaction: PoastPostLikeModel) {
+        if let likeInteraction = likeInteraction {
+            modelContext.delete(likeInteraction)
+        }
+
         let likeInteraction = PoastPostLikeInteractionModel(postUri: post.uri, interaction: interaction)
 
         modelContext.insert(likeInteraction)
@@ -70,11 +74,27 @@ enum PoastPostInteractionViewModelError: Error {
     }
 
     func getLikeCount() -> Int {
-        return post.likeCount + (likeInteraction?.interaction.rawValue ?? 0)
+        switch((post.like, likeInteraction?.interaction)) {
+        case (.none, .some(let likeInteraction)) where likeInteraction == .liked,
+             (.some, .some(let likeInteraction)) where likeInteraction == .unliked:
+            return post.likeCount + likeInteraction.rawValue
+
+        default:
+            return post.likeCount
+        }
     }
 
     func isLiked() -> Bool {
-        return post.like != nil || likeInteraction?.interaction == .liked
+        switch((post.like, likeInteraction?.interaction)) {
+        case(.some, .none):
+            return true
+
+        case (.none, .some(let likeInteraction)) where likeInteraction == .liked:
+            return true
+
+        default:
+            return false
+        }
     }
 
     func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
