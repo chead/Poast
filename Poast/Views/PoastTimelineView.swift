@@ -88,7 +88,7 @@ struct PoastTimelineView: View {
                 }
 
             case .stack:
-                ForEach(timelineViewModel.posts, id: \.uri) { post in
+                ForEach(timelineViewModel.posts, id: \.id) { post in
                     PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
                 }
             }
@@ -151,7 +151,11 @@ struct PoastTimelineView: View {
     var body: some View {
         ContentView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, showingToolbar: showingToolbar, verticalLayout: verticalLayout)
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
-                PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
+                if let session = user.session {
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
+                } else {
+                    EmptyView()
+                }
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in
                 PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
