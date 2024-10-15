@@ -41,7 +41,7 @@ struct PoastTimelineView: View {
         var body: some View {
             switch verticalLayout {
             case .list:
-                List(Array(timelineViewModel.posts.enumerated()), id: \.1.uri) { (index, post) in
+                List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
                     PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
                         .onAppear {
                             Task {
