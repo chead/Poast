@@ -28,12 +28,13 @@ struct PoastTimelineView: View {
     struct ContentView: View {
         @EnvironmentObject var user: PoastUser
 
-        @Binding var interacted: Date
+        @ObservedObject var timelineViewModel: PoastTimelineViewModel
+
         @Binding var showingComposerView: Bool
         @Binding var showingProfileHandle: String?
         @Binding var showingThreadURI: String?
+        @Binding var interacted: Date
 
-        let timelineViewModel: PoastTimelineViewModel
         let showingToolbar: Bool
         let verticalLayout: PoastTimelineViewVerticalLayout
 
@@ -42,7 +43,7 @@ struct PoastTimelineView: View {
             switch verticalLayout {
             case .list:
                 List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
-                    PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
+                    PostView(timelineViewModel: timelineViewModel, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, interacted: $interacted, post: post)
                         .onAppear {
                             Task {
                                 if index == timelineViewModel.posts.count - 1 {
@@ -89,19 +90,20 @@ struct PoastTimelineView: View {
 
             case .stack:
                 ForEach(timelineViewModel.posts, id: \.id) { post in
-                    PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
+                    PostView(timelineViewModel: timelineViewModel, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, interacted: $interacted, post: post)
                 }
             }
         }
     }
 
     struct PostView: View {
-        @Binding var interacted: Date
+        @ObservedObject var timelineViewModel: PoastTimelineViewModel
+
         @Binding var showingComposerView: Bool
         @Binding var showingProfileHandle: String?
         @Binding var showingThreadURI: String?
+        @Binding var interacted: Date
 
-        let timelineViewModel: PoastTimelineViewModel
         let post: PoastVisiblePostModel
 
         @ViewBuilder
@@ -149,7 +151,7 @@ struct PoastTimelineView: View {
     }
 
     var body: some View {
-        ContentView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, showingToolbar: showingToolbar, verticalLayout: verticalLayout)
+        ContentView(timelineViewModel: timelineViewModel, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, interacted: $interacted, showingToolbar: showingToolbar, verticalLayout: verticalLayout)
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
                     PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))

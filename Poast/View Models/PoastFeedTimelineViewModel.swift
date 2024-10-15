@@ -34,7 +34,9 @@ class PoastFeedTimelineViewModel: PoastTimelineViewModel {
                                                                 limit: 50,
                                                                 cursor: cursor)) {
                 case .success(let getTimelineResponse):
-                    self.posts.append(contentsOf: getTimelineResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
+                    posts.append(contentsOf: getTimelineResponse.body.feed.map {
+                        PoastVisiblePostModel(blueskyFeedFeedViewPost: $0)
+                    })
 
                 case .failure(_):
                     return .unknown
