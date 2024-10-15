@@ -147,7 +147,9 @@ struct PoastThreadView: View {
                 proxy.scrollTo(1, anchor: .top)
             }
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
-                PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
+                if let session = user.session {
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
+                }
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in
                 PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),

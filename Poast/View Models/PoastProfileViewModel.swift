@@ -24,13 +24,15 @@ enum PoastProfileViewModelError: Error {
 
     @Published var profile: PoastProfileModel? = nil
 
+    let session: PoastSessionModel
     let handle: String
 
-    init(handle: String) {
+    init(session: PoastSessionModel, handle: String) {
+        self.session = session
         self.handle = handle
     }
 
-    func getProfile(session: PoastSessionModel) async -> PoastProfileViewModelError? {
+    func getProfile() async -> PoastProfileViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
@@ -46,7 +48,9 @@ enum PoastProfileViewModelError: Error {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    profile = getProfilesResponse.body.profiles.map { PoastProfileModel(blueskyActorProfileViewDetailed: $0) }.first
+                    profile = getProfilesResponse.body.profiles.map {
+                        PoastProfileModel(blueskyActorProfileViewDetailed: $0)
+                    }.first
 
                 case .failure(_):
                     return .unknown
@@ -59,6 +63,6 @@ enum PoastProfileViewModelError: Error {
             return .unknown
         }
 
-        return .unknown
+        return nil
     }
 }

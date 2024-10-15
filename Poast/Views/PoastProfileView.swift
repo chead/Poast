@@ -21,7 +21,7 @@ struct PoastProfileView: View {
 
     @EnvironmentObject var user: PoastUser
 
-    @ObservedObject var profileViewModel: PoastProfileViewModel
+    @StateObject var profileViewModel: PoastProfileViewModel
 
     @State var feed: PoastProfileViewFeed = .posts
 
@@ -114,11 +114,7 @@ struct PoastProfileView: View {
         .listStyle(.plain)
         .onAppear() {
             Task {
-                guard let session = user.session else {
-                    return
-                }
-
-                _ = await self.profileViewModel.getProfile(session: session)
+                _ = await self.profileViewModel.getProfile()
             }
         }
     }
@@ -137,7 +133,7 @@ struct PoastProfileView: View {
 
     let user = PoastUser(session: session)
 
-    let profileViewModel = PoastProfileViewModel(handle: "Foobar")
+    let profileViewModel = PoastProfileViewModel(session: session, handle: "Foobar")
 
     let profile = PoastProfileModel(did: "0",
                                     handle: "foobar",

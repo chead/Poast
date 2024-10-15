@@ -152,7 +152,7 @@ struct PoastTimelineView: View {
         ContentView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, showingToolbar: showingToolbar, verticalLayout: verticalLayout)
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
                 } else {
                     EmptyView()
                 }

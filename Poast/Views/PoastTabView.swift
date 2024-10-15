@@ -31,9 +31,9 @@ struct PoastTabView: View {
                 .fill(.red)
                 .tabItem { Label("Notifications", systemImage: "bell") }
 
-            if let handle = user.session?.account.handle {
+            if let session = user.session {
                 NavigationStack {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(handle: handle))
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: session.account.handle))
                 }
                     .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
