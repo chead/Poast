@@ -23,7 +23,7 @@ enum PoastTimelineViewModelError: Error {
 
     let session: PoastSessionModel
 
-    private var modelContext: ModelContext
+    private let modelContext: ModelContext
 
     init(session: PoastSessionModel, modelContext: ModelContext) {
         self.session = session
