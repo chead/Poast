@@ -28,6 +28,8 @@ struct PoastPostView: View {
 
     var body: some View {
         HStack(alignment: .top) {
+            Spacer()
+
             Button {
                 action(.profile(postViewModel.post.author.handle))
             } label: {
@@ -49,8 +51,6 @@ struct PoastPostView: View {
                 action(.thread(postViewModel.post.uri))
             } label: {
                 VStack(alignment: .leading) {
-                    Spacer()
-
                     PoastPostHeaderView(authorName: postViewModel.post.author.name,
                                         timeAgo: postViewModel.timeAgoString)
 
@@ -62,8 +62,6 @@ struct PoastPostView: View {
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                         }
-
-                        Spacer()
                     } else if let repostedBy = postViewModel.post.repostedBy {
                         Spacer()
 
@@ -81,9 +79,9 @@ struct PoastPostView: View {
 
                     Text(postViewModel.post.text)
 
-                    Spacer()
-
                     if let embed = postViewModel.post.embed {
+                        Spacer()
+
                         PoastPostEmbedView(postViewModel: postViewModel,
                                            embed: embed)
                     }

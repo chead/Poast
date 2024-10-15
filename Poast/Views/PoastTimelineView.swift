@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum PoastTimelineViewVerticalLayout {
+    case list
+    case stack
+}
+
 struct PoastTimelineView: View {
     @EnvironmentObject var user: PoastUser
 
@@ -17,90 +22,138 @@ struct PoastTimelineView: View {
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
 
-    var body: some View {
-        NavigationStack {
-            List(Array(timelineViewModel.posts.enumerated()), id: \.1.id) { (index, post) in
-                if let parent = post.parent {
-                    switch(parent) {
-                    case .post(let parentPost):
-                        PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
-                                      interacted: $interacted,
-                                      isParent: true,
-                                      action: { action in
-                            switch action {
-                            case .profile(let handle):
-                                showingProfileHandle = handle
+    let showingToolbar: Bool
+    let verticalLayout: PoastTimelineViewVerticalLayout
 
-                            case .thread(let uri):
-                                showingThreadURI = uri
+    struct ContentView: View {
+        @EnvironmentObject var user: PoastUser
+
+        @Binding var interacted: Date
+        @Binding var showingComposerView: Bool
+        @Binding var showingProfileHandle: String?
+        @Binding var showingThreadURI: String?
+
+        let timelineViewModel: PoastTimelineViewModel
+        let showingToolbar: Bool
+        let verticalLayout: PoastTimelineViewVerticalLayout
+
+        @ViewBuilder
+        var body: some View {
+            switch verticalLayout {
+            case .list:
+                List(Array(timelineViewModel.posts.enumerated()), id: \.1.uri) { (index, post) in
+                    PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
+                        .onAppear {
+                            Task {
+                                if index == timelineViewModel.posts.count - 1 {
+                                    if let session = user.session {
+                                        _ = await timelineViewModel.getTimeline(session: session, cursor: post.date)
+                                    }
+                                }
                             }
-                        })
+                        }
+                }
+                .listStyle(.plain)
+                .refreshable {
+                    if let session = user.session {
+                        timelineViewModel.clearTimeline()
 
-                    case .reference(_):
-                        EmptyView()
-
-                    case .notFound(_):
-                        Text("Post not found")
-
-                    case .blocked(_, _):
-                        Text("Blocked post")
+                        _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
                     }
                 }
-
-                PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                              interacted: $interacted,
-                              isParent: false,
-                              action: { action in
-                    switch action {
-                    case .profile(let handle):
-                        showingProfileHandle = handle
-
-                    case .thread(let uri):
-                        showingThreadURI = uri
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        if(showingToolbar == true) {
+                            Button {
+                            } label: {
+                                Image(systemName: "magnifyingglass")
+                            }
+                        }
                     }
-                })
-                .onAppear {
-                    Task {
-                        if index == timelineViewModel.posts.count - 1 {
-                            if let session = user.session {
-                                _ = await timelineViewModel.getTimeline(session: session, cursor: post.date)
+
+                    ToolbarItem(placement: .principal) {
+                        if(showingToolbar == true) {
+                            Text("Poast")
+                        }
+                    }
+
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        if(showingToolbar == true) {
+                            Button {
+                                showingComposerView = true
+                            } label: {
+                                Image(systemName: "plus")
+                            }
+                            .sheet(isPresented: $showingComposerView) {
+                                EmptyView()
                             }
                         }
                     }
                 }
-            }
-            .listStyle(.plain)
-            .refreshable {
-                if let session = user.session {
-                    timelineViewModel.clearTimeline()
 
-                    _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
+            case .stack:
+                ForEach(timelineViewModel.posts, id: \.uri) { post in
+                    PostView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, post: post)
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+        }
+    }
 
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
+    struct PostView: View {
+        @Binding var interacted: Date
+        @Binding var showingComposerView: Bool
+        @Binding var showingProfileHandle: String?
+        @Binding var showingThreadURI: String?
 
-                ToolbarItem(placement: .principal) {
-                    Text("Poast")
-                }
+        let timelineViewModel: PoastTimelineViewModel
+        let post: PoastVisiblePostModel
 
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingComposerView = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .sheet(isPresented: $showingComposerView) {
-                        EmptyView()
-                    }
+        @ViewBuilder
+        var body: some View {
+            if let parent = post.parent {
+                switch(parent) {
+                case .post(let parentPost):
+                    PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                  interacted: $interacted,
+                                  isParent: true,
+                                  action: { action in
+                        switch action {
+                        case .profile(let handle):
+                            showingProfileHandle = handle
+
+                        case .thread(let uri):
+                            showingThreadURI = uri
+                        }
+                    })
+
+                case .reference(_):
+                    EmptyView()
+
+                case .notFound(_):
+                    Text("Post not found")
+
+                case .blocked(_, _):
+                    Text("Blocked post")
                 }
             }
+
+            PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                          interacted: $interacted,
+                          isParent: false,
+                          action: { action in
+                switch action {
+                case .profile(let handle):
+                    showingProfileHandle = handle
+
+                case .thread(let uri):
+                    showingThreadURI = uri
+                }
+            })
+        }
+    }
+
+    var body: some View {
+        ContentView(interacted: $interacted, showingComposerView: $showingComposerView, showingProfileHandle: $showingProfileHandle, showingThreadURI: $showingThreadURI, timelineViewModel: timelineViewModel, showingToolbar: showingToolbar, verticalLayout: verticalLayout)
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 PoastProfileView(profileViewModel: PoastProfileViewModel(handle: profileHandle))
             }
@@ -108,7 +161,6 @@ struct PoastTimelineView: View {
                 PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
                                 interacted: $interacted)
             }
-        }
         .task {
             if let session = user.session {
                 if(await timelineViewModel.getTimeline(session: session, cursor: Date()) == nil) {
@@ -130,9 +182,7 @@ struct PoastTimelineView: View {
 //                                    did: "",
 //                                    created: Date())
 //
-//    let user = PoastUser()
-//
-//    user.session = session
+//    let user = PoastUser(session: session)
 //
 //    return PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(algorithm: ""))
 //        .environmentObject(user)

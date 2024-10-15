@@ -12,7 +12,7 @@ struct PoastProfileModel: Hashable {
     let did: String
     let handle: String
     let displayName: String?
-    let desc: String?
+    let description: String?
     let avatar: String?
     let banner: String?
     let followsCount: Int?
@@ -28,7 +28,7 @@ struct PoastProfileModel: Hashable {
         self.did = did
         self.handle = handle
         self.displayName = displayName
-        self.desc = desc
+        self.description = desc
         self.avatar = avatar
         self.banner = banner
         self.followsCount = followsCount
@@ -41,7 +41,7 @@ struct PoastProfileModel: Hashable {
         self.did = blueskyActorProfileViewBasic.did
         self.handle = blueskyActorProfileViewBasic.handle
         self.displayName = blueskyActorProfileViewBasic.displayName
-        self.desc = nil
+        self.description = nil
         self.avatar = blueskyActorProfileViewBasic.avatar
         self.banner = nil
         self.followsCount = nil
@@ -54,7 +54,7 @@ struct PoastProfileModel: Hashable {
         self.did = blueskyActorProfileViewDetailed.did
         self.handle = blueskyActorProfileViewDetailed.handle
         self.displayName = blueskyActorProfileViewDetailed.displayName
-        self.desc = blueskyActorProfileViewDetailed.description
+        self.description = blueskyActorProfileViewDetailed.description
         self.avatar = blueskyActorProfileViewDetailed.avatar
         self.banner = blueskyActorProfileViewDetailed.banner
         self.followsCount = blueskyActorProfileViewDetailed.followsCount

@@ -26,9 +26,11 @@ struct PoastProfileView: View {
     @State var feed: PoastProfileViewFeed = .posts
 
     var body: some View {
-        VStack {
+        ScrollView {
             if let profile = profileViewModel.profile {
-                PoastProfileHeaderView(profile: profileViewModel.profile)
+                PoastProfileHeaderView(profile: profile)
+
+                Spacer()
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
@@ -75,9 +77,11 @@ struct PoastProfileView: View {
                 }
 
                 Spacer()
+
                 switch(feed) {
                 case .posts:
-                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(modelContext: modelContext, actor: profile.handle))
+                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(modelContext: modelContext, actor: profile.handle), showingToolbar: false, verticalLayout: .stack)
+                        .padding(20)
 
                 case .replies:
                     Rectangle()
@@ -103,6 +107,7 @@ struct PoastProfileView: View {
                 Spacer()
             }
         }
+        .listStyle(.plain)
         .onAppear() {
             Task {
                 guard let session = user.session else {
@@ -126,8 +131,25 @@ struct PoastProfileView: View {
                                     did: "",
                                     created: Date())
 
-    let user = PoastUser()
+    let user = PoastUser(session: session)
 
-    return PoastProfileView(profileViewModel: PoastProfileViewModel(handle: "Foobar"))
+    let profileViewModel = PoastProfileViewModel(handle: "Foobar")
+
+    let profile = PoastProfileModel(did: "0",
+                                    handle: "foobar",
+                                    displayName: "FOOBAR",
+                                    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus risus non massa mollis, eget interdum ante volutpat. Sed cursus risus non massa mollis, eget interdum ante volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a tortor dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a felis sit amet elit viverra porttitor. In hac habitasse platea dictumst. Nulla mollis luctus sagittis. Vestibulum volutpat ipsum vel elit accumsan dapibus. Vivamus quis erat consequat, auctor est id, malesuada sem.",
+                                    avatar: "",
+                                    banner: "",
+                                    followsCount: 1000,
+                                    followersCount: 1000,
+                                    postsCount: 2000,
+                                    labels: [])
+
+    profileViewModel.profile = profile
+
+    let profileView = PoastProfileView(profileViewModel: profileViewModel)
         .environmentObject(user)
+
+    return profileView
 }

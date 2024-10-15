@@ -108,7 +108,6 @@ struct PoastThreadPostView: View {
                                     showingThreadURI: $showingThreadURI,
                                     interacted: $interacted,
                                     threadPost: threadPost)
-
                 .padding(.leading, 25)
             }
         }
@@ -164,6 +163,19 @@ struct PoastThreadView: View {
 }
 
 #Preview {
+    let account = PoastAccountModel(uuid: UUID(),
+                                    created: Date(),
+                                    handle: "@foobar.baz",
+                                    host: URL(string: "https://bsky.social")!,
+                                    session: nil)
+
+    let session = PoastSessionModel(account: account,
+                                    did: "",
+                                    created: Date())
+
+    let user = PoastUser(session: session)
+
     PoastThreadView(threadViewModel: PoastThreadViewModel(uri: ""),
                     interacted: .constant(Date()))
+    .environmentObject(user)
 }
