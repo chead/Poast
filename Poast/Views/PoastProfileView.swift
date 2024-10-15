@@ -80,8 +80,12 @@ struct PoastProfileView: View {
 
                 switch(feed) {
                 case .posts:
-                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(modelContext: modelContext, actor: profile.handle), showingToolbar: false, verticalLayout: .stack)
-                        .padding(20)
+                    if let session = user.session {
+                        PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(session: session, modelContext: modelContext, actor: profile.handle), showingToolbar: false, verticalLayout: .stack)
+                            .padding(20)
+                    } else {
+                        EmptyView()
+                    }
 
                 case .replies:
                     Rectangle()

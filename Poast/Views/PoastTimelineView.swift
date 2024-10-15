@@ -46,20 +46,16 @@ struct PoastTimelineView: View {
                         .onAppear {
                             Task {
                                 if index == timelineViewModel.posts.count - 1 {
-                                    if let session = user.session {
-                                        _ = await timelineViewModel.getTimeline(session: session, cursor: post.date)
-                                    }
+                                    _ = await timelineViewModel.getTimeline(cursor: post.date)
                                 }
                             }
                         }
                 }
                 .listStyle(.plain)
                 .refreshable {
-                    if let session = user.session {
-                        timelineViewModel.clearTimeline()
+                    timelineViewModel.clearTimeline()
 
-                        _ = await timelineViewModel.getTimeline(session: session, cursor: Date())
-                    }
+                    _ = await timelineViewModel.getTimeline(cursor: Date())
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -162,10 +158,8 @@ struct PoastTimelineView: View {
                                 interacted: $interacted)
             }
         .task {
-            if let session = user.session {
-                if(await timelineViewModel.getTimeline(session: session, cursor: Date()) == nil) {
-                    interacted = Date()
-                }
+            if(await timelineViewModel.getTimeline(cursor: Date()) == nil) {
+                interacted = Date()
             }
         }
     }

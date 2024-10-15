@@ -21,23 +21,22 @@ enum PoastTimelineViewModelError: Error {
 
     @Published var posts: [PoastVisiblePostModel] = []
 
+    let session: PoastSessionModel
+
     private var modelContext: ModelContext
 
-    init(modelContext: ModelContext) {
+    init(session: PoastSessionModel, modelContext: ModelContext) {
+        self.session = session
         self.modelContext = modelContext
-    }
-
-    func deleteInteractions() {
-        try? modelContext.delete(model: PoastPostLikeInteractionModel.self)
     }
 
     func clearTimeline() {
         posts.removeAll()
 
-        deleteInteractions()
+        try? modelContext.delete(model: PoastPostLikeInteractionModel.self)
     }
 
-    func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {
+    func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
         return nil
     }
 }

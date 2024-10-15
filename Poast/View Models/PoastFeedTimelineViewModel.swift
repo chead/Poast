@@ -12,13 +12,13 @@ import SwiftBluesky
 class PoastFeedTimelineViewModel: PoastTimelineViewModel {
     let algorithm: String
 
-    init(modelContext: ModelContext, algorithm: String) {
+    init(session: PoastSessionModel, modelContext: ModelContext, algorithm: String) {
         self.algorithm = algorithm
 
-        super.init(modelContext: modelContext)
+        super.init(session: session, modelContext: modelContext)
     }
 
-    override func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):

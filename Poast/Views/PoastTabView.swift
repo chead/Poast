@@ -15,7 +15,11 @@ struct PoastTabView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(modelContext: modelContext, algorithm: ""), showingToolbar: true, verticalLayout: .list)
+                if let session = user.session {
+                    PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(session: session, modelContext: modelContext, algorithm: ""), showingToolbar: true, verticalLayout: .list)
+                } else {
+                    EmptyView()
+                }
             }
             .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
 

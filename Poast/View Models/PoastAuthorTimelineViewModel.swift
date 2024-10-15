@@ -12,13 +12,13 @@ import SwiftBluesky
 class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
     let actor: String
 
-    init(modelContext: ModelContext, actor: String) {
+    init(session: PoastSessionModel, modelContext: ModelContext, actor: String) {
         self.actor = actor
 
-        super.init(modelContext: modelContext)
+        super.init(session: session, modelContext: modelContext)
     }
 
-    override func getTimeline(session: PoastSessionModel, cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
