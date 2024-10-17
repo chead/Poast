@@ -40,7 +40,7 @@ enum PoastSignInViewModelError: Error {
     }
 }
 
-class PoastSignInViewModel {
+@MainActor class PoastSignInViewModel {
     @Dependency private var blueskyClient: BlueskyClient
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var preferencesService: PoastPreferencesService
@@ -63,7 +63,7 @@ class PoastSignInViewModel {
                         case .success(let success):
                             switch(success) {
                             case true:
-                                try preferencesService.setActiveSession(session: session)
+                                try preferencesService.setActiveSessionDid(sessionDid: session.did)
 
                                 return .success(session)
 
@@ -92,12 +92,12 @@ class PoastSignInViewModel {
     }
 
     func getOrCreateAccount(handle: String, host: URL) -> Result<PoastAccountModel, PoastSignInViewModelError> {
-        let accountsDescriptor = FetchDescriptor<PoastAccountModel>(predicate: #Predicate { account in
+        let accountsFetchDescriptor = FetchDescriptor<PoastAccountModel>(predicate: #Predicate { account in
             account.handle == handle && account.host == host
         })
 
         do {
-            let accounts = try modelContext.fetch(accountsDescriptor)
+            let accounts = try modelContext.fetch(accountsFetchDescriptor)
 
             if let account = accounts.first {
                 return .success(account)
@@ -105,8 +105,6 @@ class PoastSignInViewModel {
                 let account = PoastAccountModel(uuid: UUID(), created: Date(), handle: handle, host: host, session: nil)
 
                 modelContext.insert(account)
-
-                try modelContext.save()
 
                 return .success(account)
             }
@@ -120,12 +118,6 @@ class PoastSignInViewModel {
 
         modelContext.insert(session)
 
-        do {
-            try modelContext.save()
-
-            return .success(session)
-        } catch {
-            return.failure(.database)
-        }
+        return .success(session)
     }
 }

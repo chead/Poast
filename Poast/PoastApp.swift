@@ -9,27 +9,9 @@ import SwiftUI
 import SwiftData
 import SwiftBluesky
 
-class PoastUser: ObservableObject {
-    @Published var session: PoastSessionModel?
-
-    init(session: PoastSessionModel? = nil) {
-        self.session = session
-    }
-}
-
 @main
 struct PoastApp: App {
     let user: PoastUser
-
-    init() {
-        let preferencesService = PoastPreferencesService()
-
-        self.user = PoastUser(session: try? preferencesService.getActiveSession())
-
-        DependencyProvider.register(BlueskyClient())
-        DependencyProvider.register(PoastCredentialsService())
-        DependencyProvider.register(preferencesService)
-    }
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -46,6 +28,25 @@ struct PoastApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+
+    init() {
+        let preferencesService = PoastPreferencesService()
+        var activeSession: PoastSessionModel? = nil
+
+        if let activeSessionDid = try? preferencesService.getActiveSessionDid() {
+            let sessionsFetchDescriptor = FetchDescriptor<PoastSessionModel>(predicate: #Predicate { session in
+                session.did == activeSessionDid
+            })
+
+            activeSession = try? sharedModelContainer.mainContext.fetch(sessionsFetchDescriptor).first
+        }
+
+        self.user = PoastUser(session: activeSession)
+
+        DependencyProvider.register(BlueskyClient())
+        DependencyProvider.register(PoastCredentialsService())
+        DependencyProvider.register(preferencesService)
+    }
 
     var body: some Scene {
         WindowGroup {

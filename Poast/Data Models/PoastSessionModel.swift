@@ -9,13 +9,14 @@ import Foundation
 import SwiftData
 
 @Model
-class PoastSessionModel: ObservableObject, Codable {
+class PoastSessionModel: Codable {
     private enum CodingKeys: CodingKey {
         case account
         case did
         case created
     }
 
+    @Relationship(inverse: \PoastAccountModel.session)
     var account: PoastAccountModel
     @Attribute(.unique)
     var did: String

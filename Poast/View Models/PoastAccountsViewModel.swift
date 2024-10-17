@@ -42,7 +42,7 @@ class PoastAccountsViewModel {
 
     func setActiveSession(session: PoastSessionModel?) -> PoastAccountsViewModelError? {
         do {
-            try self.preferencesService.setActiveSession(session: session)
+            try self.preferencesService.setActiveSessionDid(sessionDid: session?.did)
         } catch {
             return .preferences
         }

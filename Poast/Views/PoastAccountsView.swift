@@ -11,6 +11,8 @@ import SwiftData
 struct PoastAccountsView: View {
     @Environment(\.modelContext) private var modelContext
 
+    @EnvironmentObject var user: PoastUser
+
     let accountsViewModel: PoastAccountsViewModel
 
     @Query private var accounts: [PoastAccountModel]
@@ -22,20 +24,18 @@ struct PoastAccountsView: View {
         NavigationStack() {
             List {
                 ForEach(accounts) { account in
-                    VStack {
-                        Button(action: {
-                            if let session = account.session {
-                                _ = self.accountsViewModel.setActiveSession(session: session)
-                            } else {
-                                selectedAccount = account
-                            }
-                        }) {
-                            Text("\(account.handle) @ \(account.host.host()!)")
-                        }
+                    Button(action: {
+                        user.session = account.session
+
+                        selectedAccount = account
+                    }) {
+                        Text("\(account.handle) @ \(account.host.host()!)")
                     }
                 }
                 .onDelete { indexSet in
-                    indexSet.forEach { _ = accountsViewModel.deleteAccount(account: self.accounts[$0]) }
+                    indexSet.forEach {
+                        _ = accountsViewModel.deleteAccount(account: self.accounts[$0])
+                    }
                 }
             }
             .navigationDestination(item: $selectedAccount, destination: { account in

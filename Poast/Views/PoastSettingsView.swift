@@ -26,6 +26,7 @@ struct PoastSettingsView: View {
             Button("Sign Out") {
                 if let session = user.session {
                     settingsViewModel.signOut(session: session)
+
                     user.session = nil
                 }
             }

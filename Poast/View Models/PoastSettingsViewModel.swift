@@ -21,11 +21,9 @@ class PoastSettingsViewModel {
     func signOut(session: PoastSessionModel) {
         _ = self.credentialsService.deleteCredentials(sessionDID: session.did)
 
-        try? preferencesService.setActiveSession(session: nil)
+        try? preferencesService.setActiveSessionDid(sessionDid: nil)
 
         modelContext.delete(session)
-
-        try? modelContext.save()
     }
 }
 

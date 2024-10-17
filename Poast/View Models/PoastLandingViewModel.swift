@@ -11,10 +11,4 @@ enum PoastLandingViewModelError: Error {
     case preferencesService
 }
 
-class PoastLandingViewModel {
-    @Dependency private var preferencesService: PoastPreferencesService
-
-    func getActiveSession() -> PoastSessionModel? {
-        return try? self.preferencesService.getActiveSession()
-    }
-}
+class PoastLandingViewModel {}
