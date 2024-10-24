@@ -44,7 +44,7 @@ struct PoastFeedView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 Button {
                 } label: {
                     Image(systemName: "magnifyingglass")
@@ -55,16 +55,16 @@ struct PoastFeedView: View {
                 Text("Poast")
             }
 
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     showingComposerView = true
                 } label: {
                     Image(systemName: "plus")
                 }
-                .sheet(isPresented: $showingComposerView) {
-                    EmptyView()
-                }
             }
+        }
+        .sheet(isPresented: $showingComposerView) {
+            PoastPostComposeView()
         }
         .refreshable {
             refreshing = true
