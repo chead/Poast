@@ -15,7 +15,8 @@ enum PoastTimelineViewModelError: Error {
     case unknown
 }
 
-@MainActor class PoastTimelineViewModel: ObservableObject {
+@MainActor
+class PoastTimelineViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
     @Dependency internal var blueskyClient: BlueskyClient
 

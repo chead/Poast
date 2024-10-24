@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C2005B4C2A966F7200ED9570 /* PoastProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2005B4B2A966F7200ED9570 /* PoastProfileHeaderView.swift */; };
 		C2222C622A8421E7000C7C45 /* PoastProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2222C612A8421E7000C7C45 /* PoastProfileViewModel.swift */; };
 		C2222C642A842601000C7C45 /* PoastProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2222C632A842601000C7C45 /* PoastProfileView.swift */; };
 		C229D8EE2AC0D80900924661 /* PoastTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C229D8ED2AC0D80900924661 /* PoastTimelineView.swift */; };
@@ -49,6 +48,7 @@
 		C277717C2B7FC9010060FDAD /* PoastAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277717B2B7FC9010060FDAD /* PoastAvatarView.swift */; };
 		C27771B32B82E9B70060FDAD /* PoastThreadPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27771B22B82E9B70060FDAD /* PoastThreadPostModel.swift */; };
 		C27FFC6E2CBADFB4003435F3 /* PoastPostRepostInteractionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27FFC6D2CBADFAC003435F3 /* PoastPostRepostInteractionModel.swift */; };
+		C28AB0E22CCADBF600965DB1 /* PoastFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28AB0E12CCADBF600965DB1 /* PoastFeedView.swift */; };
 		C28EFC292B784628009DB7A3 /* PoastTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC282B784628009DB7A3 /* PoastTimelineViewModel.swift */; };
 		C28EFC2D2B796B70009DB7A3 /* PoastThreadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC2C2B796B70009DB7A3 /* PoastThreadViewModel.swift */; };
 		C28EFC2F2B796B9D009DB7A3 /* PoastThreadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28EFC2E2B796B9D009DB7A3 /* PoastThreadModel.swift */; };
@@ -110,7 +110,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C2005B4B2A966F7200ED9570 /* PoastProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastProfileHeaderView.swift; sourceTree = "<group>"; };
 		C2222C612A8421E7000C7C45 /* PoastProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastProfileViewModel.swift; sourceTree = "<group>"; };
 		C2222C632A842601000C7C45 /* PoastProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastProfileView.swift; sourceTree = "<group>"; };
 		C229D8ED2AC0D80900924661 /* PoastTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastTimelineView.swift; sourceTree = "<group>"; };
@@ -150,6 +149,7 @@
 		C277717B2B7FC9010060FDAD /* PoastAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastAvatarView.swift; sourceTree = "<group>"; };
 		C27771B22B82E9B70060FDAD /* PoastThreadPostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastThreadPostModel.swift; sourceTree = "<group>"; };
 		C27FFC6D2CBADFAC003435F3 /* PoastPostRepostInteractionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostRepostInteractionModel.swift; sourceTree = "<group>"; };
+		C28AB0E12CCADBF600965DB1 /* PoastFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastFeedView.swift; sourceTree = "<group>"; };
 		C28EFC282B784628009DB7A3 /* PoastTimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastTimelineViewModel.swift; sourceTree = "<group>"; };
 		C28EFC2C2B796B70009DB7A3 /* PoastThreadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastThreadViewModel.swift; sourceTree = "<group>"; };
 		C28EFC2E2B796B9D009DB7A3 /* PoastThreadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastThreadModel.swift; sourceTree = "<group>"; };
@@ -313,7 +313,6 @@
 				C29362462B5C1F6D002BE99E /* PoastTabView.swift */,
 				C293623A2B5B17B7002BE99E /* PoastAccountsView.swift */,
 				C2A8D6C92A7BFE69005D9235 /* PoastSignInView.swift */,
-				C2005B4B2A966F7200ED9570 /* PoastProfileHeaderView.swift */,
 				C277717B2B7FC9010060FDAD /* PoastAvatarView.swift */,
 				C2222C632A842601000C7C45 /* PoastProfileView.swift */,
 				C2D3E88A2B63430D00440738 /* PoastPostView.swift */,
@@ -324,6 +323,7 @@
 				C22BE4DA2B72FF9100C24372 /* PoastPostEmbedRecordWithMediaView.swift */,
 				C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */,
 				C229D8ED2AC0D80900924661 /* PoastTimelineView.swift */,
+				C28AB0E12CCADBF600965DB1 /* PoastFeedView.swift */,
 				C28EFC322B7BE393009DB7A3 /* PoastThreadView.swift */,
 				C29362482B5C2177002BE99E /* PoastSettingsView.swift */,
 			);
@@ -593,7 +593,6 @@
 				C22D620C2B5DD96300A1E1B4 /* PoastLabelModel.swift in Sources */,
 				C2D0453E2A798A9B001DC946 /* DependencyProvider.swift in Sources */,
 				C2222C622A8421E7000C7C45 /* PoastProfileViewModel.swift in Sources */,
-				C2005B4C2A966F7200ED9570 /* PoastProfileHeaderView.swift in Sources */,
 				C22BE49F2B6DFBED00C24372 /* PoastPostEmbedRecordModel.swift in Sources */,
 				C22BE4D92B72F7AB00C24372 /* PoastPostEmbedExternalView.swift in Sources */,
 				C26C1BA52CB58B5D000886BB /* PoastNotFoundPostModel.swift in Sources */,
@@ -605,6 +604,7 @@
 				C28EFC2F2B796B9D009DB7A3 /* PoastThreadModel.swift in Sources */,
 				C297FDEC2A82A61B00BA78CD /* PoastCredentialsService.swift in Sources */,
 				C22BE4A32B6EA75000C24372 /* PoastBlobModel.swift in Sources */,
+				C28AB0E22CCADBF600965DB1 /* PoastFeedView.swift in Sources */,
 				C2D045902A7AC75A001DC946 /* UtilityProvider.swift in Sources */,
 				C2EDB4022B695EA000C31720 /* PoastReplyModel.swift in Sources */,
 				C22BE49D2B6DEA8800C24372 /* PoastBlockedProfileModel.swift in Sources */,
@@ -777,7 +777,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -808,7 +808,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

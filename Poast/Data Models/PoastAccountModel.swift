@@ -24,6 +24,7 @@ class PoastAccountModel: Codable {
     var handle: String
     var host: URL
     var handleAndHost: String { "\(handle)@\(host.absoluteString)" }
+    @Relationship(deleteRule: .cascade)
     var session: PoastSessionModel?
 
     init(uuid: UUID, created: Date, handle: String, host: URL, session: PoastSessionModel?) {

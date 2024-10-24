@@ -32,7 +32,7 @@ struct PoastAccountsView: View {
                         Text("\(account.handle) @ \(account.host.host()!)")
                     }
                 }
-                .onDelete { indexSet in
+                .onDelete { indexSet in 
                     indexSet.forEach {
                         _ = accountsViewModel.deleteAccount(account: self.accounts[$0])
                     }

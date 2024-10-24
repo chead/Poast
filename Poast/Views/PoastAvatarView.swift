@@ -24,7 +24,7 @@ struct PoastAvatarView: View {
                     .scaledToFill()
             } placeholder: {
                 Rectangle()
-                    .fill(.green)
+                    .fill(.clear)
                     .frame(width: size.rawValue, height: size.rawValue)
             }
             .frame(width: size.rawValue, height: size.rawValue)
