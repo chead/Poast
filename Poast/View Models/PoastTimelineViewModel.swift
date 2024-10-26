@@ -35,6 +35,8 @@ class PoastTimelineViewModel: ObservableObject {
         posts.removeAll()
 
         try? modelContext.delete(model: PoastPostLikeInteractionModel.self)
+        try? modelContext.delete(model: PoastPostRepostInteractionModel.self)
+        try? modelContext.delete(model: PoastThreadMuteInteractionModel.self)
     }
 
     func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
