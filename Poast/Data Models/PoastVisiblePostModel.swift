@@ -24,9 +24,12 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
     let repostedBy: PoastProfileModel?
     let like: String?
     let repost: String?
+    let threadMuted: Bool
     let replyDisabled: Bool
+    let embeddingDisabled: Bool
+    let pinned: Bool
 
-    init(uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, replyDisabled: Bool) {
+    init(uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, threadMuted: Bool, replyDisabled: Bool, embeddingDisabled: Bool, pinned: Bool) {
         self.uri = uri
         self.cid = cid
         self.text = text
@@ -41,7 +44,10 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         self.repostedBy = repostedBy
         self.like = like
         self.repost = repost
+        self.threadMuted = threadMuted
         self.replyDisabled = replyDisabled
+        self.embeddingDisabled = embeddingDisabled
+        self.pinned = pinned
     }
 
     init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
@@ -90,11 +96,17 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         if let viewerState = blueskyFeedFeedViewPost.post.viewer {
             self.like = viewerState.like
             self.repost = viewerState.repost
+            self.threadMuted = viewerState.threadMuted ?? false
             self.replyDisabled = viewerState.replyDisabled ?? false
+            self.embeddingDisabled = viewerState.embeddedDisabled ?? false
+            self.pinned = viewerState.pinned ?? false
         } else {
             self.like = nil
             self.repost = nil
+            self.threadMuted = false
             self.replyDisabled = false
+            self.embeddingDisabled = false
+            self.pinned = false
         }
     }
 
@@ -126,11 +138,17 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         if let viewerState = blueskyFeedPostView.viewer {
             self.like = viewerState.like
             self.repost = viewerState.repost
+            self.threadMuted = viewerState.threadMuted ?? false
             self.replyDisabled = viewerState.replyDisabled ?? false
+            self.embeddingDisabled = viewerState.embeddedDisabled ?? false
+            self.pinned = viewerState.pinned ?? false
         } else {
             self.like = nil
             self.repost = nil
+            self.threadMuted = false
             self.replyDisabled = false
+            self.embeddingDisabled = false
+            self.pinned = false
         }
     }
 

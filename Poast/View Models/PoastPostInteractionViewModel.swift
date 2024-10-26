@@ -27,6 +27,7 @@ enum PoastPostInteractionViewModelError: Error {
 
     @Published var likeInteraction: PoastPostLikeInteractionModel? = nil
     @Published var repostInteraction: PoastPostRepostInteractionModel? = nil
+    @Published var threadMuteInteraction: PoastThreadMuteInteractionModel? = nil
 
     init(modelContext: ModelContext, post: PoastVisiblePostModel) {
         self.modelContext = modelContext
@@ -38,12 +39,13 @@ enum PoastPostInteractionViewModelError: Error {
     func getInteractions() {
         getLikeInteraction()
         getRepostInteraction()
+        getThreadMuteInteraction()
     }
 
     func toggleLikePost(session: PoastSessionModel) async {
         switch((likeInteraction, post.like)) {
         case (.some(let likeInteraction), _):
-            deleteLikeInteraction(likeInteraction: likeInteraction)
+            deleteLikeInteraction(interaction: likeInteraction)
 
         case(nil, .some(_)):
             if(await unlikePost(session: session, uri: post.uri) == nil) {
@@ -105,21 +107,13 @@ enum PoastPostInteractionViewModelError: Error {
 
         modelContext.insert(likeInteraction)
 
-        do {
-            try modelContext.save()
-
-            self.likeInteraction = likeInteraction
-        } catch {}
+        self.likeInteraction = likeInteraction
     }
 
-    private func deleteLikeInteraction(likeInteraction: PoastPostLikeInteractionModel) {
-        modelContext.delete(likeInteraction)
+    private func deleteLikeInteraction(interaction: PoastPostLikeInteractionModel) {
+        modelContext.delete(interaction)
 
-        do {
-            try modelContext.save()
-
-            self.likeInteraction = nil
-        } catch {}
+        self.likeInteraction = nil
     }
 
     private func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
@@ -160,7 +154,7 @@ enum PoastPostInteractionViewModelError: Error {
     func toggleRepostPost(session: PoastSessionModel) async {
         switch((repostInteraction, post.repost)) {
         case (.some(let repostInteraction), _):
-            deleteRepostInteraction(repostInteraction: repostInteraction)
+            deleteRepostInteraction(interaction: repostInteraction)
 
         case(nil, .some(_)):
             if(await unrepostPost(session: session, uri: post.uri) == nil) {
@@ -211,14 +205,22 @@ enum PoastPostInteractionViewModelError: Error {
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
 
             do {
-                if(try await blueskyClient.deleteLike(host: session.account.host,
+                switch(try await blueskyClient.deleteLike(host: session.account.host,
                                                       accessToken: credentials.accessToken,
                                                       refreshToken: credentials.refreshToken,
                                                       repo: session.did,
-                                                      rkey: String(rkey)) != nil) {
-                    return .unknown
-                } else {
+                                                      rkey: String(rkey))) {
+                case .success(let deleteLikeReponse):
+                    if let credentials = deleteLikeReponse {
+                        _ = credentialsService.updateCredentials(did: session.did,
+                                                                 accessToken: credentials.accessToken,
+                                                                 refreshToken: credentials.refreshToken)
+                    }
+
                     return nil
+
+                case .failure(_):
+                    return .unknown
                 }
             } catch {
                 return .unknown
@@ -250,21 +252,13 @@ enum PoastPostInteractionViewModelError: Error {
 
         modelContext.insert(repostInteraction)
 
-        do {
-            try modelContext.save()
-
-            self.repostInteraction = repostInteraction
-        } catch {}
+        self.repostInteraction = repostInteraction
     }
 
-    private func deleteRepostInteraction(repostInteraction: PoastPostRepostInteractionModel) {
-        modelContext.delete(repostInteraction)
+    private func deleteRepostInteraction(interaction: PoastPostRepostInteractionModel) {
+        modelContext.delete(interaction)
 
-        do {
-            try modelContext.save()
-
-            self.repostInteraction = nil
-        } catch {}
+        self.repostInteraction = nil
     }
 
     private func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
@@ -312,20 +306,158 @@ enum PoastPostInteractionViewModelError: Error {
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
 
             do {
-                if(try await blueskyClient.deleteRepost(host: session.account.host,
-                                                        accessToken: credentials.accessToken,
-                                                        refreshToken: credentials.refreshToken,
-                                                        repo: session.did,
-                                                        rkey: String(rkey)) != nil) {
-                    return .unknown
-                } else {
+                switch(try await blueskyClient.deleteRepost(host: session.account.host,
+                                                            accessToken: credentials.accessToken,
+                                                            refreshToken: credentials.refreshToken,
+                                                            repo: session.did,
+                                                            rkey: String(rkey))) {
+
+                case .success(let unrepostPostResponse):
+                    if let credentials = unrepostPostResponse {
+                        _ = credentialsService.updateCredentials(did: session.did,
+                                                                 accessToken: credentials.accessToken,
+                                                                 refreshToken: credentials.refreshToken)
+                    }
+
                     return nil
+
+                case .failure(_):
+                    return .unknown
                 }
             } catch {
                 return .unknown
             }
 
         case .failure:
+            return .unknown
+        }
+    }
+
+    func toggleMutePost(session: PoastSessionModel) async {
+        switch((threadMuteInteraction, post.threadMuted)) {
+        case (.some(let threadMuteInteraction), _):
+            deleteThreadMuteInteraction(interaction: threadMuteInteraction)
+
+        case(nil, true):
+            if(await unmuteThread(session: session, uri: post.uri) == nil) {
+                createThreadMuteInteraction(interaction: .unmuted)
+            }
+
+        case(nil, false):
+            if(await muteThread(session: session, uri: post.uri) == nil) {
+                createThreadMuteInteraction(interaction: .muted)
+            }
+        }
+    }
+
+    func isThreadMuted() -> Bool {
+        switch((post.threadMuted, threadMuteInteraction?.interaction)) {
+        case(true, .none):
+            return true
+
+        case (_, .some(let threadMuteInteraction)) where threadMuteInteraction == .muted:
+            return true
+
+        case (_, .some(let threadMuteInteraction)) where threadMuteInteraction == .unmuted:
+            return false
+
+        default:
+            return false
+        }
+    }
+
+    private func getThreadMuteInteraction() {
+        let postUri = post.uri
+
+        let threadMuteInteractionsDescriptor = FetchDescriptor<PoastThreadMuteInteractionModel>(predicate: #Predicate { interaction in
+            return interaction.postUri == postUri
+        })
+
+        let threadMuteInteractions = try? modelContext.fetch(threadMuteInteractionsDescriptor)
+
+        threadMuteInteraction = threadMuteInteractions?.first
+    }
+
+    private func createThreadMuteInteraction(interaction: PoastThreadMuteModel) {
+        if let threadMuteInteraction = threadMuteInteraction {
+            modelContext.delete(threadMuteInteraction)
+        }
+
+        let threadMuteInteraction = PoastThreadMuteInteractionModel(postUri: post.uri, interaction: interaction)
+
+        modelContext.insert(threadMuteInteraction)
+
+        self.threadMuteInteraction = threadMuteInteraction
+    }
+
+    private func deleteThreadMuteInteraction(interaction: PoastThreadMuteInteractionModel) {
+        modelContext.delete(interaction)
+
+        self.threadMuteInteraction = nil
+    }
+
+    private func muteThread(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+        switch(credentialsService.getCredentials(sessionDID: session.did)) {
+        case .success(let credentials):
+            guard let credentials = credentials else {
+                return .credentials
+            }
+
+            do {
+                switch(try await blueskyClient.muteThread(host: session.account.host,
+                                                          accessToken: credentials.accessToken,
+                                                          refreshToken: credentials.refreshToken,
+                                                          root: uri)) {
+                case .success(let muteThreadResponse):
+                    if let credentials = muteThreadResponse {
+                        _ = credentialsService.updateCredentials(did: session.did,
+                                                                 accessToken: credentials.accessToken,
+                                                                 refreshToken: credentials.refreshToken)
+                    }
+
+                    return nil
+
+                case .failure(_):
+                    return .unknown
+                }
+            } catch {
+                return .unknown
+            }
+
+        case .failure(_):
+            return .unknown
+        }
+    }
+
+    private func unmuteThread(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+        switch(credentialsService.getCredentials(sessionDID: session.did)) {
+        case .success(let credentials):
+            guard let credentials = credentials else {
+                return .credentials
+            }
+
+            do {
+                switch(try await blueskyClient.unmuteThread(host: session.account.host,
+                                                          accessToken: credentials.accessToken,
+                                                          refreshToken: credentials.refreshToken,
+                                                          root: uri)) {
+                case .success(let unmuteThreadResponse):
+                    if let credentials = unmuteThreadResponse {
+                        _ = credentialsService.updateCredentials(did: session.did,
+                                                                 accessToken: credentials.accessToken,
+                                                                 refreshToken: credentials.refreshToken)
+                    }
+
+                    return nil
+
+                case .failure(_):
+                    return .unknown
+                }
+            } catch {
+                return .unknown
+            }
+
+        case .failure(_):
             return .unknown
         }
     }

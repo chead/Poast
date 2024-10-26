@@ -110,7 +110,15 @@ struct PoastPostInteractionView: View {
 
                 Button("Share") {}
 
-                Button("Mute thread") {}
+                Button(postInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
+                    Task {
+                        guard let session = user.session else {
+                            return
+                        }
+
+                        await postInteractionViewModel.toggleMutePost(session: session)
+                    }
+                }
 
                 Button("Hide post") {}
 
