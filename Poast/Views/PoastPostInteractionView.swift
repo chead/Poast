@@ -13,8 +13,9 @@ struct PoastPostInteractionView: View {
     @EnvironmentObject var user: PoastUser
 
     @StateObject var postInteractionViewModel: PoastPostInteractionViewModel
+
     @State var showingRepostDialog: Bool = false
-    @State var showingMoreDialog: Bool = false
+    @State var showingMoreConfirmationDialog: Bool = false
 
     @Binding var interacted: Date
 
@@ -93,32 +94,27 @@ struct PoastPostInteractionView: View {
             Spacer()
 
             Button(action: {
-                showingMoreDialog = true
+                showingMoreConfirmationDialog = true
             }, label: {
                 Image(systemName: "ellipsis")
             })
             .buttonStyle(.plain)
             .confirmationDialog("More",
-                                isPresented: $showingMoreDialog,
+                                isPresented: $showingMoreConfirmationDialog,
                                 titleVisibility: .hidden) {
-                Button(action: {}, label: {
-                    Text("Translate")
-                })
-                Button(action: {}, label: {
-                    Text("Copy post text")
-                })
-                Button(action: {}, label: {
-                    Text("Share")
-                })
-                Button(action: {}, label: {
-                    Text("Mute thread")
-                })
-                Button(action: {}, label: {
-                    Text("Hide post")
-                })
-                Button(action: {}, label: {
-                    Text("Report post")
-                })
+//                Button("Translate") {}
+
+                Button("Copy post text") {
+                    UIPasteboard.general.string = postInteractionViewModel.post.text
+                }
+
+                Button("Share") {}
+
+                Button("Mute thread") {}
+
+                Button("Hide post") {}
+
+                Button("Report post") {}
             }
         }
         .onAppear {

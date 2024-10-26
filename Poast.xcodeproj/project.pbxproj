@@ -89,6 +89,7 @@
 		C2EDB4072B6ACC8300C31720 /* PoastPreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4062B6ACC8300C31720 /* PoastPreferencesService.swift */; };
 		C2EDB40B2B6AF50600C31720 /* PoastPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB40A2B6AF50600C31720 /* PoastPostViewModel.swift */; };
 		C2F54CD42CC03B17005150F2 /* PoastUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F54CD32CC03B13005150F2 /* PoastUser.swift */; };
+		C2F6E28C2CCB10A60016A97C /* PoastPostComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F6E28B2CCB10A60016A97C /* PoastPostComposeView.swift */; };
 		C2FA38CD2B6D9D510001A8C1 /* PoastPostInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -188,6 +189,7 @@
 		C2EDB4062B6ACC8300C31720 /* PoastPreferencesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPreferencesService.swift; sourceTree = "<group>"; };
 		C2EDB40A2B6AF50600C31720 /* PoastPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostViewModel.swift; sourceTree = "<group>"; };
 		C2F54CD32CC03B13005150F2 /* PoastUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastUser.swift; sourceTree = "<group>"; };
+		C2F6E28B2CCB10A60016A97C /* PoastPostComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostComposeView.swift; sourceTree = "<group>"; };
 		C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoastPostInteractionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -361,6 +363,7 @@
 				C2B1CD9D2CB6D71800978EA1 /* PoastPostLikeInteractionModel.swift */,
 				C2B1CD9B2CB6D6FC00978EA1 /* PoastPostRepostModel.swift */,
 				C27FFC6D2CBADFAC003435F3 /* PoastPostRepostInteractionModel.swift */,
+				C2F6E28B2CCB10A60016A97C /* PoastPostComposeView.swift */,
 			);
 			path = "Data Models";
 			sourceTree = "<group>";
@@ -562,6 +565,7 @@
 				C293624B2B5C21A4002BE99E /* PoastSettingsViewModel.swift in Sources */,
 				C229D8F02AC0D87B00924661 /* PoastAuthorTimelineViewModel.swift in Sources */,
 				C28EFC332B7BE393009DB7A3 /* PoastThreadView.swift in Sources */,
+				C2F6E28C2CCB10A60016A97C /* PoastPostComposeView.swift in Sources */,
 				C26C1BA32CB58B4A000886BB /* PoastBlockedPostModel.swift in Sources */,
 				C2D044E62A78A33D001DC946 /* PoastCredentialsModel.swift in Sources */,
 				C27FFC6E2CBADFB4003435F3 /* PoastPostRepostInteractionModel.swift in Sources */,
@@ -785,9 +789,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chead.Poast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -816,9 +824,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chead.Poast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

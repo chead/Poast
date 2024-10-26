@@ -12,7 +12,7 @@ struct PoastFeedView: View {
 
     @EnvironmentObject var user: PoastUser
 
-    @State var showingComposerView: Bool = false
+    @State var showingComposeSheet: Bool = false
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
@@ -57,14 +57,15 @@ struct PoastFeedView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingComposerView = true
+                    showingComposeSheet = true
                 } label: {
                     Image(systemName: "plus")
                 }
             }
         }
-        .sheet(isPresented: $showingComposerView) {
-            PoastPostComposeView()
+        .sheet(isPresented: $showingComposeSheet) {
+            PoastPostComposeView(showingComposeView: $showingComposeSheet)
+                .interactiveDismissDisabled(true)
         }
         .refreshable {
             refreshing = true
