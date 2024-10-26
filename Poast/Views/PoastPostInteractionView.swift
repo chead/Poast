@@ -108,7 +108,9 @@ struct PoastPostInteractionView: View {
                     UIPasteboard.general.string = postInteractionViewModel.post.text
                 }
 
-                Button("Share") {}
+                if postInteractionViewModel.canSharePost(), let postShareURL = postInteractionViewModel.postShareURL() {
+                    ShareLink(item: postShareURL)
+                }
 
                 Button(postInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
                     Task {

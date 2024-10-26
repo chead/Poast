@@ -461,4 +461,16 @@ enum PoastPostInteractionViewModelError: Error {
             return .unknown
         }
     }
+
+    func canSharePost() -> Bool {
+        !(post.author.labels?.contains(where: { label in
+            label.val == "!no-unauthenticated"
+        }) ?? true)
+    }
+
+    func postShareURL() -> URL? {
+        guard let lastURICompoenentIndex = post.uri.lastIndex(of: "/") else { return nil }
+
+        return URL(string: "https://bsky.app/profile/\(post.author.handle)/post/\(String(post.uri.suffix(from: lastURICompoenentIndex).dropFirst()))")
+    }
 }
