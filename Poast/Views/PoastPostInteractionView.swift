@@ -16,6 +16,7 @@ struct PoastPostInteractionView: View {
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreConfirmationDialog: Bool = false
+    @State var showingPostShareConfirmationDialog: Bool = false
 
     @Binding var interacted: Date
 
@@ -100,8 +101,7 @@ struct PoastPostInteractionView: View {
             })
             .buttonStyle(.plain)
             .confirmationDialog("More",
-                                isPresented: $showingMoreConfirmationDialog,
-                                titleVisibility: .hidden) {
+                                isPresented: $showingMoreConfirmationDialog) {
 //                Button("Translate") {}
 
                 Button("Copy post text") {
@@ -109,7 +109,13 @@ struct PoastPostInteractionView: View {
                 }
 
                 if postInteractionViewModel.canSharePost(), let postShareURL = postInteractionViewModel.postShareURL() {
-                    ShareLink(item: postShareURL)
+                    ShareLink(item: postShareURL) {
+                        Text("Share")
+                    }
+                } else {
+                    Button("Share") {
+                        showingPostShareConfirmationDialog = true
+                    }
                 }
 
                 Button(postInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
@@ -126,6 +132,16 @@ struct PoastPostInteractionView: View {
 
                 Button("Report post") {}
             }
+        }
+        .confirmationDialog("Share",
+                            isPresented: $showingPostShareConfirmationDialog) {
+            if let postShareURL = postInteractionViewModel.postShareURL() {
+                ShareLink(item: postShareURL) {
+                    Text("Share anyway")
+                }
+            }
+        } message: {
+            Text("This post is only visibled to users who are logged in.")
         }
         .onAppear {
             postInteractionViewModel.getInteractions()
