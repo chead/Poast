@@ -52,17 +52,10 @@ struct PoastThreadParentPostView: View {
 
             case .threadPost(let threadPost):
                 PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
+                              showingProfileHandle: $showingProfileHandle,
+                              showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
-                              isParent: false,
-                              action: { action in
-                    switch action {
-                    case .profile(let handle):
-                        showingProfileHandle = handle
-
-                    case .thread(let uri):
-                        showingThreadURI = uri
-                    }
-                })
+                              isParent: false)
             }
         }
     }
@@ -79,19 +72,10 @@ struct PoastThreadPostView: View {
 
     var body: some View {
         PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
+                      showingProfileHandle: $showingProfileHandle,
+                      showingThreadURI: $showingThreadURI,
                       interacted: $interacted,
-                      isParent: false,
-                      action: { action in
-            switch action {
-            case .profile(let handle):
-                showingProfileHandle = handle
-
-            case .thread(let uri):
-                if uri != threadViewModel.uri {
-                    showingThreadURI = uri
-                }
-            }
-        })
+                      isParent: false)
         .id(1)
 
         ForEach(threadPost.replies ?? []) { reply in

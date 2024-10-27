@@ -24,17 +24,10 @@ struct PoastTimelineView: View {
                     switch(parent) {
                     case .post(let parentPost):
                         PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                      showingProfileHandle: $showingProfileHandle,
+                                      showingThreadURI: $showingThreadURI,
                                       interacted: $interacted,
-                                      isParent: true,
-                                      action: { action in
-                            switch action {
-                            case .profile(let handle):
-                                showingProfileHandle = handle
-
-                            case .thread(let uri):
-                                showingThreadURI = uri
-                            }
-                        })
+                                      isParent: true)
 
                     case .reference(_):
                         EmptyView()
@@ -48,17 +41,10 @@ struct PoastTimelineView: View {
                 }
 
                 PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                              showingProfileHandle: $showingProfileHandle,
+                              showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
-                              isParent: false,
-                              action: { action in
-                    switch action {
-                    case .profile(let handle):
-                        showingProfileHandle = handle
-
-                    case .thread(let uri):
-                        showingThreadURI = uri
-                    }
-                })
+                              isParent: false)
                 .onAppear {
                     Task {
                         if timelineViewModel.posts.lastIndex(of: post) == timelineViewModel.posts.count - 1 {

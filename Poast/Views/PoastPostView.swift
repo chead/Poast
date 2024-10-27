@@ -21,17 +21,18 @@ struct PoastPostView: View {
 
     @State var replyTo: String?
 
+    @Binding var showingProfileHandle: String?
+    @Binding var showingThreadURI: String?
     @Binding var interacted: Date
 
     let isParent: Bool
-    let action: (PoastPoastViewAction) -> Void
 
     var body: some View {
         HStack(alignment: .top) {
             Spacer()
 
             Button {
-                action(.profile(postViewModel.post.author.handle))
+                showingProfileHandle = postViewModel.post.author.handle
             } label: {
                 VStack {
                     PoastAvatarView(size: .small,
@@ -48,7 +49,7 @@ struct PoastPostView: View {
             }.buttonStyle(.plain)
 
             Button {
-                action(.thread(postViewModel.post.uri))
+                showingThreadURI = postViewModel.post.uri
             } label: {
                 VStack(alignment: .leading) {
                     PoastPostHeaderView(authorName: postViewModel.post.author.name,
