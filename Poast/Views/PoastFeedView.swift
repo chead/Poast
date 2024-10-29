@@ -16,6 +16,7 @@ struct PoastFeedView: View {
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
+    @State var hasAppeared: Bool = false
     @State var refreshing: Bool = false
 
     var body: some View {
@@ -70,8 +71,12 @@ struct PoastFeedView: View {
         .refreshable {
             refreshing = true
         }
-        .task {
-            refreshing = true
+        .onAppear {
+            if(!hasAppeared) {
+                refreshing = true
+
+                hasAppeared.toggle()
+            }
         }
     }
 }
