@@ -30,157 +30,151 @@ struct PoastProfileView: View {
     @State var refreshing: Bool = false
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
-                if let profile = profileViewModel.profile {
-                    Section {
-                        VStack {
-                            ZStack {
-                                AsyncImage(url: URL(string: profile.banner ?? "")) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                } placeholder: {
-                                    Rectangle()
-                                        .fill(.clear)
-                                        .frame(height: 100)
-                                }
-                                .frame(height: 100)
-                                .clipShape(RoundedRectangle(cornerRadius: 10.0))
-                                .padding(.horizontal, 16)
-
-                                PoastAvatarView(size: .large,
-                                                url: profile.avatar ?? "")
-                                .offset(y: 50)
-
+        List {
+            if let profile = profileViewModel.profile {
+                Section {
+                    VStack {
+                        ZStack {
+                            AsyncImage(url: URL(string: profile.banner ?? "")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            } placeholder: {
+                                Rectangle()
+                                    .fill(.clear)
                             }
-                            .padding(.top, 20)
-                            .padding(.bottom, 50)
+                            .clipShape(RoundedRectangle(cornerRadius: 10.0))
 
-                            Text(profile.displayName ?? "")
-                                .font(.title)
+                            PoastAvatarView(size: .large,
+                                            url: profile.avatar ?? "")
+                            .offset(y: 50)
 
-                            HStack {
-                                Spacer()
+                        }
+                        .padding(.bottom, 50)
 
-                                VStack {
-                                    Text("\(profile.followersCount ?? 0)")
-                                        .bold()
-                                    Text("followers")
-                                }
+                        Text(profile.displayName ?? "")
+                            .font(.title)
 
-                                Spacer()
+                        HStack {
+                            VStack {
+                                Text("\(profile.followersCount ?? 0)")
+                                    .bold()
+                                Text("followers")
+                            }
 
-                                VStack {
-                                    Text("\(profile.followsCount ?? 0)")
-                                        .bold()
-                                    Text("following")
-                                }
+                            Spacer()
 
-                                Spacer()
+                            VStack {
+                                Text("\(profile.followsCount ?? 0)")
+                                    .bold()
+                                Text("following")
+                            }
 
-                                VStack {
-                                    Text("\(profile.postsCount ?? 0)")
-                                        .bold()
-                                    Text("posts")
+                            Spacer()
 
-                                }
+                            VStack {
+                                Text("\(profile.postsCount ?? 0)")
+                                    .bold()
+                                Text("posts")
+                            }
+                        }
+                        .padding()
 
-                                Spacer()
+                        Spacer()
+
+                        Text(profile.description ?? "")
+                            .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
+                    }
+                    .padding()
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
+                    switch(feed) {
+                    case .posts:
+                        if let session = user.session {
+                            PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(session: session,
+                                                                                              modelContext: modelContext,
+                                                                                              actor: profile.handle),
+                                              showingProfileHandle: $showingProfileHandle,
+                                              showingThreadURI: $showingThreadURI,
+                                              interacted: $interacted,
+                                              refreshing: $refreshing)
+                        } else {
+                            EmptyView()
+                        }
+
+                    case .replies:
+                        Rectangle()
+                            .fill(.blue)
+
+                    case .media:
+                        Rectangle()
+                            .fill(.green)
+
+                    case .likes:
+                        Rectangle()
+                            .fill(.purple)
+
+                    case .feeds:
+                        Rectangle()
+                            .fill(.pink)
+
+                    case .lists:
+                        Rectangle()
+                            .fill(.yellow)
+                    }
+                } header: {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            Button("Posts") {
+                                feed = .posts
                             }
                             .padding(.horizontal, 20)
 
-                            Text(profile.description ?? "")
-                                .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
-                                .padding(20)
+                            Spacer()
+
+                            Button("Replies") {
+                                feed = .replies
+                            }
+                            .padding(.horizontal, 20)
+
+                            Spacer()
+
+                            Button("Media") {
+                                feed = .media
+                            }
+                            .padding(20)
+
+                            Spacer()
+
+                            Button("Likes") {
+                                feed = .likes
+                            }
+                            .padding(.horizontal, 20)
+
+                            Spacer()
+
+                            Button("Feeds") {
+                                feed = .feeds
+                            }
+                            .padding(.horizontal, 20)
+
+                            Spacer()
+
+                            Button("Lists") {
+                                feed = .lists
+                            }
+                            .padding(.horizontal, 20)
                         }
                     }
-
-                    Section {
-                        switch(feed) {
-                        case .posts:
-                            if let session = user.session {
-                                PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(session: session,
-                                                                                                  modelContext: modelContext,
-                                                                                                  actor: profile.handle),
-                                                  showingProfileHandle: $showingProfileHandle,
-                                                  showingThreadURI: $showingThreadURI,
-                                                  interacted: $interacted,
-                                                  refreshing: $refreshing)
-                                .padding(.horizontal, 20)
-                            } else {
-                                EmptyView()
-                            }
-
-                        case .replies:
-                            Rectangle()
-                                .fill(.blue)
-
-                        case .media:
-                            Rectangle()
-                                .fill(.green)
-
-                        case .likes:
-                            Rectangle()
-                                .fill(.purple)
-
-                        case .feeds:
-                            Rectangle()
-                                .fill(.pink)
-
-                        case .lists:
-                            Rectangle()
-                                .fill(.yellow)
-                        }
-                    } header: {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                Button("Posts") {
-                                    feed = .posts
-                                }
-                                .padding(20)
-
-                                Spacer()
-
-                                Button("Replies") {
-                                    feed = .replies
-                                }
-                                .padding(20)
-
-                                Spacer()
-
-                                Button("Media") {
-                                    feed = .media
-                                }
-                                .padding(20)
-
-                                Spacer()
-
-                                Button("Likes") {
-                                    feed = .likes
-                                }
-                                .padding(20)
-
-                                Spacer()
-
-                                Button("Feeds") {
-                                    feed = .feeds
-                                }
-                                .padding(20)
-
-                                Spacer()
-
-                                Button("Lists") {
-                                    feed = .lists
-                                }
-                                .padding(20)
-                            }
-                        }
-                        .background(Color(UIColor.systemBackground))
-                    }
+                }
+                .onAppear() {
+                    refreshing = true
                 }
             }
         }
+        .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
                 PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))

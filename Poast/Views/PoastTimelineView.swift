@@ -18,45 +18,40 @@ struct PoastTimelineView: View {
     @Binding var refreshing: Bool
 
     var body: some View {
-        LazyVStack(spacing: 0) {
-            ForEach(timelineViewModel.posts) { post in
-                if let parent = post.parent {
-                    switch(parent) {
-                    case .post(let parentPost):
-                        PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
-                                      showingProfileHandle: $showingProfileHandle,
-                                      showingThreadURI: $showingThreadURI,
-                                      interacted: $interacted,
-                                      isParent: true)
+        ForEach(timelineViewModel.posts) { post in
+            if let parent = post.parent {
+                switch(parent) {
+                case .post(let parentPost):
+                    PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                                  showingProfileHandle: $showingProfileHandle,
+                                  showingThreadURI: $showingThreadURI,
+                                  interacted: $interacted,
+                                  isParent: true)
+                    .padding()
 
-                    case .reference(_):
-                        EmptyView()
+                case .reference(_):
+                    EmptyView()
 
-                    case .notFound(_):
-                        Text("Post not found")
+                case .notFound(_):
+                    Text("Post not found")
 
-                    case .blocked(_, _):
-                        Text("Blocked post")
-                    }
-                }
-
-                PoastPostView(postViewModel: PoastPostViewModel(post: post),
-                              showingProfileHandle: $showingProfileHandle,
-                              showingThreadURI: $showingThreadURI,
-                              interacted: $interacted,
-                              isParent: false)
-                .onAppear {
-                    Task {
-                        if timelineViewModel.posts.lastIndex(of: post) == timelineViewModel.posts.count - 1 {
-                            _ = await timelineViewModel.getTimeline(cursor: post.date)
-                        }
-                    }
+                case .blocked(_, _):
+                    Text("Blocked post")
                 }
             }
-        }
-        .task {
-            if(await timelineViewModel.getTimeline(cursor: Date()) == nil) {
-                interacted = Date()
+
+            PoastPostView(postViewModel: PoastPostViewModel(post: post),
+                          showingProfileHandle: $showingProfileHandle,
+                          showingThreadURI: $showingThreadURI,
+                          interacted: $interacted,
+                          isParent: false)
+            .padding()
+            .onAppear {
+                Task {
+                    if timelineViewModel.posts.lastIndex(of: post) == timelineViewModel.posts.count - 1 {
+                        _ = await timelineViewModel.getTimeline(cursor: post.date)
+                    }
+                }
             }
         }
         .onChange(of: refreshing) { _, shouldRefresh in

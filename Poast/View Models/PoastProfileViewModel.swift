@@ -18,7 +18,8 @@ enum PoastProfileViewModelError: Error {
     case unknown
 }
 
-@MainActor class PoastProfileViewModel: ObservableObject {
+@MainActor
+class PoastProfileViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var blueskyClient: BlueskyClient
 

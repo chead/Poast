@@ -19,7 +19,7 @@ struct PoastFeedView: View {
     @State var refreshing: Bool = false
 
     var body: some View {
-        ScrollView {
+        List {
             if let session = user.session {
                 PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(session: session,
                                                                                 modelContext: modelContext,
@@ -28,9 +28,9 @@ struct PoastFeedView: View {
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
                                   refreshing: $refreshing)
-                .padding(.horizontal, 20)
             }
         }
+        .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
                 PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
@@ -70,9 +70,31 @@ struct PoastFeedView: View {
         .refreshable {
             refreshing = true
         }
+        .task {
+            refreshing = true
+        }
     }
 }
 
-#Preview {
-    PoastFeedView()
-}
+//#Preview {
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+//
+//    let account = PoastAccountModel(uuid: UUID(),
+//                                    created: Date(),
+//                                    handle: "@foobar.baz",
+//                                    host: URL(string: "https://bsky.social")!,
+//                                    session: nil)
+//
+//    let session = PoastSessionModel(account: account,
+//                                    did: "",
+//                                    created: Date())
+//
+//    let user = PoastUser()
+//
+//    user.session = session
+//
+//    return PoastFeedView()
+//        .environmentObject(user)
+//        .modelContainer(for: container)
+//}
