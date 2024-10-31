@@ -15,9 +15,8 @@ enum PoastPostInteractionViewModelError: Error {
     case unknown
 }
 
-@MainActor class PoastPostInteractionViewModel: ObservableObject {
+class PoastPostInteractionViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var blueskyClient: BlueskyClient
 
     @EnvironmentObject var user: PoastUser
 
@@ -124,7 +123,7 @@ enum PoastPostInteractionViewModelError: Error {
             }
 
             do {
-                switch(try await blueskyClient.createLike(host: session.account.host,
+                switch(try await BlueskyClient.createLike(host: session.account.host,
                                                           accessToken: credentials.accessToken,
                                                           refreshToken: credentials.refreshToken,
                                                           repo: session.did,
@@ -205,13 +204,13 @@ enum PoastPostInteractionViewModelError: Error {
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
 
             do {
-                switch(try await blueskyClient.deleteLike(host: session.account.host,
+                switch(try await BlueskyClient.deleteLike(host: session.account.host,
                                                       accessToken: credentials.accessToken,
                                                       refreshToken: credentials.refreshToken,
                                                       repo: session.did,
                                                       rkey: String(rkey))) {
                 case .success(let deleteLikeReponse):
-                    if let credentials = deleteLikeReponse {
+                    if let credentials = deleteLikeReponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
                                                                  accessToken: credentials.accessToken,
                                                                  refreshToken: credentials.refreshToken)
@@ -269,7 +268,7 @@ enum PoastPostInteractionViewModelError: Error {
             }
 
             do {
-                switch(try await blueskyClient.createRepost(host: session.account.host,
+                switch(try await BlueskyClient.createRepost(host: session.account.host,
                                                             accessToken: credentials.accessToken,
                                                             refreshToken: credentials.refreshToken,
                                                             repo: session.did,
@@ -306,14 +305,14 @@ enum PoastPostInteractionViewModelError: Error {
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
 
             do {
-                switch(try await blueskyClient.deleteRepost(host: session.account.host,
+                switch(try await BlueskyClient.deleteRepost(host: session.account.host,
                                                             accessToken: credentials.accessToken,
                                                             refreshToken: credentials.refreshToken,
                                                             repo: session.did,
                                                             rkey: String(rkey))) {
 
                 case .success(let unrepostPostResponse):
-                    if let credentials = unrepostPostResponse {
+                    if let credentials = unrepostPostResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
                                                                  accessToken: credentials.accessToken,
                                                                  refreshToken: credentials.refreshToken)
@@ -404,12 +403,12 @@ enum PoastPostInteractionViewModelError: Error {
             }
 
             do {
-                switch(try await blueskyClient.muteThread(host: session.account.host,
+                switch(try await BlueskyClient.muteThread(host: session.account.host,
                                                           accessToken: credentials.accessToken,
                                                           refreshToken: credentials.refreshToken,
                                                           root: uri)) {
                 case .success(let muteThreadResponse):
-                    if let credentials = muteThreadResponse {
+                    if let credentials = muteThreadResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
                                                                  accessToken: credentials.accessToken,
                                                                  refreshToken: credentials.refreshToken)
@@ -437,12 +436,12 @@ enum PoastPostInteractionViewModelError: Error {
             }
 
             do {
-                switch(try await blueskyClient.unmuteThread(host: session.account.host,
+                switch(try await BlueskyClient.unmuteThread(host: session.account.host,
                                                           accessToken: credentials.accessToken,
                                                           refreshToken: credentials.refreshToken,
                                                           root: uri)) {
                 case .success(let unmuteThreadResponse):
-                    if let credentials = unmuteThreadResponse {
+                    if let credentials = unmuteThreadResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
                                                                  accessToken: credentials.accessToken,
                                                                  refreshToken: credentials.refreshToken)

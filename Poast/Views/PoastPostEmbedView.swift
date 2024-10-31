@@ -15,7 +15,7 @@ struct PoastPostEmbedView: View {
     @State var embed: PoastPostEmbedModel
 
     var body: some View {
-        switch(self.embed) {
+        switch(embed) {
         case .images(let images):
             PoastPostEmbedImagesView(images: images)
 
@@ -32,7 +32,7 @@ struct PoastPostEmbedView: View {
                                               record: recordWithMedia.record,
                                               media: recordWithMedia.media)
 
-        case .video(let poastPostEmbedVideoModel):
+        default:
             EmptyView()
         }
     }

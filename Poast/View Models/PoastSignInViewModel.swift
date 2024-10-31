@@ -40,8 +40,7 @@ enum PoastSignInViewModelError: Error {
     }
 }
 
-@MainActor class PoastSignInViewModel {
-    @Dependency private var blueskyClient: BlueskyClient
+class PoastSignInViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var preferencesService: PoastPreferencesService
 
@@ -53,7 +52,7 @@ enum PoastSignInViewModelError: Error {
 
     func signIn(host: URL, handle: String, password: String) async -> Result<PoastSessionModel, PoastSignInViewModelError> {
         do {
-            switch(try await self.blueskyClient.createSession(host: host, identifier: handle, password: password)) {
+            switch(try await BlueskyClient.createSession(host: host, identifier: handle, password: password)) {
             case .success(let createSessionResponseBody):
                 switch(self.getOrCreateAccount(handle: handle, host: host)) {
                 case .success(let account):

@@ -92,7 +92,7 @@ struct PoastThreadPostView: View {
                                     showingThreadURI: $showingThreadURI,
                                     interacted: $interacted,
                                     threadPost: threadPost)
-                .padding(.leading, 25)
+                .padding(.leading, 40)
             }
         }
     }
@@ -100,6 +100,8 @@ struct PoastThreadPostView: View {
 
 
 struct PoastThreadView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @EnvironmentObject var user: PoastUser
 
     @StateObject var threadViewModel: PoastThreadViewModel
@@ -132,7 +134,14 @@ struct PoastThreadView: View {
             }
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                                                                             handle: profileHandle),
+                                     authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                                   modelContext: modelContext,
+                                                                                   actor: profileHandle),
+                                     likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                                                                 modelContext: modelContext,
+                                                                                 actor: profileHandle))
                 }
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in

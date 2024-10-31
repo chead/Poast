@@ -30,8 +30,6 @@ struct PoastPostView: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            Spacer()
-
             Button {
                 showingProfileHandle = postViewModel.post.author.handle
             } label: {

@@ -14,10 +14,13 @@ struct PoastTabView: View {
 
     var body: some View {
         TabView {
-            NavigationStack {
-                PoastFeedView()
+            if let session = user.session {
+                NavigationStack {
+                    PoastFollowingFeedView(followingFeedViewModel: PoastFollowingFeedViewModel(session: session,
+                                                                             modelContext: modelContext))
+                }
+                .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
             }
-            .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
 
             Rectangle()
                 .fill(.blue)
@@ -29,7 +32,14 @@ struct PoastTabView: View {
 
             if let session = user.session {
                 NavigationStack {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: session.account.handle))
+                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                                                                             handle: session.account.handle),
+                                     authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                                   modelContext: modelContext,
+                                                                                   actor: session.account.handle),
+                                     likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                                                                 modelContext: modelContext,
+                                                                                 actor: session.account.handle))
                 }
                 .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }

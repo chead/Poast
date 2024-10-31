@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum PoastProfileViewFeedType {
+enum PoastProfileFeedType {
     case posts
     case replies
     case media
@@ -23,113 +23,71 @@ struct PoastProfileView: View {
     @EnvironmentObject var user: PoastUser
 
     @StateObject var profileViewModel: PoastProfileViewModel
+    @StateObject var authorFeedViewModel: PoastAuthorFeedViewModel
+    @StateObject var likesFeedViewModel: PoastLikesFeedViewModel
 
-    @State var feedType: PoastProfileViewFeedType = .posts
+    @State var feedType: PoastProfileFeedType = .posts
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
-    @State var hasAppeared: Bool = false
-    @State var refreshing: Bool = false
 
-    @ViewBuilder var header: some View {
-        if let profile = profileViewModel.profile {
-            VStack {
-                ZStack {
-                    AsyncImage(url: URL(string: profile.banner ?? "")) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        Rectangle()
-                            .fill(.clear)
-                    }
-                    .frame(height: 100)
-                    .clipShape(RoundedRectangle(cornerRadius: 10.0))
-                    
-                    PoastAvatarView(size: .large,
-                                    url: profile.avatar ?? "")
-                    .offset(y: 50)
-                    
+    var header: some View {
+        VStack {
+            ZStack {
+                AsyncImage(url: URL(string: profileViewModel.profile?.banner ?? "")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Rectangle()
+                        .fill(.clear)
                 }
-                .padding(.bottom, 50)
-                
-                Text(profile.displayName ?? "")
-                    .font(.title)
-                
-                HStack {
-                    VStack {
-                        Text("\(profile.followersCount ?? 0)")
-                            .bold()
-                        Text("followers")
-                    }
-                    
-                    Spacer()
-                    
-                    VStack {
-                        Text("\(profile.followsCount ?? 0)")
-                            .bold()
-                        Text("following")
-                    }
-                    
-                    Spacer()
-                    
-                    VStack {
-                        Text("\(profile.postsCount ?? 0)")
-                            .bold()
-                        Text("posts")
-                    }
+                .frame(height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: 10.0))
+
+                PoastAvatarView(size: .large,
+                                url: profileViewModel.profile?.avatar ?? "")
+                .offset(y: 50)
+            }
+            .padding(.bottom, 50)
+
+            Text(profileViewModel.profile?.displayName ?? "")
+                .font(.title)
+
+            HStack {
+                VStack {
+                    Text("\(profileViewModel.profile?.followersCount ?? 0)")
+                        .bold()
+                    Text("followers")
                 }
-                .padding()
-                
+
                 Spacer()
-                
-                Text(profile.description ?? "")
-                    .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
-            }
-            .listRowSeparator(.hidden)
-        }
-    }
 
-    @ViewBuilder var feed: some View {
-        if let profile = profileViewModel.profile {
-            switch(feedType) {
-            case .posts:
-                if let session = user.session {
-                    PoastTimelineView(timelineViewModel: PoastAuthorTimelineViewModel(session: session,
-                                                                                      modelContext: modelContext,
-                                                                                      actor: profile.handle),
-                                      showingProfileHandle: $showingProfileHandle,
-                                      showingThreadURI: $showingThreadURI,
-                                      interacted: $interacted,
-                                      refreshing: $refreshing)
-                } else {
-                    EmptyView()
+                VStack {
+                    Text("\(profileViewModel.profile?.followsCount ?? 0)")
+                        .bold()
+                    Text("following")
                 }
 
-            case .replies:
-                Rectangle()
-                    .fill(.blue)
+                Spacer()
 
-            case .media:
-                Rectangle()
-                    .fill(.green)
-
-            case .likes:
-                Rectangle()
-                    .fill(.purple)
-
-            case .feeds:
-                Rectangle()
-                    .fill(.pink)
-
-            case .lists:
-                Rectangle()
-                    .fill(.yellow)
+                VStack {
+                    Text("\(profileViewModel.profile?.postsCount ?? 0)")
+                        .bold()
+                    Text("posts")
+                }
             }
+            .padding()
+
+            Spacer()
+
+            Text(profileViewModel.profile?.description ?? "")
+                .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
         }
+        .listRowSeparator(.hidden)
     }
 
-    @ViewBuilder var menu: some View {
+    var menu: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 Button("Posts") {
@@ -153,10 +111,12 @@ struct PoastProfileView: View {
 
                 Spacer()
 
-                Button("Likes") {
-                    feedType = .likes
+                if(isUserProfile()) {
+                    Button("Likes") {
+                        feedType = .likes
+                    }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
 
                 Spacer()
 
@@ -175,6 +135,45 @@ struct PoastProfileView: View {
         }
     }
 
+    @ViewBuilder
+    var feed: some View {
+        switch(feedType) {
+        case .posts:
+            ForEach(authorFeedViewModel.posts) { post in
+                PoastFeedPostView(feedViewModel: authorFeedViewModel,
+                                  showingProfileHandle: $showingProfileHandle,
+                                  showingThreadURI: $showingThreadURI,
+                                  interacted: $interacted,
+                                  post: post)
+            }
+
+        case .replies:
+            Rectangle()
+                .fill(.blue)
+
+        case .media:
+            Rectangle()
+                .fill(.green)
+
+        case .likes:
+            ForEach(likesFeedViewModel.posts) { post in
+                PoastFeedPostView(feedViewModel: likesFeedViewModel,
+                                  showingProfileHandle: $showingProfileHandle,
+                                  showingThreadURI: $showingThreadURI,
+                                  interacted: $interacted,
+                                  post: post)
+            }
+
+        case .feeds:
+            Rectangle()
+                .fill(.pink)
+
+        case .lists:
+            Rectangle()
+                .fill(.yellow)
+        }
+    }
+
     var body: some View {
         List {
             Section {
@@ -185,18 +184,18 @@ struct PoastProfileView: View {
             } header: {
                 menu
             }
-            .onAppear() {
-                if(!hasAppeared) {
-                    refreshing = true
-
-                    hasAppeared.toggle()
-                }
-            }
         }
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
+                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                                                                         handle: profileHandle),
+                                 authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                               modelContext: modelContext,
+                                                                               actor: profileHandle),
+                                 likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                                                             modelContext: modelContext,
+                                                                             actor: profileHandle))
             } else {
                 EmptyView()
             }
@@ -212,53 +211,69 @@ struct PoastProfileView: View {
             }
         }
         .refreshable {
-            refreshing = true
+            switch(feedType) {
+            case .posts:
+                _ = await authorFeedViewModel.refreshPosts(cursor: Date())
+
+            case .likes:
+                _ = await likesFeedViewModel.refreshPosts(cursor: Date())
+
+            default:
+                break
+            }
         }
-        .onAppear() {
-            Task {
-                _ = await self.profileViewModel.getProfile()
+        .task {
+            _ = await profileViewModel.getProfile()
+            _ = await authorFeedViewModel.getPosts(cursor: Date())
+
+            if(isUserProfile()) {
+                _ = await likesFeedViewModel.getPosts(cursor: Date())
             }
         }
     }
+
+    func isUserProfile() -> Bool {
+        user.session?.account.handle == profileViewModel.profile?.handle
+    }
 }
 
-#Preview {
-    let modelContainer = try! ModelContainer(for: PoastAccountModel.self,
-                                             PoastPostLikeInteractionModel.self,
-                                             PoastPostRepostInteractionModel.self,
-                                             PoastThreadMuteInteractionModel.self,
-                                        configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-
-    let account = PoastAccountModel(uuid: UUID(),
-                                    created: Date(),
-                                    handle: "@foobar.baz",
-                                    host: URL(string: "https://bsky.social")!,
-                                    session: nil)
-
-    let session = PoastSessionModel(account: account,
-                                    did: "",
-                                    created: Date())
-
-    let user = PoastUser(session: session)
-
-    let profileViewModel = PoastProfileViewModel(session: session, handle: "Foobar")
-
-    let profile = PoastProfileModel(did: "0",
-                                    handle: "foobar",
-                                    displayName: "FOOBAR",
-                                    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus risus non massa mollis, eget interdum ante volutpat.",
-                                    avatar: "",
-                                    banner: "",
-                                    followsCount: 1000,
-                                    followersCount: 1000,
-                                    postsCount: 2000,
-                                    labels: [])
-
-    profileViewModel.profile = profile
-
-    let profileView = PoastProfileView(profileViewModel: profileViewModel)
-        .modelContainer(modelContainer)
-        .environmentObject(user)
-
-    return profileView
-}
+//#Preview {
+//    let modelContainer = try! ModelContainer(for: PoastAccountModel.self,
+//                                             PoastPostLikeInteractionModel.self,
+//                                             PoastPostRepostInteractionModel.self,
+//                                             PoastThreadMuteInteractionModel.self,
+//                                        configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+//
+//    let account = PoastAccountModel(uuid: UUID(),
+//                                    created: Date(),
+//                                    handle: "@foobar.baz",
+//                                    host: URL(string: "https://bsky.social")!,
+//                                    session: nil)
+//
+//    let session = PoastSessionModel(account: account,
+//                                    did: "",
+//                                    created: Date())
+//
+//    let user = PoastUser(session: session)
+//
+//    let profileViewModel = PoastProfileViewModel(session: session, handle: "Foobar")
+//
+//    let profile = PoastProfileModel(did: "0",
+//                                    handle: "foobar",
+//                                    displayName: "FOOBAR",
+//                                    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus risus non massa mollis, eget interdum ante volutpat.",
+//                                    avatar: "",
+//                                    banner: "",
+//                                    followsCount: 1000,
+//                                    followersCount: 1000,
+//                                    postsCount: 2000,
+//                                    labels: [])
+//
+//    profileViewModel.profile = profile
+//
+//    let profileView = PoastProfileView(profileViewModel: profileViewModel)
+//        .modelContainer(modelContainer)
+//        .environmentObject(user)
+//
+//    return profileView
+//}

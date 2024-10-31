@@ -9,16 +9,17 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-class PoastFeedTimelineViewModel: PoastTimelineViewModel {
+@MainActor
+class PoastFollowingFeedViewModel: PoastFeedViewModel {
     let algorithm: String
 
-    init(session: PoastSessionModel, modelContext: ModelContext, algorithm: String) {
+    init(session: PoastSessionModel, modelContext: ModelContext, algorithm: String = "") {
         self.algorithm = algorithm
 
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getPosts(cursor: Date) async -> PoastTimelineViewModelError? {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
@@ -27,7 +28,7 @@ class PoastFeedTimelineViewModel: PoastTimelineViewModel {
                 }
 
 
-                switch(try await self.blueskyClient.getTimeline(host: session.account.host,
+                switch(try await BlueskyClient.getTimeline(host: session.account.host,
                                                                 accessToken: credentials.accessToken,
                                                                 refreshToken: credentials.refreshToken,
                                                                 algorithm: algorithm,

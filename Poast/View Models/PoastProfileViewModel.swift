@@ -21,7 +21,6 @@ enum PoastProfileViewModelError: Error {
 @MainActor
 class PoastProfileViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var blueskyClient: BlueskyClient
 
     @Published var profile: PoastProfileModel? = nil
 
@@ -41,7 +40,7 @@ class PoastProfileViewModel: ObservableObject {
             }
 
             do {
-                switch(try await self.blueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
+                switch(try await BlueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
                 case .success(let getProfilesResponse):
                     if let credentials = getProfilesResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,

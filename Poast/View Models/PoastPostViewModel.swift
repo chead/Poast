@@ -18,7 +18,6 @@ enum PoastPostViewModelError: Error {
 
 class PoastPostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var blueskyClient: BlueskyClient
 
     let post: PoastVisiblePostModel
 
@@ -44,7 +43,7 @@ class PoastPostViewModel {
                     return .failure(.credentials)
                 }
 
-                switch(try await self.blueskyClient.getPosts(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, uris: [uri])) {
+                switch(try await BlueskyClient.getPosts(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, uris: [uri])) {
                 case .success(let getPostsResponse):
                     if let credentials = getPostsResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,

@@ -8,9 +8,9 @@
 import Foundation
 import SwiftBluesky
 
-@MainActor class PoastThreadViewModel: ObservableObject {
+@MainActor
+class PoastThreadViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
-    @Dependency internal var blueskyClient: BlueskyClient
 
     @Published var threadPost: PoastThreadPostModel? = nil
 
@@ -28,7 +28,7 @@ import SwiftBluesky
                     return .unknown
                 }
 
-                switch(try await self.blueskyClient.getPostThread(host: session.account.host,
+                switch(try await BlueskyClient.getPostThread(host: session.account.host,
                                                                       accessToken: credentials.accessToken,
                                                                       refreshToken: credentials.refreshToken,
                                                                       uri: uri)) {

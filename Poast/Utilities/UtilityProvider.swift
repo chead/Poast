@@ -14,20 +14,6 @@ final class UtilityProvider: UtilityProviding {
 
     private static var shared = UtilityProvider()
 
-    static func resolve() -> BlueskyClient {
-        let key = "\(BlueskyClient.self)"
-
-        guard let client = shared.instances[key] as? BlueskyClient else {
-            let client = BlueskyClient()
-            
-            shared.instances[key] = client
-            
-            return client
-        }
-
-        return client
-    }
-
     static func resolve() -> PoastCredentialsStore {
         let key = "\(PoastCredentialsStore.self)"
 

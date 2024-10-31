@@ -29,10 +29,6 @@ class DependencyProvider: DependencyProviding {
         ServiceProvider.resolve()
     }
     
-    static func resolve() -> BlueskyClient {
-        return UtilityProvider.resolve()
-    }
-    
     static func resolve() -> PoastCredentialsStore {
         return UtilityProvider.resolve()
     }

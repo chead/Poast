@@ -44,7 +44,6 @@ struct PoastApp: App {
 
         self.user = PoastUser(session: activeSession)
 
-        DependencyProvider.register(BlueskyClient())
         DependencyProvider.register(PoastCredentialsService())
         DependencyProvider.register(preferencesService)
     }

@@ -7,34 +7,39 @@
 
 import SwiftUI
 
-struct PoastFeedView: View {
+struct PoastFollowingFeedView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: PoastUser
+
+    @StateObject var followingFeedViewModel: PoastFollowingFeedViewModel
 
     @State var showingComposeSheet: Bool = false
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
-    @State var hasAppeared: Bool = false
-    @State var refreshing: Bool = false
 
     var body: some View {
         List {
-            if let session = user.session {
-                PoastTimelineView(timelineViewModel: PoastFeedTimelineViewModel(session: session,
-                                                                                modelContext: modelContext,
-                                                                                algorithm: ""),
+            ForEach(followingFeedViewModel.posts) { post in
+                PoastFeedPostView(feedViewModel: followingFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
-                                  refreshing: $refreshing)
+                                  post: post)
             }
         }
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session, handle: profileHandle))
+                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                                                                         handle: profileHandle),
+                                 authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                               modelContext: modelContext,
+                                                                               actor: profileHandle),
+                                 likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                                                             modelContext: modelContext,
+                                                                             actor: profileHandle))
             } else {
                 EmptyView()
             }
@@ -69,14 +74,10 @@ struct PoastFeedView: View {
                 .interactiveDismissDisabled(true)
         }
         .refreshable {
-            refreshing = true
+            _ = await followingFeedViewModel.refreshPosts(cursor: Date())
         }
-        .onAppear {
-            if(!hasAppeared) {
-                refreshing = true
-
-                hasAppeared.toggle()
-            }
+        .task {
+            _ = await followingFeedViewModel.getPosts(cursor: Date())
         }
     }
 }

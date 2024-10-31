@@ -1,15 +1,16 @@
 //
-//  PoastAuthorTimelineViewModel.swift
+//  PoastAuthorLikesViewModel.swift
 //  Poast
 //
-//  Created by Christopher Head on 9/24/23.
+//  Created by Christopher Head on 10/30/24.
 //
 
 import Foundation
 import SwiftData
 import SwiftBluesky
 
-class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
+@MainActor
+class PoastLikesFeedViewModel: PoastFeedViewModel {
     let actor: String
 
     init(session: PoastSessionModel, modelContext: ModelContext, actor: String) {
@@ -18,7 +19,7 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getTimeline(cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getPosts(cursor: Date) async -> PoastTimelineViewModelError? {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
@@ -26,9 +27,7 @@ class PoastAuthorTimelineViewModel: PoastTimelineViewModel {
                     return .unknown
                 }
 
-
-
-                switch(try await self.blueskyClient.getAuthorFeed(host: session.account.host,
+                switch(try await BlueskyClient.Feed.getActorLikes(host: session.account.host,
                                                                   accessToken: credentials.accessToken,
                                                                   refreshToken: credentials.refreshToken,
                                                                   actor: actor,
