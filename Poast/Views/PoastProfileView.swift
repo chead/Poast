@@ -97,13 +97,16 @@ struct PoastProfileView: View {
                 Button("Posts") {
                     feedType = .posts
                 }
+                .foregroundStyle(feedType == .posts ? .blue : .gray)
                 .padding(.horizontal, 20)
+
 
                 Spacer()
 
                 Button("Replies") {
                     feedType = .replies
                 }
+                .foregroundStyle(feedType == .replies ? .blue : .gray)
                 .padding(.horizontal, 20)
 
                 Spacer()
@@ -111,6 +114,7 @@ struct PoastProfileView: View {
                 Button("Media") {
                     feedType = .media
                 }
+                .foregroundStyle(feedType == .media ? .blue : .gray)
                 .padding(20)
 
                 Spacer()
@@ -119,6 +123,7 @@ struct PoastProfileView: View {
                     Button("Likes") {
                         feedType = .likes
                     }
+                    .foregroundStyle(feedType == .likes ? .blue : .gray)
                     .padding(.horizontal, 20)
                 }
 
@@ -127,6 +132,7 @@ struct PoastProfileView: View {
                 Button("Feeds") {
                     feedType = .feeds
                 }
+                .foregroundStyle(feedType == .feeds ? .blue : .gray)
                 .padding(.horizontal, 20)
 
                 Spacer()
@@ -134,6 +140,7 @@ struct PoastProfileView: View {
                 Button("Lists") {
                     feedType = .lists
                 }
+                .foregroundStyle(feedType == .lists ? .blue : .gray)
                 .padding(.horizontal, 20)
             }
         }
