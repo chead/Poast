@@ -330,9 +330,9 @@
 				C2B429EE2CD3FD4D00A9AE89 /* PoastPostHeaderView.swift */,
 				C2FA38CC2B6D9D510001A8C1 /* PoastPostInteractionView.swift */,
 				C2D3E88A2B63430D00440738 /* PoastPostView.swift */,
+				C2B429F02CD418C200A9AE89 /* PoastFeedPostView.swift */,
 				C28EFC322B7BE393009DB7A3 /* PoastThreadView.swift */,
 				C28AB0E12CCADBF600965DB1 /* PoastFollowingFeedView.swift */,
-				C2B429F02CD418C200A9AE89 /* PoastFeedPostView.swift */,
 				C2222C632A842601000C7C45 /* PoastProfileView.swift */,
 				C29362482B5C2177002BE99E /* PoastSettingsView.swift */,
 			);

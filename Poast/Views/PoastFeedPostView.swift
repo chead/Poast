@@ -25,6 +25,7 @@ struct PoastFeedPostView: View {
                               showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
                               isParent: true)
+                .listRowSeparator(.hidden)
 
             case .reference(_):
                 Text("Reference")
@@ -45,10 +46,9 @@ struct PoastFeedPostView: View {
         .onAppear {
             Task {
                 if feedViewModel.posts.lastIndex(of: post) == feedViewModel.posts.count - 1 {
-                    _ = await feedViewModel.getPosts(cursor: post.date)
+                    _ = await feedViewModel.updatePosts(cursor: post.date)
                 }
             }
         }
     }
-
 }

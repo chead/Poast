@@ -88,7 +88,9 @@ struct PoastPostView: View {
 
                     Spacer()
 
-                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext: modelContext,
+                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext:
+                                                                                                        modelContext,
+
                                                                                                      post: postViewModel.post),
                                              interacted: $interacted)
 

@@ -19,12 +19,12 @@ class PoastLikesFeedViewModel: PoastFeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastTimelineViewModelError> {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
                 guard let credentials = credentials else {
-                    return .unknown
+                    return .failure(.unknown)
                 }
 
                 switch(try await BlueskyClient.Feed.getActorLikes(host: session.account.host,
@@ -40,20 +40,18 @@ class PoastLikesFeedViewModel: PoastFeedViewModel {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    posts.append(contentsOf: getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
+                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
 
                 case .failure(_):
-                    return .unknown
+                    return .failure(.unknown)
                 }
 
             case .failure(_):
-                return .unknown
+                return .failure(.unknown)
             }
 
         } catch(_) {
-            return .unknown
+            return .failure(.unknown)
         }
-
-        return nil
     }
 }

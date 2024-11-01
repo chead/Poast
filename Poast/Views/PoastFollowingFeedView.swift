@@ -18,6 +18,7 @@ struct PoastFollowingFeedView: View {
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
+    @State var hasAppeared: Bool = false
 
     var body: some View {
         List {
@@ -36,7 +37,15 @@ struct PoastFollowingFeedView: View {
                                                                          handle: profileHandle),
                                  authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
-                                                                               actor: profileHandle),
+                                                                               actor: profileHandle,
+                                                                               filter: .postsNoReplies),
+                                 repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                                modelContext: modelContext,
+                                                                                actor: profileHandle),
+                                 mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                              modelContext: modelContext,
+                                                                              actor: profileHandle,
+                                                                              filter: .postsWithMedia),
                                  likesFeedViewModel: PoastLikesFeedViewModel(session: session,
                                                                              modelContext: modelContext,
                                                                              actor: profileHandle))
@@ -74,10 +83,14 @@ struct PoastFollowingFeedView: View {
                 .interactiveDismissDisabled(true)
         }
         .refreshable {
-            _ = await followingFeedViewModel.refreshPosts(cursor: Date())
+            _ = await followingFeedViewModel.refreshPosts()
         }
         .task {
-            _ = await followingFeedViewModel.getPosts(cursor: Date())
+            if(!hasAppeared) {
+                _ = await followingFeedViewModel.refreshPosts()
+                
+                hasAppeared.toggle()
+            }
         }
     }
 }

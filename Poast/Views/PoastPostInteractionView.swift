@@ -100,10 +100,7 @@ struct PoastPostInteractionView: View {
                 Image(systemName: "ellipsis")
             })
             .buttonStyle(.plain)
-            .confirmationDialog("More",
-                                isPresented: $showingMoreConfirmationDialog) {
-//                Button("Translate") {}
-
+            .confirmationDialog("More", isPresented: $showingMoreConfirmationDialog) {
                 Button("Copy post text") {
                     UIPasteboard.general.string = postInteractionViewModel.post.text
                 }

@@ -24,12 +24,16 @@ struct PoastProfileView: View {
 
     @StateObject var profileViewModel: PoastProfileViewModel
     @StateObject var authorFeedViewModel: PoastAuthorFeedViewModel
+    @StateObject var repliesFeedViewModel: PoastAuthorFeedViewModel
+    @StateObject var mediaFeedViewModel: PoastAuthorFeedViewModel
     @StateObject var likesFeedViewModel: PoastLikesFeedViewModel
 
     @State var feedType: PoastProfileFeedType = .posts
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
+    @State var hasAppeared: Bool = false
+    @State var showingMoreConfirmationDialog: Bool = false
 
     var header: some View {
         VStack {
@@ -148,12 +152,22 @@ struct PoastProfileView: View {
             }
 
         case .replies:
-            Rectangle()
-                .fill(.blue)
+            ForEach(repliesFeedViewModel.posts) { post in
+                PoastFeedPostView(feedViewModel: repliesFeedViewModel,
+                                  showingProfileHandle: $showingProfileHandle,
+                                  showingThreadURI: $showingThreadURI,
+                                  interacted: $interacted,
+                                  post: post)
+            }
 
         case .media:
-            Rectangle()
-                .fill(.green)
+            ForEach(mediaFeedViewModel.posts) { post in
+                PoastFeedPostView(feedViewModel: mediaFeedViewModel,
+                                  showingProfileHandle: $showingProfileHandle,
+                                  showingThreadURI: $showingThreadURI,
+                                  interacted: $interacted,
+                                  post: post)
+            }
 
         case .likes:
             ForEach(likesFeedViewModel.posts) { post in
@@ -192,7 +206,15 @@ struct PoastProfileView: View {
                                                                          handle: profileHandle),
                                  authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
-                                                                               actor: profileHandle),
+                                                                               actor: profileHandle,
+                                                                               filter: .postsNoReplies),
+                                 repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                                modelContext: modelContext,
+                                                                                actor: profileHandle),
+                                 mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                                                              modelContext: modelContext,
+                                                                              actor: profileHandle,
+                                                                              filter: .postsWithMedia),
                                  likesFeedViewModel: PoastLikesFeedViewModel(session: session,
                                                                              modelContext: modelContext,
                                                                              actor: profileHandle))
@@ -209,25 +231,59 @@ struct PoastProfileView: View {
             ToolbarItem(placement: .principal) {
                 Text(profileViewModel.profile?.handle ?? "")
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingMoreConfirmationDialog = true
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+                .confirmationDialog("More", isPresented: $showingMoreConfirmationDialog) {
+                    if(isUserProfile()) {
+                        Button("Edit") {
+                        }
+                    }
+
+                    if profileViewModel.canShareProfile(), let profileShareURL = profileViewModel.profileShareURL() {
+                        ShareLink(item: profileShareURL) {
+                            Text("Share")
+                        }
+                    }
+
+                    Button("Add to Lists") {
+                    }
+                }
+            }
         }
         .refreshable {
             switch(feedType) {
             case .posts:
-                _ = await authorFeedViewModel.refreshPosts(cursor: Date())
+                _ = await authorFeedViewModel.refreshPosts()
+
+            case .replies:
+                _ = await repliesFeedViewModel.refreshPosts()
+
+            case .media:
+                _ = await mediaFeedViewModel.refreshPosts()
 
             case .likes:
-                _ = await likesFeedViewModel.refreshPosts(cursor: Date())
+                _ = await likesFeedViewModel.refreshPosts()
 
             default:
                 break
             }
         }
         .task {
-            _ = await profileViewModel.getProfile()
-            _ = await authorFeedViewModel.getPosts(cursor: Date())
+            if(!hasAppeared) {
+                _ = await profileViewModel.getProfile()
+                _ = await authorFeedViewModel.refreshPosts()
+                _ = await repliesFeedViewModel.refreshPosts()
+                _ = await mediaFeedViewModel.refreshPosts()
 
-            if(isUserProfile()) {
-                _ = await likesFeedViewModel.getPosts(cursor: Date())
+                if(isUserProfile()) {
+                    _ = await likesFeedViewModel.refreshPosts()
+                }
+
+                hasAppeared.toggle()
             }
         }
     }

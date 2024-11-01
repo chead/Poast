@@ -65,4 +65,16 @@ class PoastProfileViewModel: ObservableObject {
 
         return nil
     }
+
+    func canShareProfile() -> Bool {
+        !(profile?.labels?.contains(where: { label in
+            label.val == "!no-unauthenticated"
+        }) ?? true)
+    }
+
+    func profileShareURL() -> URL? {
+        guard let profile = profile else { return nil }
+
+        return URL(string: "https://bsky.app/profile/\(profile.handle)")
+    }
 }

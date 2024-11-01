@@ -12,25 +12,28 @@ import SwiftBluesky
 @MainActor
 class PoastAuthorFeedViewModel: PoastFeedViewModel {
     let actor: String
+    let filter: BlueskyClient.AuthorFeedFilter
 
-    init(session: PoastSessionModel, modelContext: ModelContext, actor: String) {
+    init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: BlueskyClient.AuthorFeedFilter = .postsWithReplies) {
         self.actor = actor
+        self.filter = filter
 
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> PoastTimelineViewModelError? {
+    override func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastTimelineViewModelError> {
         do {
             switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
             case .success(let credentials):
                 guard let credentials = credentials else {
-                    return .unknown
+                    return .failure(.unknown)
                 }
 
                 switch(try await BlueskyClient.getAuthorFeed(host: session.account.host,
                                                              accessToken: credentials.accessToken,
                                                              refreshToken: credentials.refreshToken,
                                                              actor: actor,
+                                                             filter: filter,
                                                              limit: 50,
                                                              cursor: cursor)) {
                 case .success(let getAuthorFeedResponse):
@@ -40,20 +43,18 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    posts.append(contentsOf: getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
+                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
 
                 case .failure(_):
-                    return .unknown
+                    return .failure(.unknown)
                 }
 
             case .failure(_):
-                return .unknown
+                return .failure(.unknown)
             }
 
         } catch(_) {
-            return .unknown
+            return .failure(.unknown)
         }
-
-        return nil
     }
 }

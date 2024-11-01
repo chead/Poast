@@ -15,6 +15,7 @@ enum PoastTimelineViewModelError: Error {
     case unknown
 }
 
+@MainActor
 class PoastFeedViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
 
@@ -37,13 +38,39 @@ class PoastFeedViewModel: ObservableObject {
         try? modelContext.delete(model: PoastThreadMuteInteractionModel.self)
     }
 
-    func getPosts(cursor: Date) async -> PoastTimelineViewModelError? {
-        return nil
+    func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastTimelineViewModelError> {
+        return .success([])
     }
 
-    func refreshPosts(cursor: Date) async -> PoastTimelineViewModelError? {
-        removePosts()
+    func refreshPosts() async -> PoastTimelineViewModelError? {
+        switch(await getPosts(cursor: Date())) {
+        case .success(let newPosts):
+            guard let firstNewPost = newPosts.first else {
+                return nil
+            }
 
-        return await getPosts(cursor: cursor)
+            if(posts.first != firstNewPost) {
+                posts = newPosts
+            }
+
+            return nil
+
+        case .failure(let error):
+            return error
+        }
+    }
+
+    func updatePosts(cursor: Date) async -> PoastTimelineViewModelError? {
+        switch(await getPosts(cursor: cursor)) {
+        case .success(let newPosts):
+            removePosts()
+
+            posts.append(contentsOf: newPosts)
+
+            return nil
+
+        case .failure(let error):
+            return error
+        }
     }
 }
