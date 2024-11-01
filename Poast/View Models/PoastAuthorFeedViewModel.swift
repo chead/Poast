@@ -12,9 +12,9 @@ import SwiftBluesky
 @MainActor
 class PoastAuthorFeedViewModel: PoastFeedViewModel {
     let actor: String
-    let filter: BlueskyClient.AuthorFeedFilter
+    let filter: BlueskyClient.Feed.AuthorFeedFilter
 
-    init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: BlueskyClient.AuthorFeedFilter = .postsWithReplies) {
+    init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: BlueskyClient.Feed.AuthorFeedFilter = .postsWithReplies) {
         self.actor = actor
         self.filter = filter
 
@@ -29,13 +29,13 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
                     return .failure(.unknown)
                 }
 
-                switch(try await BlueskyClient.getAuthorFeed(host: session.account.host,
-                                                             accessToken: credentials.accessToken,
-                                                             refreshToken: credentials.refreshToken,
-                                                             actor: actor,
-                                                             filter: filter,
-                                                             limit: 50,
-                                                             cursor: cursor)) {
+                switch(try await BlueskyClient.Feed.getAuthorFeed(host: session.account.host,
+                                                                  accessToken: credentials.accessToken,
+                                                                  refreshToken: credentials.refreshToken,
+                                                                  actor: actor,
+                                                                  filter: filter,
+                                                                  limit: 50,
+                                                                  cursor: cursor)) {
                 case .success(let getAuthorFeedResponse):
                     if let credentials = getAuthorFeedResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,

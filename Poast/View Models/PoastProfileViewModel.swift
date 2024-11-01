@@ -40,7 +40,7 @@ class PoastProfileViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
+                switch(try await BlueskyClient.Actor.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
                 case .success(let getProfilesResponse):
                     if let credentials = getProfilesResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,

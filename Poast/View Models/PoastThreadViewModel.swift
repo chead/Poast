@@ -28,7 +28,7 @@ class PoastThreadViewModel: ObservableObject {
                     return .unknown
                 }
 
-                switch(try await BlueskyClient.getPostThread(host: session.account.host,
+                switch(try await BlueskyClient.Feed.getPostThread(host: session.account.host,
                                                                       accessToken: credentials.accessToken,
                                                                       refreshToken: credentials.refreshToken,
                                                                       uri: uri)) {

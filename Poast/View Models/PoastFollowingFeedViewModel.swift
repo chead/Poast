@@ -28,7 +28,7 @@ class PoastFollowingFeedViewModel: PoastFeedViewModel {
                 }
 
 
-                switch(try await BlueskyClient.getTimeline(host: session.account.host,
+                switch(try await BlueskyClient.Feed.getTimeline(host: session.account.host,
                                                                 accessToken: credentials.accessToken,
                                                                 refreshToken: credentials.refreshToken,
                                                                 algorithm: algorithm,

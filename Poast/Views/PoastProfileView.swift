@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import SwiftBluesky
 
 enum PoastProfileFeedType {
     case posts

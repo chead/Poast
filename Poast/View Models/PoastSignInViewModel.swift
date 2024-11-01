@@ -52,7 +52,7 @@ class PoastSignInViewModel {
 
     func signIn(host: URL, handle: String, password: String) async -> Result<PoastSessionModel, PoastSignInViewModelError> {
         do {
-            switch(try await BlueskyClient.createSession(host: host, identifier: handle, password: password)) {
+            switch(try await BlueskyClient.Server.createSession(host: host, identifier: handle, password: password)) {
             case .success(let createSessionResponseBody):
                 switch(self.getOrCreateAccount(handle: handle, host: host)) {
                 case .success(let account):
