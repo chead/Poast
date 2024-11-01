@@ -14,7 +14,7 @@ class PoastThreadViewModel: ObservableObject {
 
     @Published var threadPost: PoastThreadPostModel? = nil
 
-    let uri: String
+    private let uri: String
 
     init(uri: String) {
         self.uri = uri

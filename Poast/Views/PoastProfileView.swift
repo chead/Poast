@@ -35,62 +35,7 @@ struct PoastProfileView: View {
     @State var interacted: Date = Date()
     @State var hasAppeared: Bool = false
     @State var showingMoreConfirmationDialog: Bool = false
-
-    var header: some View {
-        VStack {
-            ZStack {
-                AsyncImage(url: URL(string: profileViewModel.profile?.banner ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(.clear)
-                }
-                .frame(height: 100)
-                .clipShape(RoundedRectangle(cornerRadius: 10.0))
-
-                PoastAvatarView(size: .large,
-                                url: profileViewModel.profile?.avatar ?? "")
-                .offset(y: 50)
-            }
-            .padding(.bottom, 50)
-
-            Text(profileViewModel.profile?.displayName ?? "")
-                .font(.title)
-
-            HStack {
-                VStack {
-                    Text("\(profileViewModel.profile?.followersCount ?? 0)")
-                        .bold()
-                    Text("followers")
-                }
-
-                Spacer()
-
-                VStack {
-                    Text("\(profileViewModel.profile?.followsCount ?? 0)")
-                        .bold()
-                    Text("following")
-                }
-
-                Spacer()
-
-                VStack {
-                    Text("\(profileViewModel.profile?.postsCount ?? 0)")
-                        .bold()
-                    Text("posts")
-                }
-            }
-            .padding()
-
-            Spacer()
-
-            Text(profileViewModel.profile?.description ?? "")
-                .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
-        }
-        .listRowSeparator(.hidden)
-    }
+    @State var showingEditSheet: Bool = false
 
     var menu: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -199,7 +144,9 @@ struct PoastProfileView: View {
     var body: some View {
         List {
             Section {
-                header
+                if let profile = profileViewModel.profile {
+                    PoastProfileHeaderView(profile: profile)
+                }
             }
             Section {
                 feed
@@ -248,6 +195,7 @@ struct PoastProfileView: View {
                 .confirmationDialog("More", isPresented: $showingMoreConfirmationDialog) {
                     if(isUserProfile()) {
                         Button("Edit") {
+                            showingEditSheet = true
                         }
                     }
 
@@ -260,6 +208,13 @@ struct PoastProfileView: View {
                     Button("Add to Lists") {
                     }
                 }
+            }
+        }
+        .sheet(isPresented: $showingEditSheet) {
+            if let profile = profileViewModel.profile {
+                PoastProfileEditView(profile: profile, showingEditSheet: $showingEditSheet, profileEditViewModel: PoastProfileEditViewModel())
+            } else {
+                EmptyView()
             }
         }
         .refreshable {

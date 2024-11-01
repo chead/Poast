@@ -20,7 +20,7 @@ class PoastPostInteractionViewModel: ObservableObject {
 
     @EnvironmentObject var user: PoastUser
 
-    private var modelContext: ModelContext
+    private let modelContext: ModelContext
 
     let post: PoastVisiblePostModel
 

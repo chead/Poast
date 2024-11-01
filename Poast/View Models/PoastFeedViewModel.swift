@@ -22,7 +22,7 @@ class PoastFeedViewModel: ObservableObject {
     @Published var posts: [PoastVisiblePostModel] = []
 
     let session: PoastSessionModel
-
+    
     private let modelContext: ModelContext
 
     init(session: PoastSessionModel, modelContext: ModelContext) {

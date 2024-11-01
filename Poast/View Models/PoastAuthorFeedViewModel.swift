@@ -11,8 +11,8 @@ import SwiftBluesky
 
 @MainActor
 class PoastAuthorFeedViewModel: PoastFeedViewModel {
-    let actor: String
-    let filter: BlueskyClient.Feed.AuthorFeedFilter
+    private let actor: String
+    private let filter: BlueskyClient.Feed.AuthorFeedFilter
 
     init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: BlueskyClient.Feed.AuthorFeedFilter = .postsWithReplies) {
         self.actor = actor

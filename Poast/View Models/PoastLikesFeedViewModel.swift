@@ -11,7 +11,7 @@ import SwiftBluesky
 
 @MainActor
 class PoastLikesFeedViewModel: PoastFeedViewModel {
-    let actor: String
+    private let actor: String
 
     init(session: PoastSessionModel, modelContext: ModelContext, actor: String) {
         self.actor = actor
