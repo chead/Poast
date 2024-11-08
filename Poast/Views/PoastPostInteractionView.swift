@@ -59,7 +59,7 @@ struct PoastPostInteractionView: View {
                             return
                         }
 
-                        await postInteractionViewModel.toggleRepostPost(session: session)
+                        _ = await postInteractionViewModel.toggleRepostPost(session: session)
                     }
                 }
 
@@ -74,7 +74,7 @@ struct PoastPostInteractionView: View {
                         return
                     }
 
-                    await postInteractionViewModel.toggleLikePost(session: session)
+                    _ = await postInteractionViewModel.toggleLikePost(session: session)
                 }
 
                 interacted = Date()
@@ -121,7 +121,7 @@ struct PoastPostInteractionView: View {
                             return
                         }
 
-                        await postInteractionViewModel.toggleMutePost(session: session)
+                        _ = await postInteractionViewModel.toggleMutePost(session: session)
                     }
                 }
 

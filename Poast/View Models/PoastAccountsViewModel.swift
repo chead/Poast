@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 enum PoastAccountsViewModelError: Error {
-    case preferencesService
-    case modelContext
+    case preferencesService(error: Error)
+    case modelContext(error: Error)
 }
 
 class PoastAccountsViewModel {
@@ -32,8 +32,8 @@ class PoastAccountsViewModel {
 
         do {
             try modelContext.save()
-        } catch {
-            return .modelContext
+        } catch(let error) {
+            return .modelContext(error: error)
         }
 
         return nil
@@ -42,8 +42,8 @@ class PoastAccountsViewModel {
     func setActiveSession(session: PoastSessionModel?) -> PoastAccountsViewModelError? {
         do {
             try self.preferencesService.setActiveSessionDid(sessionDid: session?.did)
-        } catch {
-            return .preferencesService
+        } catch(let error) {
+            return .preferencesService(error: error)
         }
 
         return nil

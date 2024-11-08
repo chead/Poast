@@ -15,7 +15,7 @@ enum PoastSignInViewModelError: Error {
     case blueskyClientServerCreateSession(error: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>)
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
     case credentialsServiceAddCredentials(error: PoastCredentialsServiceError)
-    case modelContext
+    case modelContext(error: Error)
     case unknown(error: Error)
 }
 
@@ -76,6 +76,12 @@ class PoastSignInViewModel {
 
                 modelContext.insert(account)
 
+                do {
+                    try modelContext.save()
+                } catch(let error) {
+                    return .failure(.modelContext(error: error))
+                }
+
                 return .success(account)
             }
         } catch(let error){
@@ -87,6 +93,12 @@ class PoastSignInViewModel {
         let session = PoastSessionModel(account: account, did: did, created: Date())
 
         modelContext.insert(session)
+
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .failure(.modelContext(error: error))
+        }
 
         return .success(session)
     }

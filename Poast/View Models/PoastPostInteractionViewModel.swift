@@ -20,6 +20,7 @@ enum PoastPostInteractionViewModelError: Error {
     case blueskyClientUnrepostPost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoDeleteRecordError>)
     case blueskyClientMuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphMuteThreadError>)
     case blueskyClientUnuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphUnmuteThreadError>)
+    case modelContext(error: Error)
     case unknown(error: Error)
 }
 
@@ -50,21 +51,23 @@ class PoastPostInteractionViewModel: ObservableObject {
         getThreadMuteInteraction()
     }
 
-    func toggleLikePost(session: PoastSessionModel) async {
+    func toggleLikePost(session: PoastSessionModel) async -> PoastPostInteractionViewModelError? {
         switch((likeInteraction, post.like)) {
         case (.some(let likeInteraction), _):
-            deleteLikeInteraction(interaction: likeInteraction)
+            return deleteLikeInteraction(interaction: likeInteraction)
 
         case(nil, .some(_)):
             if(await unlikePost(session: session, uri: post.uri) == nil) {
-                createLikeInteraction(interaction: .unliked)
+                return createLikeInteraction(interaction: .unliked)
             }
 
         case(nil, nil):
             if(await likePost(session: session, uri: post.uri, cid: post.cid) == nil) {
-                createLikeInteraction(interaction: .liked)
+                return createLikeInteraction(interaction: .liked)
             }
         }
+
+        return nil
     }
 
     func isLiked() -> Bool {
@@ -106,7 +109,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         likeInteraction = likeInteractions?.first
     }
 
-    private func createLikeInteraction(interaction: PoastPostLikeModel) {
+    private func createLikeInteraction(interaction: PoastPostLikeModel) -> PoastPostInteractionViewModelError? {
         if let likeInteraction = likeInteraction {
             modelContext.delete(likeInteraction)
         }
@@ -115,13 +118,29 @@ class PoastPostInteractionViewModel: ObservableObject {
 
         modelContext.insert(likeInteraction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.likeInteraction = likeInteraction
+
+        return nil
     }
 
-    private func deleteLikeInteraction(interaction: PoastPostLikeInteractionModel) {
+    private func deleteLikeInteraction(interaction: PoastPostLikeInteractionModel) -> PoastPostInteractionViewModelError? {
         modelContext.delete(interaction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.likeInteraction = nil
+
+        return nil
     }
 
     private func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
@@ -159,21 +178,23 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleRepostPost(session: PoastSessionModel) async {
+    func toggleRepostPost(session: PoastSessionModel) async -> PoastPostInteractionViewModelError? {
         switch((repostInteraction, post.repost)) {
         case (.some(let repostInteraction), _):
-            deleteRepostInteraction(interaction: repostInteraction)
+            return deleteRepostInteraction(interaction: repostInteraction)
 
         case(nil, .some(_)):
             if(await unrepostPost(session: session, uri: post.uri) == nil) {
-                createRepostInteraction(interaction: .unreposted)
+                return createRepostInteraction(interaction: .unreposted)
             }
 
         case(nil, nil):
             if(await repostPost(session: session, uri: post.uri, cid: post.cid) == nil) {
-                createRepostInteraction(interaction: .reposted)
+                return createRepostInteraction(interaction: .reposted)
             }
         }
+
+        return nil
     }
 
     func isReposted() -> Bool {
@@ -251,7 +272,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         self.repostInteraction = repostInteractions?.first
     }
 
-    private func createRepostInteraction(interaction: PoastPostRepostModel) {
+    private func createRepostInteraction(interaction: PoastPostRepostModel) -> PoastPostInteractionViewModelError? {
         if let repostInteraction = repostInteraction {
             modelContext.delete(repostInteraction)
         }
@@ -260,13 +281,29 @@ class PoastPostInteractionViewModel: ObservableObject {
 
         modelContext.insert(repostInteraction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.repostInteraction = repostInteraction
+
+        return nil
     }
 
-    private func deleteRepostInteraction(interaction: PoastPostRepostInteractionModel) {
+    private func deleteRepostInteraction(interaction: PoastPostRepostInteractionModel) -> PoastPostInteractionViewModelError? {
         modelContext.delete(interaction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.repostInteraction = nil
+
+        return nil
     }
 
     private func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
@@ -341,21 +378,23 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleMutePost(session: PoastSessionModel) async {
+    func toggleMutePost(session: PoastSessionModel) async -> PoastPostInteractionViewModelError? {
         switch((threadMuteInteraction, post.threadMuted)) {
         case (.some(let threadMuteInteraction), _):
-            deleteThreadMuteInteraction(interaction: threadMuteInteraction)
+            return deleteThreadMuteInteraction(interaction: threadMuteInteraction)
 
         case(nil, true):
             if(await unmuteThread(session: session, uri: post.uri) == nil) {
-                createThreadMuteInteraction(interaction: .unmuted)
+                return createThreadMuteInteraction(interaction: .unmuted)
             }
 
         case(nil, false):
             if(await muteThread(session: session, uri: post.uri) == nil) {
-                createThreadMuteInteraction(interaction: .muted)
+                return createThreadMuteInteraction(interaction: .muted)
             }
         }
+
+        return nil
     }
 
     func isThreadMuted() -> Bool {
@@ -386,7 +425,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         threadMuteInteraction = threadMuteInteractions?.first
     }
 
-    private func createThreadMuteInteraction(interaction: PoastThreadMuteModel) {
+    private func createThreadMuteInteraction(interaction: PoastThreadMuteModel) -> PoastPostInteractionViewModelError? {
         if let threadMuteInteraction = threadMuteInteraction {
             modelContext.delete(threadMuteInteraction)
         }
@@ -395,13 +434,29 @@ class PoastPostInteractionViewModel: ObservableObject {
 
         modelContext.insert(threadMuteInteraction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.threadMuteInteraction = threadMuteInteraction
+
+        return nil
     }
 
-    private func deleteThreadMuteInteraction(interaction: PoastThreadMuteInteractionModel) {
+    private func deleteThreadMuteInteraction(interaction: PoastThreadMuteInteractionModel) -> PoastPostInteractionViewModelError? {
         modelContext.delete(interaction)
 
+        do {
+            try modelContext.save()
+        } catch(let error) {
+            return .modelContext(error: error)
+        }
+
         self.threadMuteInteraction = nil
+
+        return nil
     }
 
     private func muteThread(session: PoastSessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
