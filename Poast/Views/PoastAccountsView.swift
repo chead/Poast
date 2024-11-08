@@ -43,7 +43,9 @@ struct PoastAccountsView: View {
             })
             .navigationTitle("Accounts")
             .toolbar {
-                EditButton()
+                if(!accounts.isEmpty) {
+                    EditButton()
+                }
                 Button {
                     showingSignInView = true
                 } label: {

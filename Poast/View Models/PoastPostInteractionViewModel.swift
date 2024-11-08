@@ -201,14 +201,14 @@ class PoastPostInteractionViewModel: ObservableObject {
                 return .credentials
             }
 
-            let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
+            let rkey = String(uri.split(separator: ":").last?.split(separator: "/").last ?? "")
 
             do {
                 switch(try await BlueskyClient.Feed.deleteLike(host: session.account.host,
                                                                accessToken: credentials.accessToken,
                                                                refreshToken: credentials.refreshToken,
                                                                repo: session.did,
-                                                               rkey: String(rkey))) {
+                                                               rkey: rkey)) {
                 case .success(let deleteLikeReponse):
                     if let credentials = deleteLikeReponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,

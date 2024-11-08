@@ -19,10 +19,9 @@ struct PoastSignInView: View {
 
     @State private var loading: Bool = false
     @State private var showInvalidURLAlert: Bool = false
-    @State private var showAccountExistsAlert: Bool = false
-    @State private var showSessionExistsAlert: Bool = false
-    @State private var showUnauthorizedAlert: Bool = false
-    @State private var showHostUnreachableAlert: Bool = false
+    @State private var showBlueskyClientErrorAlert: Bool = false
+    @State private var showCredentialsServiceErrorAlert: Bool = false
+    @State private var showModelContextErrorAlert: Bool = false
     @State private var showUnknownErrorAlert: Bool = false
 
     init(host: String = "", handle: String = "", signInViewModel: PoastSignInViewModel) {
@@ -59,6 +58,7 @@ struct PoastSignInView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(.gray, lineWidth: 2)
             }
+
             .padding(.horizontal)
 
             SecureField("Password",
@@ -69,7 +69,8 @@ struct PoastSignInView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(.gray, lineWidth: 2)
-            }.padding(.horizontal)
+            }
+            .padding(.horizontal)
 
             Button {
                 Task {
@@ -85,23 +86,20 @@ struct PoastSignInView: View {
                     case .success(let session):
                         user.session = session
 
-                    case .failure(let error):
+                    case .failure(let signInError):
                         loading = false
 
-                        switch(error) {
-                        case .accountExists:
-                            showAccountExistsAlert = true
+                        switch(signInError) {
+                        case .blueskyClient(error: _):
+                            showBlueskyClientErrorAlert = true
 
-                        case .sessionExists:
-                            showSessionExistsAlert = true
+                        case .credentialsService(error: _):
+                            showCredentialsServiceErrorAlert = true
 
-                        case .unauthorized:
-                            showUnauthorizedAlert = true
+                        case .modelContext:
+                            showModelContextErrorAlert = true
 
-                        case .unavailable:
-                            showHostUnreachableAlert = true
-
-                        default:
+                        case .unknown(error: _):
                             showUnknownErrorAlert = true
                         }
                     }
@@ -115,16 +113,13 @@ struct PoastSignInView: View {
             .alert("Invalid Host", isPresented: $showInvalidURLAlert) {
                 Button("OK", role: .cancel) {}
             }
-            .alert("Invalid handle or password", isPresented: $showUnauthorizedAlert) {
+            .alert("Bluesky Client error", isPresented: $showBlueskyClientErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
-            .alert("Duplicate account", isPresented: $showAccountExistsAlert) {
+            .alert("Credentials Service error", isPresented: $showCredentialsServiceErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
-            .alert("Duplicate session", isPresented: $showSessionExistsAlert) {
-                Button("OK", role: .cancel) {}
-            }
-            .alert("Host unreachable", isPresented: $showHostUnreachableAlert) {
+            .alert("Model Context error", isPresented: $showModelContextErrorAlert) {
                 Button("OK", role: .cancel) {}
             }
             .alert("Sign in failed", isPresented: $showUnknownErrorAlert) {

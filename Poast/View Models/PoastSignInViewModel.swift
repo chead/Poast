@@ -7,36 +7,22 @@
 
 import Foundation
 
-import SwiftBluesky
-import SwiftUI
+
 import SwiftData
+import SwiftBluesky
 
 enum PoastSignInViewModelError: Error {
-    case unavailable
-    case unauthorized
-    case accountExists
-    case sessionExists
-    case unknown
-    case database
+    case blueskyClient(error: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>)
+    case credentialsService(error: PoastCredentialsServiceError)
+    case modelContext
+    case unknown(error: Error)
 
-    init(blueskyClientError: BlueskyClientError) {
-        switch blueskyClientError {
-        case .unavailable:
-            self = .unavailable
-
-        case .unauthorized:
-            self = .unauthorized
-
-        default:
-            self = .unknown
-        }
+    init(blueskyClientError: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>) {
+        self = .blueskyClient(error: blueskyClientError)
     }
 
     init(credentialsServiceError: PoastCredentialsServiceError) {
-        switch credentialsServiceError {
-        default:
-            self = .unknown
-        }
+        self = .credentialsService(error: credentialsServiceError)
     }
 }
 
@@ -54,25 +40,17 @@ class PoastSignInViewModel {
         do {
             switch(try await BlueskyClient.Server.createSession(host: host, identifier: handle, password: password)) {
             case .success(let createSessionResponseBody):
-                switch(self.getOrCreateAccount(handle: handle, host: host)) {
+                switch(getOrCreateAccount(handle: handle, host: host)) {
                 case .success(let account):
-                    switch(self.createSession(did: createSessionResponseBody.did, account: account)) {
+                    switch(createSession(did: createSessionResponseBody.did, account: account)) {
                     case .success(let session):
-                        switch(self.credentialsService.addCredentials(did: createSessionResponseBody.did, accessToken: createSessionResponseBody.accessJwt, refreshToken: createSessionResponseBody.refreshJwt)) {
-                        case .success(let success):
-                            switch(success) {
-                            case true:
-                                try preferencesService.setActiveSessionDid(sessionDid: session.did)
-
-                                return .success(session)
-
-                            case false:
-                                return .failure(.unknown)
-                            }
-
-                        case .failure(let error):
+                        if let error = credentialsService.addCredentials(did: createSessionResponseBody.did, accessToken: createSessionResponseBody.accessJwt, refreshToken: createSessionResponseBody.refreshJwt) {
                             return .failure(PoastSignInViewModelError(credentialsServiceError: error))
                         }
+
+                        try preferencesService.setActiveSessionDid(sessionDid: session.did)
+
+                        return .success(session)
 
                     case .failure(let error):
                         return .failure(error)
@@ -85,8 +63,8 @@ class PoastSignInViewModel {
             case .failure(let error):
                 return .failure(PoastSignInViewModelError(blueskyClientError: error))
             }
-        } catch {
-            return .failure(.unknown)
+        } catch(let error) {
+            return .failure(.unknown(error: error))
         }
     }
 
@@ -108,7 +86,7 @@ class PoastSignInViewModel {
                 return .success(account)
             }
         } catch {
-            return .failure(.database)
+            return .failure(.modelContext)
         }
     }
 

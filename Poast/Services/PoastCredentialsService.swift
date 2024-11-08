@@ -14,40 +14,35 @@ enum PoastCredentialsServiceError: Error {
 class PoastCredentialsService {
     private var credentialsStore =  PoastCredentialsStore()
 
-    func addCredentials(did: String, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
+    func addCredentials(did: String, accessToken: String, refreshToken: String) -> PoastCredentialsServiceError? {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
 
         do {
-            return .success(try self.credentialsStore.addCredentials(identifier: did, credentials: credentials) ? true : false)
+            return try credentialsStore.addCredentials(identifier: did, credentials: credentials) ? nil : .store
         } catch(_) {
-            return .failure(.store)
+            return .store
         }
     }
 
     func getCredentials(sessionDID: String) -> Result<PoastCredentialsModel?, PoastCredentialsServiceError> {
         do {
-            return .success(try self.credentialsStore.getCredentials(identifier: sessionDID))
+            return .success(try credentialsStore.getCredentials(identifier: sessionDID))
         } catch(_) {
             return .failure(.store)
         }
     }
 
-    func updateCredentials(did: String, accessToken: String, refreshToken: String) -> Result<Bool, PoastCredentialsServiceError> {
+    func updateCredentials(did: String, accessToken: String, refreshToken: String) -> PoastCredentialsServiceError? {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
 
         do {
-            return .success(try self.credentialsStore.updateCredentials(identifier: did, credentials: credentials) ? true : false)
+            return try credentialsStore.updateCredentials(identifier: did, credentials: credentials) ? nil : .store
         } catch(_) {
-            return .failure(.store)
+            return .store
         }
     }
 
     func deleteCredentials(sessionDID: String) -> PoastCredentialsServiceError? {
-        switch(self.credentialsStore.deleteCredentials(identifier: sessionDID)) {
-        case true:
-            return nil
-        case false:
-            return .store
-        }
+        return credentialsStore.deleteCredentials(identifier: sessionDID) ? nil : .store
     }
 }
