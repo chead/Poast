@@ -212,7 +212,8 @@ struct PoastProfileView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             if let profile = profileViewModel.profile {
-                PoastProfileEditView(profile: profile, showingEditSheet: $showingEditSheet, profileEditViewModel: PoastProfileEditViewModel())
+                PoastProfileEditView(profileEditViewModel: PoastProfileEditViewModel(handle: profile.handle),
+                                     showingEditSheet: $showingEditSheet)
             } else {
                 EmptyView()
             }
@@ -238,15 +239,59 @@ struct PoastProfileView: View {
         .task {
             if(!hasAppeared) {
                 _ = await profileViewModel.getProfile()
-                _ = await authorFeedViewModel.refreshPosts()
-                _ = await repliesFeedViewModel.refreshPosts()
-                _ = await mediaFeedViewModel.refreshPosts()
 
-                if(isUserProfile()) {
+                switch(feedType) {
+                case .posts:
+                    _ = await authorFeedViewModel.refreshPosts()
+
+                case .replies:
+                    _ = await repliesFeedViewModel.refreshPosts()
+
+                case .media:
+                    _ = await mediaFeedViewModel.refreshPosts()
+
+                case .likes:
                     _ = await likesFeedViewModel.refreshPosts()
+
+                default:
+                    break
                 }
 
                 hasAppeared.toggle()
+            }
+        }
+        .onChange(of: feedType) { oldValue, newValue in
+            switch(newValue) {
+            case .posts:
+                if(authorFeedViewModel.posts.isEmpty) {
+                    Task {
+                        _ = await authorFeedViewModel.refreshPosts()
+                    }
+                }
+
+            case .replies:
+                if(repliesFeedViewModel.posts.isEmpty) {
+                    Task {
+                        _ = await repliesFeedViewModel.refreshPosts()
+                    }
+                }
+
+            case .media:
+                if(mediaFeedViewModel.posts.isEmpty) {
+                    Task {
+                        _ = await mediaFeedViewModel.refreshPosts()
+                    }
+                }
+
+            case .likes:
+                if(likesFeedViewModel.posts.isEmpty) {
+                    Task {
+                        _ = await likesFeedViewModel.refreshPosts()
+                    }
+                }
+
+            default:
+                break
             }
         }
     }

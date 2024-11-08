@@ -8,7 +8,7 @@
 import Foundation
 
 enum PoastCredentialsServiceError: Error {
-    case store
+    case credentialsStore
 }
 
 class PoastCredentialsService {
@@ -18,9 +18,9 @@ class PoastCredentialsService {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
 
         do {
-            return try credentialsStore.addCredentials(identifier: did, credentials: credentials) ? nil : .store
+            return try credentialsStore.addCredentials(identifier: did, credentials: credentials) ? nil : .credentialsStore
         } catch(_) {
-            return .store
+            return .credentialsStore
         }
     }
 
@@ -28,7 +28,7 @@ class PoastCredentialsService {
         do {
             return .success(try credentialsStore.getCredentials(identifier: sessionDID))
         } catch(_) {
-            return .failure(.store)
+            return .failure(.credentialsStore)
         }
     }
 
@@ -36,13 +36,13 @@ class PoastCredentialsService {
         let credentials = PoastCredentialsModel(accessToken: accessToken, refreshToken: refreshToken)
 
         do {
-            return try credentialsStore.updateCredentials(identifier: did, credentials: credentials) ? nil : .store
+            return try credentialsStore.updateCredentials(identifier: did, credentials: credentials) ? nil : .credentialsStore
         } catch(_) {
-            return .store
+            return .credentialsStore
         }
     }
 
     func deleteCredentials(sessionDID: String) -> PoastCredentialsServiceError? {
-        return credentialsStore.deleteCredentials(identifier: sessionDID) ? nil : .store
+        return credentialsStore.deleteCredentials(identifier: sessionDID) ? nil : .credentialsStore
     }
 }

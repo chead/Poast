@@ -12,18 +12,11 @@ import SwiftData
 import SwiftBluesky
 
 enum PoastSignInViewModelError: Error {
-    case blueskyClient(error: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>)
-    case credentialsService(error: PoastCredentialsServiceError)
+    case blueskyClientCreateSession(error: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>)
+    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
+    case credentialsServiceAddCredentials(error: PoastCredentialsServiceError)
     case modelContext
     case unknown(error: Error)
-
-    init(blueskyClientError: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>) {
-        self = .blueskyClient(error: blueskyClientError)
-    }
-
-    init(credentialsServiceError: PoastCredentialsServiceError) {
-        self = .credentialsService(error: credentialsServiceError)
-    }
 }
 
 class PoastSignInViewModel {
@@ -45,12 +38,12 @@ class PoastSignInViewModel {
                     switch(createSession(did: createSessionResponseBody.did, account: account)) {
                     case .success(let session):
                         if let error = credentialsService.addCredentials(did: createSessionResponseBody.did, accessToken: createSessionResponseBody.accessJwt, refreshToken: createSessionResponseBody.refreshJwt) {
-                            return .failure(PoastSignInViewModelError(credentialsServiceError: error))
+                            return .failure(.credentialsServiceAddCredentials(error: error))
+                        } else {
+                            try preferencesService.setActiveSessionDid(sessionDid: session.did)
+
+                            return .success(session)
                         }
-
-                        try preferencesService.setActiveSessionDid(sessionDid: session.did)
-
-                        return .success(session)
 
                     case .failure(let error):
                         return .failure(error)
@@ -61,7 +54,7 @@ class PoastSignInViewModel {
                 }
 
             case .failure(let error):
-                return .failure(PoastSignInViewModelError(blueskyClientError: error))
+                return .failure(.blueskyClientCreateSession(error: error))
             }
         } catch(let error) {
             return .failure(.unknown(error: error))
@@ -85,8 +78,8 @@ class PoastSignInViewModel {
 
                 return .success(account)
             }
-        } catch {
-            return .failure(.modelContext)
+        } catch(let error){
+            return .failure(.unknown(error: error))
         }
     }
 

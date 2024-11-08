@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 class PoastPreferencesService {
-    enum PreferencesKeys {
+    private enum PreferencesKeys {
         enum Session: String {
             case activeSessionDid = "activeSessionDid"
         }
@@ -20,6 +20,6 @@ class PoastPreferencesService {
     }
 
     func getActiveSessionDid() throws -> String? {
-        return UserDefaults.standard.object(forKey: PreferencesKeys.Session.activeSessionDid.rawValue) as? String
+        UserDefaults.standard.object(forKey: PreferencesKeys.Session.activeSessionDid.rawValue) as? String
     }
 }

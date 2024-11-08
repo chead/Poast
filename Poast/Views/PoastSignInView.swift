@@ -90,10 +90,10 @@ struct PoastSignInView: View {
                         loading = false
 
                         switch(signInError) {
-                        case .blueskyClient(error: _):
+                        case .blueskyClientCreateSession(error: _):
                             showBlueskyClientErrorAlert = true
 
-                        case .credentialsService(error: _):
+                        case .credentialsServiceAddCredentials(error: _), .credentialsServiceGetCredentials(error: _):
                             showCredentialsServiceErrorAlert = true
 
                         case .modelContext:

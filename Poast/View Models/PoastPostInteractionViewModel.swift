@@ -12,7 +12,15 @@ import SwiftBluesky
 import SwiftATProto
 
 enum PoastPostInteractionViewModelError: Error {
-    case unknown
+    case noCredentials
+    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
+    case blueskyClientLikePost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoCreateRecordError>)
+    case blueskyClientUnlikePost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoDeleteRecordError>)
+    case blueskyClientRepostPost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoCreateRecordError>)
+    case blueskyClientUnrepostPost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoDeleteRecordError>)
+    case blueskyClientMuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphMuteThreadError>)
+    case blueskyClientUnuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphUnmuteThreadError>)
+    case unknown(error: Error)
 }
 
 class PoastPostInteractionViewModel: ObservableObject {
@@ -115,11 +123,11 @@ class PoastPostInteractionViewModel: ObservableObject {
         self.likeInteraction = nil
     }
 
-    private func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
+    private func likePost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             do {
@@ -138,15 +146,15 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientLikePost(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error) {
+                return .unknown(error: error)
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 
@@ -194,11 +202,11 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unlikePost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    private func unlikePost(session: PoastSessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             let rkey = String(uri.split(separator: ":").last?.split(separator: "/").last ?? "")
@@ -218,15 +226,15 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientUnlikePost(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error) {
+                return .unknown(error: error)
             }
 
-        case .failure:
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 
@@ -260,11 +268,11 @@ class PoastPostInteractionViewModel: ObservableObject {
         self.repostInteraction = nil
     }
 
-    private func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostViewModelError? {
+    private func repostPost(session: PoastSessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             do {
@@ -283,23 +291,23 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientRepostPost(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error) {
+                return .unknown(error: error)
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 
-    private func unrepostPost(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    private func unrepostPost(session: PoastSessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
@@ -320,15 +328,15 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientUnrepostPost(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error) {
+                return .unknown(error: error)
             }
 
-        case .failure:
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 
@@ -395,11 +403,11 @@ class PoastPostInteractionViewModel: ObservableObject {
         self.threadMuteInteraction = nil
     }
 
-    private func muteThread(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    private func muteThread(session: PoastSessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             do {
@@ -416,23 +424,23 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientMuteThread(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error){
+                return .unknown(error: error)
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 
-    private func unmuteThread(session: PoastSessionModel, uri: String) async -> PoastPostViewModelError? {
+    private func unmuteThread(session: PoastSessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .credentials
+                return .noCredentials
             }
 
             do {
@@ -449,15 +457,15 @@ class PoastPostInteractionViewModel: ObservableObject {
 
                     return nil
 
-                case .failure(_):
-                    return .unknown
+                case .failure(let error):
+                    return .blueskyClientUnuteThread(error: error)
                 }
-            } catch {
-                return .unknown
+            } catch(let error){
+                return .unknown(error: error)
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsServiceGetCredentials(error: error)
         }
     }
 

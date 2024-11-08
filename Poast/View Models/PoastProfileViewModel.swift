@@ -9,13 +9,10 @@ import Foundation
 import SwiftBluesky
 
 enum PoastProfileViewModelError: Error {
-    case session
-    case profile
-    case authorization
-    case availability
-    case request
-    case service
-    case unknown
+    case noCredentials
+    case credentialsService(error: PoastCredentialsServiceError)
+    case blueskyClient(error: BlueskyClientError<BlueskyClient.Actor.BlueskyActorGetProfilesError>)
+    case unknown(error: Error)
 }
 
 @MainActor
@@ -36,34 +33,36 @@ class PoastProfileViewModel: ObservableObject {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             guard let credentials = credentials else {
-                return .unknown
+                return .noCredentials
             }
 
             do {
                 switch(try await BlueskyClient.Actor.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
                 case .success(let getProfilesResponse):
                     if let credentials = getProfilesResponse.credentials {
-                        _ = self.credentialsService.updateCredentials(did: session.did,
+                        if let error = self.credentialsService.updateCredentials(did: session.did,
                                                                       accessToken: credentials.accessToken,
-                                                                      refreshToken: credentials.refreshToken)
+                                                                              refreshToken: credentials.refreshToken) {
+                            return .credentialsService(error: error)
+                        }
                     }
 
                     profile = getProfilesResponse.body.profiles.map {
                         PoastProfileModel(blueskyActorProfileViewDetailed: $0)
                     }.first
 
-                case .failure(_):
-                    return .unknown
+                    return nil
+
+                case .failure(let error):
+                    return .blueskyClient(error: error)
                 }
-            } catch(_) {
-                return .unknown
+            } catch(let error) {
+                return .unknown(error: error)
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsService(error: error)
         }
-
-        return nil
     }
 
     func canShareProfile() -> Bool {
