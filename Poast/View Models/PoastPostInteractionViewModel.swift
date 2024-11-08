@@ -23,6 +23,7 @@ enum PoastPostInteractionViewModelError: Error {
     case unknown(error: Error)
 }
 
+@MainActor
 class PoastPostInteractionViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
 

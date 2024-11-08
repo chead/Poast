@@ -9,7 +9,6 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-@MainActor
 class PoastAuthorFeedViewModel: PoastFeedViewModel {
     private let actor: String
     private let filter: BlueskyClient.Feed.AuthorFeedFilter
@@ -21,14 +20,14 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastTimelineViewModelError> {
-        do {
-            switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
-            case .success(let credentials):
-                guard let credentials = credentials else {
-                    return .failure(.unknown)
-                }
+    override func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastFeedViewModelError> {
+        switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
+        case .success(let credentials):
+            guard let credentials = credentials else {
+                return .failure(.noCredentials)
+            }
 
+            do {
                 switch(try await BlueskyClient.Feed.getAuthorFeed(host: session.account.host,
                                                                   accessToken: credentials.accessToken,
                                                                   refreshToken: credentials.refreshToken,
@@ -45,16 +44,15 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
 
                     return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
 
-                case .failure(_):
-                    return .failure(.unknown)
+                case .failure(let error):
+                    return .failure(.blueskyClientFeedGetAuthorFeed(error: error))
                 }
-
-            case .failure(_):
-                return .failure(.unknown)
+            } catch(let error) {
+                return .failure(.unknown(error: error))
             }
 
-        } catch(_) {
-            return .failure(.unknown)
+        case .failure(let error):
+            return .failure(.credentialsServiceGetCredentials(error: error))
         }
     }
 }

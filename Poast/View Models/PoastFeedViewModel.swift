@@ -10,9 +10,13 @@ import SwiftData
 import SwiftATProto
 import SwiftBluesky
 
-enum PoastTimelineViewModelError: Error {
-    case session
-    case unknown
+enum PoastFeedViewModelError: Error {
+    case noCredentials
+    case blueskyClientFeedGetTimelineFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetTimelineFeedError>)
+    case blueskyClientFeedGetAuthorFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetAuthorFeedError>)
+    case blueskyClientFeedGetActorLikesFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetActorLikesError>)
+    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
+    case unknown(error: Error)
 }
 
 @MainActor
@@ -38,11 +42,11 @@ class PoastFeedViewModel: ObservableObject {
         try? modelContext.delete(model: PoastThreadMuteInteractionModel.self)
     }
 
-    func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastTimelineViewModelError> {
+    func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastFeedViewModelError> {
         return .success([])
     }
 
-    func refreshPosts() async -> PoastTimelineViewModelError? {
+    func refreshPosts() async -> PoastFeedViewModelError? {
         switch(await getPosts(cursor: Date())) {
         case .success(let newPosts):
             guard let firstNewPost = newPosts.first else {
@@ -60,7 +64,7 @@ class PoastFeedViewModel: ObservableObject {
         }
     }
 
-    func updatePosts(cursor: Date) async -> PoastTimelineViewModelError? {
+    func updatePosts(cursor: Date) async -> PoastFeedViewModelError? {
         switch(await getPosts(cursor: cursor)) {
         case .success(let newPosts):
             removePosts()

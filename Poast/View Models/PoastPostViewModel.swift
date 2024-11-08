@@ -16,6 +16,7 @@ enum PoastPostViewModelError: Error {
     case unknown(error: Error)
 }
 
+@MainActor
 class PoastPostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
 
