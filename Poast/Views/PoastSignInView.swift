@@ -19,6 +19,7 @@ struct PoastSignInView: View {
 
     @State private var loading: Bool = false
     @State private var showInvalidURLAlert: Bool = false
+    @State private var showBlueskyBadUsernameOrPasswordAlert: Bool = false
     @State private var showBlueskyClientErrorAlert: Bool = false
     @State private var showCredentialsServiceErrorAlert: Bool = false
     @State private var showModelContextErrorAlert: Bool = false
@@ -90,8 +91,14 @@ struct PoastSignInView: View {
                         loading = false
 
                         switch(signInError) {
-                        case .blueskyClientServerCreateSession(error: _):
-                            showBlueskyClientErrorAlert = true
+                        case .blueskyClientServerCreateSession(error: let createSessionError):
+                            switch(createSessionError) {
+                            case .unauthorized:
+                                showBlueskyBadUsernameOrPasswordAlert = true
+
+                            default:
+                                showBlueskyClientErrorAlert = true
+                            }
 
                         case .credentialsServiceAddCredentials(error: _), .credentialsServiceGetCredentials(error: _):
                             showCredentialsServiceErrorAlert = true
@@ -111,6 +118,9 @@ struct PoastSignInView: View {
             .disabled(isSignInButtonDisabled)
             .padding()
             .alert("Invalid Host", isPresented: $showInvalidURLAlert) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Bad username or password", isPresented: $showBlueskyBadUsernameOrPasswordAlert) {
                 Button("OK", role: .cancel) {}
             }
             .alert("Bluesky Client error", isPresented: $showBlueskyClientErrorAlert) {
