@@ -25,7 +25,7 @@ struct PoastSignInView: View {
     @State private var showModelContextErrorAlert: Bool = false
     @State private var showUnknownErrorAlert: Bool = false
 
-    init(host: String = "", handle: String = "", signInViewModel: PoastSignInViewModel) {
+    init(host: String = "https://bsky.social", handle: String = "", signInViewModel: PoastSignInViewModel) {
         self.host = host
         self.handle = handle
         self.signInViewModel = signInViewModel
