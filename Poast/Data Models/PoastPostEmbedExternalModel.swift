@@ -19,9 +19,9 @@ struct PoastPostEmbedExternalModel: Hashable {
         self.thumb = thumb
     }
 
-    init(blueskyEmbedExternalViewExternal: BlueskyEmbedExternalViewExternal) {
-        self.uri = blueskyEmbedExternalViewExternal.uri
-        self.description = blueskyEmbedExternalViewExternal.description
-        self.thumb = blueskyEmbedExternalViewExternal.thumb
+    init(viewExternal: Bsky.Embed.External.ViewExternal) {
+        self.uri = viewExternal.uri
+        self.description = viewExternal.description
+        self.thumb = viewExternal.thumb
     }
 }

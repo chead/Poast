@@ -15,22 +15,22 @@ enum PoastPostEmbedModel {
     case recordWithMedia(PoastPostEmbedRecordWithMediaModel)
     case video(PoastPostEmbedVideoModel)
 
-    init(blueskyFeedPostViewEmbedType: BlueskyFeedPostViewEmbedType) {
-        switch(blueskyFeedPostViewEmbedType) {
-        case .blueskyEmbedImagesView(let blueskyEmbedImagesView):
-            self = .images(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
+    init(embedType: Bsky.Feed.PostView.EmbedType) {
+        switch(embedType) {
+        case .imagesView(let ImagesView):
+            self = .images(ImagesView.images.map { PoastPostEmbedImageModel(viewImage: $0) })
 
-        case .blueskyEmbedExternalView(let blueskyEmbedExternalView):
-            self = .external(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
+        case .externalView(let externalView):
+            self = .external(PoastPostEmbedExternalModel(viewExternal: externalView.external))
 
-        case .blueskyEmbedRecordView(let blueskyEmbedRecordView):
-            self = .record(PoastPostEmbedRecordModel(blueskyEmbedRecordView: blueskyEmbedRecordView))
+        case .recordView(let recordView):
+            self = .record(PoastPostEmbedRecordModel(view: recordView))
 
-        case .blueskyEmbedRecordWithMediaView(let blueskyEmbedRecordWithMediaView):
-            self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(blueskyEmbedRecordWithMediaView: blueskyEmbedRecordWithMediaView))
+        case .recordWithMediaView(let recordWithMediaView):
+            self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(view: recordWithMediaView))
 
-        case .blueskyEmbedVideoView(let blueskyEmbedVideoView):
-            self = .video(PoastPostEmbedVideoModel(blueskyEmbedVideoView: blueskyEmbedVideoView))
+        case .videoView(let videoView):
+            self = .video(PoastPostEmbedVideoModel(view: videoView))
         }
     }
 }

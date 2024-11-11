@@ -37,29 +37,29 @@ struct PoastProfileModel: Hashable {
         self.labels = labels
     }
 
-    init(blueskyActorProfileViewBasic: BlueskyActorProfileViewBasic) {
-        self.did = blueskyActorProfileViewBasic.did
-        self.handle = blueskyActorProfileViewBasic.handle
-        self.displayName = blueskyActorProfileViewBasic.displayName
+    init(profileViewBasic: Bsky.BskyActor.ProfileViewBasic) {
+        self.did = profileViewBasic.did
+        self.handle = profileViewBasic.handle
+        self.displayName = profileViewBasic.displayName
         self.description = nil
-        self.avatar = blueskyActorProfileViewBasic.avatar
+        self.avatar = profileViewBasic.avatar
         self.banner = nil
         self.followsCount = nil
         self.followersCount = nil
         self.postsCount = nil
-        self.labels = blueskyActorProfileViewBasic.labels?.map { PoastLabelModel(atProtoLabel: $0) }
+        self.labels = profileViewBasic.labels?.map { PoastLabelModel(atProtoLabel: $0) }
     }
 
-    init(blueskyActorProfileViewDetailed: BlueskyActorProfileViewDetailed) {
-        self.did = blueskyActorProfileViewDetailed.did
-        self.handle = blueskyActorProfileViewDetailed.handle
-        self.displayName = blueskyActorProfileViewDetailed.displayName
-        self.description = blueskyActorProfileViewDetailed.description
-        self.avatar = blueskyActorProfileViewDetailed.avatar
-        self.banner = blueskyActorProfileViewDetailed.banner
-        self.followsCount = blueskyActorProfileViewDetailed.followsCount
-        self.followersCount = blueskyActorProfileViewDetailed.followersCount
-        self.postsCount = blueskyActorProfileViewDetailed.postsCount
-        self.labels = blueskyActorProfileViewDetailed.labels?.map { PoastLabelModel(atProtoLabel: $0) }
+    init(profileViewDetailed: Bsky.BskyActor.ProfileViewDetailed) {
+        self.did = profileViewDetailed.did
+        self.handle = profileViewDetailed.handle
+        self.displayName = profileViewDetailed.displayName
+        self.description = profileViewDetailed.description
+        self.avatar = profileViewDetailed.avatar
+        self.banner = profileViewDetailed.banner
+        self.followsCount = profileViewDetailed.followsCount
+        self.followersCount = profileViewDetailed.followersCount
+        self.postsCount = profileViewDetailed.postsCount
+        self.labels = profileViewDetailed.labels?.map { PoastLabelModel(atProtoLabel: $0) }
     }
 }

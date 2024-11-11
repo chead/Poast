@@ -26,15 +26,15 @@ class PoastFollowingFeedViewModel: PoastFeedViewModel {
             }
 
             do {
-                switch(try await BlueskyClient.Feed.getTimeline(host: session.account.host,
-                                                                accessToken: credentials.accessToken,
-                                                                refreshToken: credentials.refreshToken,
-                                                                algorithm: algorithm,
-                                                                limit: 50,
-                                                                cursor: cursor)) {
+                switch(try await Bsky.Feed.getTimeline(host: session.account.host,
+                                                       accessToken: credentials.accessToken,
+                                                       refreshToken: credentials.refreshToken,
+                                                       algorithm: algorithm,
+                                                       limit: 50,
+                                                       cursor: cursor)) {
                 case .success(let getTimelineResponse):
                     return .success(getTimelineResponse.body.feed.map {
-                        PoastVisiblePostModel(blueskyFeedFeedViewPost: $0)
+                        PoastVisiblePostModel(feedViewPost: $0)
                     })
 
                 case .failure(let error):

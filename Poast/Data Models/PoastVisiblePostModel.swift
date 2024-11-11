@@ -50,50 +50,50 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         self.pinned = pinned
     }
 
-    init(blueskyFeedFeedViewPost: BlueskyFeedFeedViewPost) {
-        self.uri = blueskyFeedFeedViewPost.post.uri
-        self.cid = blueskyFeedFeedViewPost.post.cid
+    init(feedViewPost: Bsky.Feed.FeedViewPost) {
+        self.uri = feedViewPost.post.uri
+        self.cid = feedViewPost.post.cid
 
-        switch(blueskyFeedFeedViewPost.post.record) {
-        case .blueskyFeedPost(let blueskyFeedPost):
-            self.text = blueskyFeedPost.text
+        switch(feedViewPost.post.record) {
+        case .post(let post):
+            self.text = post.text
         }
 
-        self.author = PoastProfileModel(blueskyActorProfileViewBasic: blueskyFeedFeedViewPost.post.author)
-        self.replyCount = blueskyFeedFeedViewPost.post.replyCount ?? 0
-        self.repostCount = blueskyFeedFeedViewPost.post.repostCount ?? 0
-        self.likeCount = blueskyFeedFeedViewPost.post.likeCount ?? 0
+        self.author = PoastProfileModel(profileViewBasic: feedViewPost.post.author)
+        self.replyCount = feedViewPost.post.replyCount ?? 0
+        self.repostCount = feedViewPost.post.repostCount ?? 0
+        self.likeCount = feedViewPost.post.likeCount ?? 0
 
-        if let parent = blueskyFeedFeedViewPost.reply?.parent {
-            self.parent = PoastReplyModel(blueskyFeedReplyRefPostType: parent)
+        if let parent = feedViewPost.reply?.parent {
+            self.parent = PoastReplyModel(postType: parent)
         } else {
             self.parent = nil
         }
 
-        if let root = blueskyFeedFeedViewPost.reply?.root {
-            self.root = PoastReplyModel(blueskyFeedReplyRefPostType: root)
+        if let root = feedViewPost.reply?.root {
+            self.root = PoastReplyModel(postType: root)
         } else {
             self.root = nil
         }
 
-        if let embed = blueskyFeedFeedViewPost.post.embed {
-            self.embed = PoastPostEmbedModel(blueskyFeedPostViewEmbedType: embed)
+        if let embed = feedViewPost.post.embed {
+            self.embed = PoastPostEmbedModel(embedType: embed)
         } else {
             self.embed = nil
         }
 
-        self.date = blueskyFeedFeedViewPost.post.indexedAt
+        self.date = feedViewPost.post.indexedAt
 
-        if let reason = blueskyFeedFeedViewPost.reason {
+        if let reason = feedViewPost.reason {
             switch(reason) {
-            case .blueskyFeedReasonRepost(let repost):
-                self.repostedBy = PoastProfileModel(blueskyActorProfileViewBasic: repost.by)
+            case .reasonRepost(let repost):
+                self.repostedBy = PoastProfileModel(profileViewBasic: repost.by)
             }
         } else {
             self.repostedBy = nil
         }
 
-        if let viewerState = blueskyFeedFeedViewPost.post.viewer {
+        if let viewerState = feedViewPost.post.viewer {
             self.like = viewerState.like
             self.repost = viewerState.repost
             self.threadMuted = viewerState.threadMuted ?? false
@@ -110,15 +110,15 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         }
     }
 
-    init(blueskyFeedPostView: BlueskyFeedPostView) {
-        self.uri = blueskyFeedPostView.uri
-        self.cid = blueskyFeedPostView.cid
+    init(postView: Bsky.Feed.PostView) {
+        self.uri = postView.uri
+        self.cid = postView.cid
 
-        switch(blueskyFeedPostView.record) {
-        case .blueskyFeedPost(let blueskyFeedPost):
-            self.text = blueskyFeedPost.text
+        switch(postView.record) {
+        case .post(let post):
+            self.text = post.text
 
-            if let reply = blueskyFeedPost.reply {
+            if let reply = post.reply {
                 self.root = .reference(PoastStrongReferenceModel(atProtoRepoStrongRef: reply.root))
                 self.parent = .reference(PoastStrongReferenceModel(atProtoRepoStrongRef: reply.parent))
             } else {
@@ -127,15 +127,15 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
             }
         }
 
-        self.author = PoastProfileModel(blueskyActorProfileViewBasic: blueskyFeedPostView.author)
-        self.replyCount = blueskyFeedPostView.replyCount ?? 0
-        self.repostCount = blueskyFeedPostView.repostCount ?? 0
-        self.likeCount = blueskyFeedPostView.likeCount ?? 0
+        self.author = PoastProfileModel(profileViewBasic: postView.author)
+        self.replyCount = postView.replyCount ?? 0
+        self.repostCount = postView.repostCount ?? 0
+        self.likeCount = postView.likeCount ?? 0
         self.embed = nil
-        self.date = blueskyFeedPostView.indexedAt
+        self.date = postView.indexedAt
         self.repostedBy = nil
 
-        if let viewerState = blueskyFeedPostView.viewer {
+        if let viewerState = postView.viewer {
             self.like = viewerState.like
             self.repost = viewerState.repost
             self.threadMuted = viewerState.threadMuted ?? false

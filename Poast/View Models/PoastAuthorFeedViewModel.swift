@@ -11,9 +11,9 @@ import SwiftBluesky
 
 class PoastAuthorFeedViewModel: PoastFeedViewModel {
     private let actor: String
-    private let filter: BlueskyClient.Feed.AuthorFeedFilter
+    private let filter: Bsky.Feed.GetAuthorFeedFilter
 
-    init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: BlueskyClient.Feed.AuthorFeedFilter = .postsWithReplies) {
+    init(session: PoastSessionModel, modelContext: ModelContext, actor: String, filter: Bsky.Feed.GetAuthorFeedFilter = .postsWithReplies) {
         self.actor = actor
         self.filter = filter
 
@@ -28,13 +28,11 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
             }
 
             do {
-                switch(try await BlueskyClient.Feed.getAuthorFeed(host: session.account.host,
-                                                                  accessToken: credentials.accessToken,
-                                                                  refreshToken: credentials.refreshToken,
-                                                                  actor: actor,
-                                                                  filter: filter,
-                                                                  limit: 50,
-                                                                  cursor: cursor)) {
+                switch(try await Bsky.Feed.getAuthorFeed(host: session.account.host,
+                                                         accessToken: credentials.accessToken,
+                                                         refreshToken: credentials.refreshToken,
+                                                         actor: actor,
+                                                         cursor: cursor)) {
                 case .success(let getAuthorFeedResponse):
                     if let credentials = getAuthorFeedResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,
@@ -42,7 +40,7 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
+                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(feedViewPost: $0) })
 
                 case .failure(let error):
                     return .failure(.blueskyClientFeedGetAuthorFeed(error: error))

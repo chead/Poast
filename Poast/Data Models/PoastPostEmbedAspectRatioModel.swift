@@ -17,8 +17,8 @@ struct PoastPostEmbedAspectRatioModel: Hashable {
         self.height = height
     }
 
-    init(blueskyEmbedAspectRatio: BlueskyEmbedAspectRatio) {
-        self.width = blueskyEmbedAspectRatio.width
-        self.height = blueskyEmbedAspectRatio.height
+    init(aspectRatio: Bsky.Embed.AspectRatio) {
+        self.width = aspectRatio.width
+        self.height = aspectRatio.height
     }
 }

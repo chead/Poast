@@ -11,7 +11,7 @@ import SwiftBluesky
 struct PoastBlockedProfileModel: Hashable {
     let did: String
 
-    init(blueskyFeedBlockedAuthor: BlueskyFeedBlockedAuthor) {
-        self.did = blueskyFeedBlockedAuthor.did
+    init(blockedAuthor: Bsky.Feed.BlockedAuthor) {
+        self.did = blockedAuthor.did
     }
 }

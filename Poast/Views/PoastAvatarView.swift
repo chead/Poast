@@ -14,11 +14,11 @@ enum PoastAvatarSize: CGFloat {
 
 struct PoastAvatarView: View {
     let size: PoastAvatarSize
-    let url: String
+    let url: URL?
 
     var body: some View {
         VStack {
-            AsyncImage(url: URL(string: url)) { image in
+            AsyncImage(url: url) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -34,5 +34,5 @@ struct PoastAvatarView: View {
 }
 
 #Preview {
-    PoastAvatarView(size: .large, url: "")
+    PoastAvatarView(size: .large, url: URL(string: ""))
 }

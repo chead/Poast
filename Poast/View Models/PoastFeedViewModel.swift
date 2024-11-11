@@ -12,9 +12,9 @@ import SwiftBluesky
 
 enum PoastFeedViewModelError: Error {
     case noCredentials
-    case blueskyClientFeedGetTimelineFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetTimelineFeedError>)
-    case blueskyClientFeedGetAuthorFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetAuthorFeedError>)
-    case blueskyClientFeedGetActorLikesFeed(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetActorLikesError>)
+    case blueskyClientFeedGetTimelineFeed(error: BlueskyClientError<Bsky.Feed.GetTimelineError>)
+    case blueskyClientFeedGetAuthorFeed(error: BlueskyClientError<Bsky.Feed.GetAuthorFeedError>)
+    case blueskyClientFeedGetActorLikesFeed(error: BlueskyClientError<Bsky.Feed.GetActorLikesError>)
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
     case unknown(error: Error)
 }

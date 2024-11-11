@@ -10,7 +10,7 @@ import SwiftBluesky
 
 enum PoastThreadViewModelError: Error {
     case noCredentials
-    case blueskyClientFeedGetPostThread(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetPostThreadError>)
+    case blueskyClientFeedGetPostThread(error: BlueskyClientError<Bsky.Feed.GetPostThreadError>)
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
     case unknown(error: Error)
 }
@@ -35,10 +35,10 @@ class PoastThreadViewModel: ObservableObject {
                     return .noCredentials
                 }
 
-                switch(try await BlueskyClient.Feed.getPostThread(host: session.account.host,
-                                                                      accessToken: credentials.accessToken,
-                                                                      refreshToken: credentials.refreshToken,
-                                                                      uri: uri)) {
+                switch(try await Bsky.Feed.getPostThread(host: session.account.host,
+                                                         accessToken: credentials.accessToken,
+                                                         refreshToken: credentials.refreshToken,
+                                                         uri: uri)) {
                 case .success(let getThreadResponse):
                     if let credentials = getThreadResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,
@@ -46,7 +46,7 @@ class PoastThreadViewModel: ObservableObject {
                                                                       refreshToken: credentials.refreshToken)
                     }
                         
-                    self.threadPost = PoastThreadPostModel(blueskyFeedThreadViewPost: getThreadResponse.body.thread)
+                    self.threadPost = PoastThreadPostModel(threadViewPost: getThreadResponse.body.thread)
 
                 case .failure(let error):
                     return .blueskyClientFeedGetPostThread(error: error)

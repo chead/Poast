@@ -28,7 +28,7 @@ struct PoastProfileHeaderView: View {
 
                 if let avatar = profile.avatar {
                     PoastAvatarView(size: .large,
-                                    url: avatar)
+                                    url: URL(string: avatar))
                     .offset(y: 50)
                 }
             }

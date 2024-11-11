@@ -14,16 +14,16 @@ indirect enum PoastReplyModel: Hashable {
     case notFound(uri: String)
     case blocked(uri: String, authorDid: String)
 
-    init(blueskyFeedReplyRefPostType: BlueskyFeedReplyRefPostType) {
-        switch(blueskyFeedReplyRefPostType) {
-        case .blueskyFeedPostView(let blueskyFeedPostView):
-            self = .post(PoastVisiblePostModel(blueskyFeedPostView: blueskyFeedPostView))
+    init(postType: Bsky.Feed.FeedReplyRef.PostType) {
+        switch(postType) {
+        case .postView(let postView):
+            self = .post(PoastVisiblePostModel(postView: postView))
 
-        case .blueskyFeedNotFoundPost(let blueskyFeedNotFoundPost):
-            self = .notFound(uri: blueskyFeedNotFoundPost.uri)
+        case .notFoundPost(let notFoundPost):
+            self = .notFound(uri: notFoundPost.uri)
 
-        case .blueskyFeedBlockedPost(let blueskyFeedBlockedPost):
-            self = .blocked(uri: blueskyFeedBlockedPost.uri, authorDid: blueskyFeedBlockedPost.author.did)
+        case .blockedPost(let blockedPost):
+            self = .blocked(uri: blockedPost.uri, authorDid: blockedPost.author.did)
         }
     }
 }

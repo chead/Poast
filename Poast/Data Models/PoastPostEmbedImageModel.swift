@@ -17,9 +17,9 @@ struct PoastEmbedImageModelAspectRatio: Hashable {
         self.height = height
     }
 
-    init(blueskyEmbedImagesAspectRatio: BlueskyEmbedImagesAspectRatio) {
-        self.width = blueskyEmbedImagesAspectRatio.width
-        self.height = blueskyEmbedImagesAspectRatio.height
+    init(aspectRatio: Bsky.Embed.AspectRatio) {
+        self.width = aspectRatio.width
+        self.height = aspectRatio.height
     }
 }
 
@@ -36,13 +36,13 @@ struct PoastPostEmbedImageModel: Hashable {
         self.aspectRatio = aspectRatio
     }
 
-    init(blueskyEmbedImagesViewImage: BlueskyEmbedImagesViewImage) {
-        self.fullsize = blueskyEmbedImagesViewImage.fullsize
-        self.thumb = blueskyEmbedImagesViewImage.thumb
-        self.alt = blueskyEmbedImagesViewImage.alt
+    init(viewImage: Bsky.Embed.Images.ViewImage) {
+        self.fullsize = viewImage.fullsize
+        self.thumb = viewImage.thumb
+        self.alt = viewImage.alt
 
-        if let aspectRatio = blueskyEmbedImagesViewImage.aspectRatio {
-            self.aspectRatio = PoastEmbedImageModelAspectRatio(blueskyEmbedImagesAspectRatio: aspectRatio)
+        if let aspectRatio = viewImage.aspectRatio {
+            self.aspectRatio = PoastEmbedImageModelAspectRatio(aspectRatio: aspectRatio)
         } else {
             self.aspectRatio = nil
         }

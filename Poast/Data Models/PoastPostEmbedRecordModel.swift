@@ -13,17 +13,17 @@ struct PoastPostEmbedBlockedRecordModel: Hashable {
     let uri: String
     let profile: PoastBlockedProfileModel
 
-    init(blueskyEmbedRecordViewBlocked: BlueskyEmbedRecordViewBlocked) {
-        self.uri = blueskyEmbedRecordViewBlocked.uri
-        self.profile = PoastBlockedProfileModel(blueskyFeedBlockedAuthor: blueskyEmbedRecordViewBlocked.author)
+    init(viewBlocked: Bsky.Embed.Record.ViewBlocked) {
+        self.uri = viewBlocked.uri
+        self.profile = PoastBlockedProfileModel(blockedAuthor: viewBlocked.author)
     }
 }
 
 struct PoastPostEmbedNotFoundRecordModel: Hashable {
     let uri: String
 
-    init(blueskyEmbedRecordViewNotFound: BlueskyEmbedRecordViewNotFound) {
-        self.uri = blueskyEmbedRecordViewNotFound.uri
+    init(viewNotFound: Bsky.Embed.Record.ViewNotFound) {
+        self.uri = viewNotFound.uri
     }
 }
 
@@ -35,32 +35,38 @@ struct PoastPostEmbedRecordRecordModel: Hashable {
     let embeds: [PoastPostEmbedRecordEmbedModel]?
     let indexedAt: Date
 
-    init(blueskyEmbedRecordViewRecord: BlueskyEmbedRecordViewRecord) {
-        self.uri = blueskyEmbedRecordViewRecord.uri
-        self.cid = blueskyEmbedRecordViewRecord.cid
-        self.author = PoastProfileModel(blueskyActorProfileViewBasic: blueskyEmbedRecordViewRecord.author)
-        self.labels = blueskyEmbedRecordViewRecord.labels?.map { PoastLabelModel(atProtoLabel: $0) }
-        self.embeds = blueskyEmbedRecordViewRecord.embeds?.map { PoastPostEmbedRecordEmbedModel(blueskyEmbedRecordViewRecordEmbedType: $0) }
-        self.indexedAt = blueskyEmbedRecordViewRecord.indexedAt
+    init(viewRecord: Bsky.Embed.Record.ViewRecord) {
+        self.uri = viewRecord.uri
+        self.cid = viewRecord.cid
+        self.author = PoastProfileModel(profileViewBasic: viewRecord.author)
+        self.labels = viewRecord.labels?.map { PoastLabelModel(atProtoLabel: $0) }
+        self.embeds = viewRecord.embeds?.map { PoastPostEmbedRecordEmbedModel(embedType: $0) }
+        self.indexedAt = viewRecord.indexedAt
     }
 }
 
 enum PoastPostEmbedRecordModel: Hashable {
-    case unknown
     case blocked(PoastPostEmbedBlockedRecordModel)
     case notFound(PoastPostEmbedNotFoundRecordModel)
     case record(PoastPostEmbedRecordRecordModel)
+    case unknown
 
-    init(blueskyEmbedRecordView: BlueskyEmbedRecordView) {
-        switch(blueskyEmbedRecordView.record) {
-        case .blueskyEmbedRecordViewBlocked(let blueskyEmbedRecordViewBlocked):
-            self = .blocked(PoastPostEmbedBlockedRecordModel(blueskyEmbedRecordViewBlocked: blueskyEmbedRecordViewBlocked))
+    init(view: Bsky.Embed.Record.View) {
+        switch(view.record) {
+        case .recordViewBlocked(let viewBlocked):
+            self = .blocked(PoastPostEmbedBlockedRecordModel(viewBlocked: viewBlocked))
 
-        case .blueskyEmbedRecordViewNotFound(let blueskyEmbedRecordViewNotFound):
-            self = .notFound(PoastPostEmbedNotFoundRecordModel(blueskyEmbedRecordViewNotFound: blueskyEmbedRecordViewNotFound))
+        case .recordViewNotFound(let viewNotFound):
+            self = .notFound(PoastPostEmbedNotFoundRecordModel(viewNotFound: viewNotFound))
 
-        case .blueskyEmbedRecordViewRecord(let blueskyEmbedRecordViewRecord):
-            self = .record(PoastPostEmbedRecordRecordModel(blueskyEmbedRecordViewRecord: blueskyEmbedRecordViewRecord))
+        case .recordViewRecord(let viewRecord):
+            self = .record(PoastPostEmbedRecordRecordModel(viewRecord: viewRecord))
+
+// FIXME: Cases
+//        case .feedGeneratorView(_):
+//            break
+//        case .graphListView(_):
+//            break
 
         default:
             self = .unknown

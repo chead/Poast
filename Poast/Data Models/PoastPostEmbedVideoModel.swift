@@ -21,13 +21,13 @@ struct PoastPostEmbedVideoModel: Hashable {
         self.aspectRatio = aspectRatio
     }
 
-    init(blueskyEmbedVideoView: BlueskyEmbedVideoView) {
-        self.playlist = blueskyEmbedVideoView.playlist
-        self.thumbnail = blueskyEmbedVideoView.thumbnail
-        self.alt = blueskyEmbedVideoView.alt
+    init(view: Bsky.Embed.Video.View) {
+        self.playlist = view.playlist
+        self.thumbnail = view.thumbnail
+        self.alt = view.alt
 
-        if let aspectRatio = blueskyEmbedVideoView.aspectRatio {
-            self.aspectRatio = PoastPostEmbedAspectRatioModel(blueskyEmbedAspectRatio: aspectRatio)
+        if let aspectRatio = view.aspectRatio {
+            self.aspectRatio = PoastPostEmbedAspectRatioModel(aspectRatio: aspectRatio)
         } else {
             self.aspectRatio = nil
         }

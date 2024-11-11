@@ -11,7 +11,7 @@ import SwiftBluesky
 enum PoastProfileViewModelError: Error {
     case noCredentials
     case credentialsService(error: PoastCredentialsServiceError)
-    case blueskyClient(error: BlueskyClientError<BlueskyClient.Actor.BlueskyActorGetProfilesError>)
+    case blueskyClient(error: BlueskyClientError<Bsky.BskyActor.GetProfilesError>)
     case unknown(error: Error)
 }
 
@@ -37,7 +37,7 @@ class PoastProfileViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.Actor.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
+                switch(try await Bsky.BskyActor.getProfiles(host: session.account.host, accessToken: credentials.accessToken, refreshToken: credentials.refreshToken, actors: [handle])) {
                 case .success(let getProfilesResponse):
                     if let credentials = getProfilesResponse.credentials {
                         if let error = self.credentialsService.updateCredentials(did: session.did,
@@ -48,7 +48,7 @@ class PoastProfileViewModel: ObservableObject {
                     }
 
                     profile = getProfilesResponse.body.profiles.map {
-                        PoastProfileModel(blueskyActorProfileViewDetailed: $0)
+                        PoastProfileModel(profileViewDetailed: $0)
                     }.first
 
                     return nil

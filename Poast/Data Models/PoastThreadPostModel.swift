@@ -19,17 +19,17 @@ struct PoastThreadPostModel: Hashable {
         self.replies = replies
     }
 
-    init(blueskyFeedThreadViewPost: BlueskyFeedThreadViewPost) {
-        self.post = PoastVisiblePostModel(blueskyFeedPostView: blueskyFeedThreadViewPost.post)
+    init(threadViewPost: Bsky.Feed.ThreadViewPost) {
+        self.post = PoastVisiblePostModel(postView: threadViewPost.post)
 
-        if let parent = blueskyFeedThreadViewPost.parent {
-            self.parent = PoastThreadModel(blueskyFeedThreadViewPostPostType: parent)
+        if let parent = threadViewPost.parent {
+            self.parent = PoastThreadModel(threadViewPostPostType: parent)
         } else {
             self.parent = nil
         }
 
-        if let replies = blueskyFeedThreadViewPost.replies {
-            self.replies = replies.map { PoastThreadModel(blueskyFeedThreadViewPostPostType: $0) }
+        if let replies = threadViewPost.replies {
+            self.replies = replies.map { PoastThreadModel(threadViewPostPostType: $0) }
         } else {
             self.replies = []
         }

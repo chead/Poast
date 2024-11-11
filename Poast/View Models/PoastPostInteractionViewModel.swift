@@ -14,12 +14,12 @@ import SwiftATProto
 enum PoastPostInteractionViewModelError: Error {
     case noCredentials
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
-    case blueskyClientLikePost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoCreateRecordError>)
-    case blueskyClientUnlikePost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoDeleteRecordError>)
-    case blueskyClientRepostPost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoCreateRecordError>)
-    case blueskyClientUnrepostPost(error: BlueskyClientError<BlueskyClient.Repo.ATProtoRepoDeleteRecordError>)
-    case blueskyClientMuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphMuteThreadError>)
-    case blueskyClientUnuteThread(error: BlueskyClientError<BlueskyClient.Graph.BlueskyGraphUnmuteThreadError>)
+    case blueskyClientLikePost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
+    case blueskyClientUnlikePost(error: BlueskyClientError<ATProto.Repo.DeleteRecordError>)
+    case blueskyClientRepostPost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
+    case blueskyClientUnrepostPost(error: BlueskyClientError<ATProto.Repo.DeleteRecordError>)
+    case blueskyClientMuteThread(error: BlueskyClientError<Bsky.Graph.MuteThreadError>)
+    case blueskyClientUnuteThread(error: BlueskyClientError<Bsky.Graph.UnmuteThreadError>)
     case modelContext(error: Error)
     case unknown(error: Error)
 }
@@ -151,12 +151,12 @@ class PoastPostInteractionViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.Feed.createLike(host: session.account.host,
-                                                               accessToken: credentials.accessToken,
-                                                               refreshToken: credentials.refreshToken,
-                                                               repo: session.did,
-                                                               uri: uri,
-                                                               cid: cid)) {
+                switch(try await Bsky.Feed.createLike(host: session.account.host,
+                                                      accessToken: credentials.accessToken,
+                                                      refreshToken: credentials.refreshToken,
+                                                      repo: session.did,
+                                                      uri: uri,
+                                                      cid: cid)) {
                 case .success(let createLikeResponse):
                     if let credentials = createLikeResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
@@ -234,11 +234,11 @@ class PoastPostInteractionViewModel: ObservableObject {
             let rkey = String(uri.split(separator: ":").last?.split(separator: "/").last ?? "")
 
             do {
-                switch(try await BlueskyClient.Feed.deleteLike(host: session.account.host,
-                                                               accessToken: credentials.accessToken,
-                                                               refreshToken: credentials.refreshToken,
-                                                               repo: session.did,
-                                                               rkey: rkey)) {
+                switch(try await Bsky.Feed.deleteLike(host: session.account.host,
+                                                      accessToken: credentials.accessToken,
+                                                      refreshToken: credentials.refreshToken,
+                                                      repo: session.did,
+                                                      rkey: rkey)) {
                 case .success(let deleteLikeReponse):
                     if let credentials = deleteLikeReponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
@@ -314,12 +314,12 @@ class PoastPostInteractionViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.Feed.createRepost(host: session.account.host,
-                                                                 accessToken: credentials.accessToken,
-                                                                 refreshToken: credentials.refreshToken,
-                                                                 repo: session.did,
-                                                                 uri: uri,
-                                                                 cid: cid)) {
+                switch(try await Bsky.Feed.createRepost(host: session.account.host,
+                                                        accessToken: credentials.accessToken,
+                                                        refreshToken: credentials.refreshToken,
+                                                        repo: session.did,
+                                                        uri: uri,
+                                                        cid: cid)) {
                 case .success(let createLikeResponse):
                     if let credentials = createLikeResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
@@ -351,11 +351,11 @@ class PoastPostInteractionViewModel: ObservableObject {
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
 
             do {
-                switch(try await BlueskyClient.Feed.deleteRepost(host: session.account.host,
-                                                                 accessToken: credentials.accessToken,
-                                                                 refreshToken: credentials.refreshToken,
-                                                                 repo: session.did,
-                                                                 rkey: String(rkey))) {
+                switch(try await Bsky.Feed.deleteRepost(host: session.account.host,
+                                                        accessToken: credentials.accessToken,
+                                                        refreshToken: credentials.refreshToken,
+                                                        repo: session.did,
+                                                        rkey: String(rkey))) {
 
                 case .success(let unrepostPostResponse):
                     if let credentials = unrepostPostResponse.credentials {
@@ -467,10 +467,10 @@ class PoastPostInteractionViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.Graph.muteThread(host: session.account.host,
-                                                                accessToken: credentials.accessToken,
-                                                                refreshToken: credentials.refreshToken,
-                                                                root: uri)) {
+                switch(try await Bsky.Graph.muteThread(host: session.account.host,
+                                                       accessToken: credentials.accessToken,
+                                                       refreshToken: credentials.refreshToken,
+                                                       root: uri)) {
                 case .success(let muteThreadResponse):
                     if let credentials = muteThreadResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,
@@ -500,10 +500,10 @@ class PoastPostInteractionViewModel: ObservableObject {
             }
 
             do {
-                switch(try await BlueskyClient.Graph.unmuteThread(host: session.account.host,
-                                                                  accessToken: credentials.accessToken,
-                                                                  refreshToken: credentials.refreshToken,
-                                                                  root: uri)) {
+                switch(try await Bsky.Graph.unmuteThread(host: session.account.host,
+                                                         accessToken: credentials.accessToken,
+                                                         refreshToken: credentials.refreshToken,
+                                                         root: uri)) {
                 case .success(let unmuteThreadResponse):
                     if let credentials = unmuteThreadResponse.credentials {
                         _ = credentialsService.updateCredentials(did: session.did,

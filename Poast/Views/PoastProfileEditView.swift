@@ -8,30 +8,17 @@
 import SwiftUI
 
 struct PoastProfileEditView: View {
+    @EnvironmentObject var user: PoastUser
+
     @StateObject var profileEditViewModel: PoastProfileEditViewModel
 
-    @State var banner: String?
-    @State var avatar: String?
-    @State var displayName: String
-    @State var description: String
+    @State var avatar: String = ""
+    @State var displayName: String = ""
+    @State var description: String = ""
     @State var showingBannerConfirmationDialog = false
     @State var showingAvatarConfirmationDialog = false
 
     @Binding var showingEditSheet: Bool
-
-    let profile: PoastProfileModel
-
-    init(profile: PoastProfileModel, showingEditSheet: Binding<Bool>, profileEditViewModel: PoastProfileEditViewModel) {
-
-        self.profile = profile
-        self._showingEditSheet = showingEditSheet
-        self.banner = profile.banner
-        self.avatar = profile.avatar
-        self.displayName = profile.displayName ?? ""
-        self.description = profile.description ?? ""
-
-        self._profileEditViewModel = StateObject(wrappedValue: profileEditViewModel)
-    }
 
     var body: some View {
         VStack {
@@ -42,7 +29,9 @@ struct PoastProfileEditView: View {
 
                 Spacer ()
 
-                Button("Save") {}
+                Button("Save") {
+                    
+                }
             }
             .padding()
             .padding(.bottom, 10)
@@ -51,7 +40,7 @@ struct PoastProfileEditView: View {
                 Button {
                     showingBannerConfirmationDialog = true
                 } label: {
-                    AsyncImage(url: URL(string: banner ?? "")) { image in
+                    AsyncImage(url: URL(string: avatar)) { image in
                         image
                             .resizable()
                             .scaledToFill()
@@ -72,7 +61,7 @@ struct PoastProfileEditView: View {
                     showingAvatarConfirmationDialog = true
                 } label: {
                     PoastAvatarView(size: .large,
-                                    url: avatar ?? "")
+                                    url: URL(string: ""))
                     .offset(y: 50)
                 }
                 .confirmationDialog("Avatar", isPresented: $showingAvatarConfirmationDialog) {
@@ -87,15 +76,28 @@ struct PoastProfileEditView: View {
             TextField("", text: $displayName)
                 .font(.title)
                 .multilineTextAlignment(.center)
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(10)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.gray, lineWidth: 2)
+                }
                 .padding()
 
             TextEditor(text: $description)
                 .scrollContentBackground(.hidden)
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(10)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.gray, lineWidth: 2)
+                }
                 .padding()
+        }
+        .task {
+            if let session = user.session, await profileEditViewModel.getProfile(session: session) == nil {
+                avatar = profileEditViewModel.profile?.avatar?.ref.link ?? ""
+                displayName = profileEditViewModel.profile?.displayName ?? ""
+                description = profileEditViewModel.profile?.description ?? ""
+            }
         }
     }
 }

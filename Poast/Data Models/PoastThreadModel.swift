@@ -15,17 +15,17 @@ indirect enum PoastThreadModel: Hashable, Identifiable {
     case notFound(PoastNotFoundPostModel)
     case threadPost(PoastThreadPostModel)
 
-    init(blueskyFeedThreadViewPostPostType: BlueskyFeedThreadViewPostPostType) {
-        switch(blueskyFeedThreadViewPostPostType) {
+    init(threadViewPostPostType: Bsky.Feed.ThreadViewPost.PostType) {
 
-        case .blueskyFeedBlockedPost(let blueskyFeedBlockedPost):
-            self = .blocked(PoastBlockedPostModel(uri: blueskyFeedBlockedPost.uri, authorDid: blueskyFeedBlockedPost.author.did))
+        switch(threadViewPostPostType) {
+        case .blockedPost(let blockedPost):
+            self = .blocked(PoastBlockedPostModel(uri: blockedPost.uri, authorDid: blockedPost.author.did))
 
-        case .blueskyFeedNotFoundPost(let blueskyFeedNotFoundPost):
-            self = .notFound(PoastNotFoundPostModel(uri: blueskyFeedNotFoundPost.uri))
+        case .notFoundPost(let notFoundPost):
+            self = .notFound(PoastNotFoundPostModel(uri: notFoundPost.uri))
 
-        case .blueskyFeedThreadViewPost(let blueskyFeedThreadViewPost):
-            self = .threadPost(PoastThreadPostModel(blueskyFeedThreadViewPost: blueskyFeedThreadViewPost))
+        case .threadViewPost(let threadViewPost):
+            self = .threadPost(PoastThreadPostModel(threadViewPost: threadViewPost))
         }
     }
 

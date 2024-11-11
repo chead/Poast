@@ -26,12 +26,12 @@ class PoastLikesFeedViewModel: PoastFeedViewModel {
             }
 
             do {
-                switch(try await BlueskyClient.Feed.getActorLikes(host: session.account.host,
-                                                                  accessToken: credentials.accessToken,
-                                                                  refreshToken: credentials.refreshToken,
-                                                                  actor: actor,
-                                                                  limit: 50,
-                                                                  cursor: cursor)) {
+                switch(try await Bsky.Feed.getActorLikes(host: session.account.host,
+                                                         accessToken: credentials.accessToken,
+                                                         refreshToken: credentials.refreshToken,
+                                                         actor: actor,
+                                                         limit: 50,
+                                                         cursor: cursor)) {
                 case .success(let getAuthorFeedResponse):
                     if let credentials = getAuthorFeedResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,
@@ -39,7 +39,7 @@ class PoastLikesFeedViewModel: PoastFeedViewModel {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(blueskyFeedFeedViewPost: $0) })
+                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(feedViewPost: $0) })
 
                 case .failure(let error):
                     return .failure(.blueskyClientFeedGetActorLikesFeed(error: error))

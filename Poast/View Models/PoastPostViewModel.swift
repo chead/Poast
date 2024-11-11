@@ -12,7 +12,7 @@ import SwiftATProto
 enum PoastPostViewModelError: Error {
     case noCredentials
     case credentialsService(error: PoastCredentialsServiceError)
-    case blueskyClient(error: BlueskyClientError<BlueskyClient.Feed.BlueskyFeedGetPostsError>)
+    case blueskyClient(error: BlueskyClientError<Bsky.Feed.GetPostsError>)
     case unknown(error: Error)
 }
 
@@ -44,10 +44,10 @@ class PoastPostViewModel {
                     return .failure(.noCredentials)
                 }
 
-                switch(try await BlueskyClient.Feed.getPosts(host: session.account.host,
-                                                             accessToken: credentials.accessToken,
-                                                             refreshToken: credentials.refreshToken,
-                                                             uris: [uri])) {
+                switch(try await Bsky.Feed.getPosts(host: session.account.host,
+                                                    accessToken: credentials.accessToken,
+                                                    refreshToken: credentials.refreshToken,
+                                                    uris: [uri])) {
                 case .success(let getPostsResponse):
                     if let credentials = getPostsResponse.credentials {
                         _ = self.credentialsService.updateCredentials(did: session.did,
@@ -55,8 +55,8 @@ class PoastPostViewModel {
                                                                       refreshToken: credentials.refreshToken)
                     }
 
-                    if let post = getPostsResponse.body.posts.first {
-                        return .success(PoastVisiblePostModel(blueskyFeedPostView: post))
+                    if let postView = getPostsResponse.body.posts.first {
+                        return .success(PoastVisiblePostModel(postView: postView))
                     } else {
                         return .success(nil)
                     }

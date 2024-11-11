@@ -12,7 +12,7 @@ import SwiftData
 import SwiftBluesky
 
 enum PoastSignInViewModelError: Error {
-    case blueskyClientServerCreateSession(error: BlueskyClientError<BlueskyClient.Server.ATProtoServerCreateSessionError>)
+    case blueskyClientServerCreateSession(error: BlueskyClientError<ATProto.Server.CreateSessionError>)
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
     case credentialsServiceAddCredentials(error: PoastCredentialsServiceError)
     case modelContext(error: Error)
@@ -31,7 +31,7 @@ class PoastSignInViewModel {
 
     func signIn(host: URL, handle: String, password: String) async -> Result<PoastSessionModel, PoastSignInViewModelError> {
         do {
-            switch(try await BlueskyClient.Server.createSession(host: host, identifier: handle, password: password)) {
+            switch(try await ATProto.Server.createSession(host: host, identifier: handle, password: password)) {
             case .success(let createSessionResponseBody):
                 switch(getOrCreateAccount(handle: handle, host: host)) {
                 case .success(let account):

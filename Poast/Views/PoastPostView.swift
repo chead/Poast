@@ -35,7 +35,7 @@ struct PoastPostView: View {
             } label: {
                 VStack {
                     PoastAvatarView(size: .small,
-                                    url: postViewModel.post.author.avatar ?? "")
+                                    url: URL(string: postViewModel.post.author.avatar ?? ""))
                     .padding(.bottom, 10)
                     .padding(.top, 10)
 
@@ -140,15 +140,15 @@ struct PoastPostView: View {
                                              PoastThreadMuteInteractionModel.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: true))
 
-    let account = PoastAccountModel(uuid: UUID(),
-                                    created: Date(),
-                                    handle: "@foobar.baz",
-                                    host: URL(string: "https://bsky.social")!,
-                                    session: nil)
+//    let account = PoastAccountModel(uuid: UUID(),
+//                                    created: Date(),
+//                                    handle: "@foobar.baz",
+//                                    host: URL(string: "https://bsky.social")!,
+//                                    session: nil)
 
-    let session = PoastSessionModel(account: account,
-                                    did: "",
-                                    created: Date())
+//    let session = PoastSessionModel(account: account,
+//                                    did: "",
+//                                    created: Date())
 
     let user = PoastUser()
 

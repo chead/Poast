@@ -15,12 +15,12 @@ struct PoastPostEmbedExternalExternalModel: Hashable {
     let description: String
     let thumb: PoastBlobModel?
 
-    init(blueskyEmbedExternalExternal: BlueskyEmbedExternalExternal) {
-        self.uri = blueskyEmbedExternalExternal.uri
-        self.title = blueskyEmbedExternalExternal.title
-        self.description = blueskyEmbedExternalExternal.description
+    init(external: Bsky.Embed.External.External) {
+        self.uri = external.uri
+        self.title = external.title
+        self.description = external.description
 
-        if let thumb = blueskyEmbedExternalExternal.thumb {
+        if let thumb = external.thumb {
             self.thumb = PoastBlobModel(atProtoBlob: thumb)
         } else {
             self.thumb = nil
@@ -32,8 +32,8 @@ enum PoastPostEmbedExternalImageImageModel: Hashable {
     case blob(PoastBlobModel)
     case imageBlob(PoastImageBlobModel)
 
-    init(blueskyEmbedImagesImageType: BlueskyEmbedImagesImageType) {
-        switch(blueskyEmbedImagesImageType) {
+    init(imageType: Bsky.Embed.Images.Image.ImageType) {
+        switch(imageType) {
         case .atProtoBlob(let atProtoBlob):
             self = .blob(PoastBlobModel(atProtoBlob: atProtoBlob))
 
@@ -48,12 +48,12 @@ struct PoastPostEmbedExternalImageModel: Hashable {
     let alt: String
     let aspectRatio: PoastEmbedImageModelAspectRatio?
 
-    init(blueskyEmbedImagesImage: BlueskyEmbedImagesImage) {
-        self.image = PoastPostEmbedExternalImageImageModel(blueskyEmbedImagesImageType: blueskyEmbedImagesImage.image)
-        self.alt = blueskyEmbedImagesImage.alt
+    init(image: Bsky.Embed.Images.Image) {
+        self.image = PoastPostEmbedExternalImageImageModel(imageType: image.image)
+        self.alt = image.alt
 
-        if let aspectRatio = blueskyEmbedImagesImage.aspectRatio {
-            self.aspectRatio = PoastEmbedImageModelAspectRatio(blueskyEmbedImagesAspectRatio: aspectRatio)
+        if let aspectRatio = image.aspectRatio {
+            self.aspectRatio = PoastEmbedImageModelAspectRatio(aspectRatio: aspectRatio)
         } else {
             self.aspectRatio = nil
         }
@@ -65,15 +65,20 @@ enum PoastPostEmbedRecordWithMediaMediaModel: Hashable {
     case imagesView([PoastPostEmbedImageModel])
     case unknown
 
-    init(blueskyEmbedRecordWithMediaViewMediaType: BlueskyEmbedRecordWithMediaViewMediaType) {
-        switch(blueskyEmbedRecordWithMediaViewMediaType) {
-        case .blueskyEmbedExternalView(let blueskyEmbedExternalView):
-            self = .externalView(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
+    init(mediaType: Bsky.Embed.RecordWithMedia.View.MediaType) {
 
-        case .blueskyEmbedImagesView(let blueskyEmbedImagesView):
-            self = .imagesView(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
+        switch(mediaType) {
+        case .externalView(let externalView):
+            self = .externalView(PoastPostEmbedExternalModel(viewExternal: externalView.external))
 
-        case .unknown:
+        case .imagesView(let imagesView):
+            self = .imagesView(imagesView.images.map { PoastPostEmbedImageModel(viewImage: $0) })
+
+// FIXME: Case
+//        case .videoView(_):
+//            break
+
+        default:
             self = .unknown
         }
     }
@@ -83,9 +88,9 @@ struct PoastPostEmbedRecordWithMediaModel: Hashable {
     let record: PoastPostEmbedRecordModel
     let media: PoastPostEmbedRecordWithMediaMediaModel
 
-    init(blueskyEmbedRecordWithMediaView: BlueskyEmbedRecordWithMediaView) {
-        self.record = PoastPostEmbedRecordModel(blueskyEmbedRecordView: blueskyEmbedRecordWithMediaView.record)
-        self.media = PoastPostEmbedRecordWithMediaMediaModel(blueskyEmbedRecordWithMediaViewMediaType: blueskyEmbedRecordWithMediaView.media)
+    init(view: Bsky.Embed.RecordWithMedia.View) {
+        self.record = PoastPostEmbedRecordModel(view: view.record)
+        self.media = PoastPostEmbedRecordWithMediaMediaModel(mediaType: view.media)
     }
 }
 
@@ -96,22 +101,22 @@ enum PoastPostEmbedRecordEmbedModel: Hashable {
     case recordWithMedia(PoastPostEmbedRecordWithMediaModel)
     case video(PoastPostEmbedVideoModel)
 
-    init(blueskyEmbedRecordViewRecordEmbedType: BlueskyEmbedRecordViewRecordEmbedType) {
-        switch(blueskyEmbedRecordViewRecordEmbedType) {
-        case .blueskyEmbedExternalView(let blueskyEmbedExternalView):
-            self = .external(PoastPostEmbedExternalModel(blueskyEmbedExternalViewExternal: blueskyEmbedExternalView.external))
+    init(embedType: Bsky.Embed.Record.ViewRecord.EmbedType) {
+        switch(embedType) {
+        case .externalView(let externalView):
+            self = .external(PoastPostEmbedExternalModel(viewExternal: externalView.external))
 
-        case .blueskyEmbedImagesView(let blueskyEmbedImagesView):
-            self = .images(blueskyEmbedImagesView.images.map { PoastPostEmbedImageModel(blueskyEmbedImagesViewImage: $0) })
+        case .imagesView(let imagesView):
+            self = .images(imagesView.images.map { PoastPostEmbedImageModel(viewImage: $0) })
 
-        case .blueskyEmbedRecordView(let blueskyEmbedRecordView):
-            self = .record(PoastPostEmbedRecordModel(blueskyEmbedRecordView: blueskyEmbedRecordView))
+        case .recordView(let recordView):
+            self = .record(PoastPostEmbedRecordModel(view: recordView))
 
-        case .blueskyEmbedRecordWithMediaView(let blueskyEmbedRecordWithMediaView):
-            self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(blueskyEmbedRecordWithMediaView: blueskyEmbedRecordWithMediaView))
+        case .recordWithMediaView(let recordWithMediaView):
+            self = .recordWithMedia(PoastPostEmbedRecordWithMediaModel(view: recordWithMediaView))
 
-        case .blueskyEmbedVideoView(let blueskyEmbedVideoView):
-            self = .video(PoastPostEmbedVideoModel(blueskyEmbedVideoView: blueskyEmbedVideoView))
+        case .videoView(let videoView):
+            self = .video(PoastPostEmbedVideoModel(view: videoView))
         }
     }
 }
