@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct PoastSignInView: View {
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     let signInViewModel: PoastSignInViewModel
 
@@ -93,20 +93,20 @@ struct PoastSignInView: View {
                         switch(signInError) {
                         case .blueskyClientServerCreateSession(error: let createSessionError):
                             switch(createSessionError) {
-                            case .unauthorized:
-                                showBlueskyBadUsernameOrPasswordAlert = true
+                            case .atProtoClient(let atProtoClientError):
+                                switch(atProtoClientError) {
+                                case .unauthorized:
+                                    showBlueskyBadUsernameOrPasswordAlert = true
+
+                                default:
+                                    break
+                                }
 
                             default:
                                 showBlueskyClientErrorAlert = true
                             }
 
-                        case .credentialsServiceAddCredentials(error: _), .credentialsServiceGetCredentials(error: _):
-                            showCredentialsServiceErrorAlert = true
-
-                        case .modelContext:
-                            showModelContextErrorAlert = true
-
-                        case .unknown(error: _):
+                        default:
                             showUnknownErrorAlert = true
                         }
                     }
@@ -153,8 +153,8 @@ struct PoastSignInView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+    let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
     PoastSignInView(signInViewModel: PoastSignInViewModel(modelContext: container.mainContext))
-        .environmentObject(PoastUser())
+        .environmentObject(UserModel())
 }

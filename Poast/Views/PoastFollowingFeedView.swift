@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastFollowingFeedView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     @StateObject var followingFeedViewModel: PoastFollowingFeedViewModel
 
@@ -33,7 +33,7 @@ struct PoastFollowingFeedView: View {
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
                                  authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,

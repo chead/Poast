@@ -11,25 +11,23 @@ import SwiftATProto
 import SwiftBluesky
 
 enum PoastFeedViewModelError: Error {
-    case noCredentials
-    case blueskyClientFeedGetTimelineFeed(error: BlueskyClientError<Bsky.Feed.GetTimelineError>)
-    case blueskyClientFeedGetAuthorFeed(error: BlueskyClientError<Bsky.Feed.GetAuthorFeedError>)
-    case blueskyClientFeedGetActorLikesFeed(error: BlueskyClientError<Bsky.Feed.GetActorLikesError>)
-    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
-    case unknown(error: Error)
+    case followingFeed(error: BlueskyClientError<Bsky.Feed.GetTimelineError>)
+    case authorFeed(error: BlueskyClientError<Bsky.Feed.GetAuthorFeedError>)
+    case actorLikesFeed(error: BlueskyClientError<Bsky.Feed.GetActorLikesError>)
+    case credentialsService(error: PoastCredentialsServiceError)
 }
 
 @MainActor
 class PoastFeedViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
 
-    @Published var posts: [PoastVisiblePostModel] = []
+    @Published var posts: [FeedFeedViewPostModel] = []
 
-    let session: PoastSessionModel
+    let session: SessionModel
     
     private let modelContext: ModelContext
 
-    init(session: PoastSessionModel, modelContext: ModelContext) {
+    init(session: SessionModel, modelContext: ModelContext) {
         self.session = session
         self.modelContext = modelContext
     }
@@ -37,12 +35,12 @@ class PoastFeedViewModel: ObservableObject {
     func removePosts() {
         posts.removeAll()
 
-        try? modelContext.delete(model: PoastPostLikeInteractionModel.self)
-        try? modelContext.delete(model: PoastPostRepostInteractionModel.self)
-        try? modelContext.delete(model: PoastThreadMuteInteractionModel.self)
+        try? modelContext.delete(model: LikeInteractionModel.self)
+        try? modelContext.delete(model: RepostInteractionModel.self)
+        try? modelContext.delete(model: MuteInteractionModel.self)
     }
 
-    func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastFeedViewModelError> {
+    func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], PoastFeedViewModelError> {
         return .success([])
     }
 

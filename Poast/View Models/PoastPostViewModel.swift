@@ -20,9 +20,9 @@ enum PoastPostViewModelError: Error {
 class PoastPostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
 
-    let post: PoastVisiblePostModel
+    let post: FeedFeedViewPostModel
 
-    init(post: PoastVisiblePostModel) {
+    init(post: FeedFeedViewPostModel) {
         self.post = post
     }
 
@@ -36,41 +36,32 @@ class PoastPostViewModel {
         return formatter.localizedString(for: post.date, relativeTo: Date())
     }
 
-    func getPost(session: PoastSessionModel, uri: String) async -> Result<PoastVisiblePostModel?, PoastPostViewModelError> {
-        do {
-            switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
-            case .success(let credentials):
-                guard let credentials = credentials else {
-                    return .failure(.noCredentials)
+    func getPost(session: SessionModel, uri: String) async -> Result<FeedFeedViewPostModel?, PoastPostViewModelError> {
+        switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
+        case .success(let credentials):
+            switch(await Bsky.Feed.getPosts(host: session.account.host,
+                                            accessToken: credentials.accessToken,
+                                            refreshToken: credentials.refreshToken,
+                                            uris: [uri])) {
+            case .success(let getPostsResponse):
+                if let credentials = getPostsResponse.credentials {
+                    _ = self.credentialsService.updateCredentials(did: session.did,
+                                                                  accessToken: credentials.accessToken,
+                                                                  refreshToken: credentials.refreshToken)
                 }
 
-                switch(try await Bsky.Feed.getPosts(host: session.account.host,
-                                                    accessToken: credentials.accessToken,
-                                                    refreshToken: credentials.refreshToken,
-                                                    uris: [uri])) {
-                case .success(let getPostsResponse):
-                    if let credentials = getPostsResponse.credentials {
-                        _ = self.credentialsService.updateCredentials(did: session.did,
-                                                                      accessToken: credentials.accessToken,
-                                                                      refreshToken: credentials.refreshToken)
-                    }
-
-                    if let postView = getPostsResponse.body.posts.first {
-                        return .success(PoastVisiblePostModel(postView: postView))
-                    } else {
-                        return .success(nil)
-                    }
-
-                case .failure(let error):
-                    return .failure(.blueskyClient(error: error))
+                if let postView = getPostsResponse.body.posts.first {
+                    return .success(FeedFeedViewPostModel(postView: postView))
+                } else {
+                    return .success(nil)
                 }
 
             case .failure(let error):
-                return .failure(.credentialsService(error: error))
+                return .failure(.blueskyClient(error: error))
             }
 
-        } catch(let error) {
-            return .failure(.unknown(error: error))
+        case .failure(let error):
+            return .failure(.credentialsService(error: error))
         }
     }
 

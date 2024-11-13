@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct PoastPostEmbedView: View {
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     let postViewModel: PoastPostViewModel
 
-    @State var embed: PoastPostEmbedModel
+    @State var embed: FeedPostViewEmbedModel
 
     var body: some View {
         switch(embed) {
@@ -23,13 +23,11 @@ struct PoastPostEmbedView: View {
             PoastPostEmbedExternalView(external: external)
 
         case .record(let record):
-            PoastPostEmbedRecordWithMediaView(postViewModel: postViewModel,
-                                              record: record,
+            PoastPostEmbedRecordWithMediaView(record: record,
                                               media: nil)
 
         case .recordWithMedia(let recordWithMedia):
-            PoastPostEmbedRecordWithMediaView(postViewModel: postViewModel,
-                                              record: recordWithMedia.record,
+            PoastPostEmbedRecordWithMediaView(record: recordWithMedia.record,
                                               media: recordWithMedia.media)
 
         default:

@@ -16,7 +16,7 @@ enum PoastPoastViewAction {
 struct PoastPostView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     var postViewModel: PoastPostViewModel
 
@@ -134,10 +134,10 @@ struct PoastPostView: View {
 }
 
 #Preview {
-    let modelContainer = try! ModelContainer(for: PoastAccountModel.self,
-                                             PoastPostLikeInteractionModel.self,
-                                             PoastPostRepostInteractionModel.self,
-                                             PoastThreadMuteInteractionModel.self,
+    let modelContainer = try! ModelContainer(for: AccountModel.self,
+                                             LikeInteractionModel.self,
+                                             RepostInteractionModel.self,
+                                             MuteInteractionModel.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: true))
 
 //    let account = PoastAccountModel(uuid: UUID(),
@@ -150,9 +150,9 @@ struct PoastPostView: View {
 //                                    did: "",
 //                                    created: Date())
 
-    let user = PoastUser()
+    let user = UserModel()
 
-    let profile = PoastProfileModel(
+    let profile = ActorProfileViewModel(
                     did: "",
                     handle: "foobar.net",
                     displayName: "Fooooooooooooooo bar",
@@ -164,7 +164,7 @@ struct PoastPostView: View {
                     postsCount: 4123,
                     labels: [])
 
-    let post = PoastVisiblePostModel(uri: "",
+    let post = FeedFeedViewPostModel(uri: "",
                                    cid: "",
                                    text: "A post!",
                                    author: profile,
@@ -172,7 +172,7 @@ struct PoastPostView: View {
                                    likeCount: 0,
                                    repostCount: 10,
                                    root: nil,
-                                   parent: .post(PoastVisiblePostModel(uri: "",
+                                   parent: .post(FeedFeedViewPostModel(uri: "",
                                                                        cid: "",
                                                                        text: "Parent post",
                                                                        author: profile,

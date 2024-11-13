@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct PoastSettingsView: View {
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     let settingsViewModel: PoastSettingsViewModel
 
@@ -38,7 +38,7 @@ struct PoastSettingsView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+    let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
     PoastSettingsView(settingsViewModel: PoastSettingsViewModel(modelContext: container.mainContext))
 }

@@ -1,5 +1,5 @@
 //
-//  PoastPostModel.swift
+//  FeedViewPostModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 7/29/23.
@@ -8,12 +8,12 @@
 import Foundation
 import SwiftBluesky
 
-struct PoastVisiblePostModel: Hashable, Identifiable {
+struct FeedViewPostModel: Hashable, Identifiable {
     let id = UUID()
     let uri: String
     let cid: String
     let text: String
-    let author: PoastProfileModel
+    let author: ProfileViewModel
     let replyCount: Int
     let likeCount: Int
     let repostCount: Int
@@ -21,7 +21,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
     let parent: PoastReplyModel?
     let embed: PoastPostEmbedModel?
     let date: Date
-    let repostedBy: PoastProfileModel?
+    let repostedBy: ProfileViewModel?
     let like: String?
     let repost: String?
     let threadMuted: Bool
@@ -29,7 +29,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
     let embeddingDisabled: Bool
     let pinned: Bool
 
-    init(uri: String, cid: String, text: String, author: PoastProfileModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: PoastProfileModel?, like: String?, repost: String?, threadMuted: Bool, replyDisabled: Bool, embeddingDisabled: Bool, pinned: Bool) {
+    init(uri: String, cid: String, text: String, author: ProfileViewModel, replyCount: Int, likeCount: Int, repostCount: Int, root: PoastReplyModel?, parent: PoastReplyModel?, embed: PoastPostEmbedModel?, date: Date, repostedBy: ProfileViewModel?, like: String?, repost: String?, threadMuted: Bool, replyDisabled: Bool, embeddingDisabled: Bool, pinned: Bool) {
         self.uri = uri
         self.cid = cid
         self.text = text
@@ -59,7 +59,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
             self.text = post.text
         }
 
-        self.author = PoastProfileModel(profileViewBasic: feedViewPost.post.author)
+        self.author = ProfileViewModel(profileViewBasic: feedViewPost.post.author)
         self.replyCount = feedViewPost.post.replyCount ?? 0
         self.repostCount = feedViewPost.post.repostCount ?? 0
         self.likeCount = feedViewPost.post.likeCount ?? 0
@@ -87,7 +87,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         if let reason = feedViewPost.reason {
             switch(reason) {
             case .reasonRepost(let repost):
-                self.repostedBy = PoastProfileModel(profileViewBasic: repost.by)
+                self.repostedBy = ProfileViewModel(profileViewBasic: repost.by)
             }
         } else {
             self.repostedBy = nil
@@ -127,7 +127,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
             }
         }
 
-        self.author = PoastProfileModel(profileViewBasic: postView.author)
+        self.author = ProfileViewModel(profileViewBasic: postView.author)
         self.replyCount = postView.replyCount ?? 0
         self.repostCount = postView.repostCount ?? 0
         self.likeCount = postView.likeCount ?? 0
@@ -156,7 +156,7 @@ struct PoastVisiblePostModel: Hashable, Identifiable {
         hasher.combine(uri)
     }
     
-    static func ==(lhs: PoastVisiblePostModel, rhs: PoastVisiblePostModel) -> Bool {
+    static func ==(lhs: FeedViewPostModel, rhs: FeedViewPostModel) -> Bool {
         return lhs.uri == rhs.uri
     }
 }

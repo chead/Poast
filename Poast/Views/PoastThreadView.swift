@@ -14,16 +14,16 @@ struct PoastThreadParentPostView: View {
     @Binding var showingThreadURI: String?
     @Binding var interacted: Date
 
-    let posts: [PoastThreadModel]
+    let posts: [FeedThreadViewPostPostModel]
 
-    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, threadPost: PoastThreadPostModel) {
+    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, threadPost: FeedThreadViewPostModel) {
         self._interacted = interacted
         self.threadViewModel = threadViewModel
 
         self._showingProfileHandle = showingProfileHandle
         self._showingThreadURI = showingThreadURI
 
-        var posts: [PoastThreadModel] = []
+        var posts: [FeedThreadViewPostPostModel] = []
         var parent = threadPost.parent
 
         while(parent != nil) {
@@ -68,7 +68,7 @@ struct PoastThreadPostView: View {
     @Binding var showingThreadURI: String?
     @Binding var interacted: Date
 
-    let threadPost: PoastThreadPostModel
+    let threadPost: FeedThreadViewPostModel
 
     var body: some View {
         PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
@@ -102,7 +102,7 @@ struct PoastThreadPostView: View {
 struct PoastThreadView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     @StateObject var threadViewModel: PoastThreadViewModel
 
@@ -134,7 +134,7 @@ struct PoastThreadView: View {
             }
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                    PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: profileHandle),
                                      authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,
@@ -166,17 +166,17 @@ struct PoastThreadView: View {
 }
 
 #Preview {
-    let account = PoastAccountModel(uuid: UUID(),
+    let account = AccountModel(uuid: UUID(),
                                     created: Date(),
                                     handle: "@foobar.baz",
                                     host: URL(string: "https://bsky.social")!,
                                     session: nil)
 
-    let session = PoastSessionModel(account: account,
+    let session = SessionModel(account: account,
                                     did: "",
                                     created: Date())
 
-    let user = PoastUser(session: session)
+    let user = UserModel(session: session)
 
     PoastThreadView(threadViewModel: PoastThreadViewModel(uri: ""),
                     interacted: .constant(Date()))

@@ -15,11 +15,11 @@ class PoastPreferencesService {
         }
     }
 
-    func setActiveSessionDid(sessionDid: String?) throws {
+    func setActiveSessionDid(sessionDid: String?) {
         UserDefaults.standard.setValue(sessionDid, forKey: PreferencesKeys.Session.activeSessionDid.rawValue)
     }
 
-    func getActiveSessionDid() throws -> String? {
+    func getActiveSessionDid() -> String? {
         UserDefaults.standard.object(forKey: PreferencesKeys.Session.activeSessionDid.rawValue) as? String
     }
 }

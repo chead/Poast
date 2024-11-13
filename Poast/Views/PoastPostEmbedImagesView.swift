@@ -10,11 +10,11 @@ import SwiftUI
 struct PoastPostEmbedImagesView: View {
     struct ImageRow: Identifiable {
         let id = UUID()
-        let first: PoastPostEmbedImageModel
-        let second: PoastPostEmbedImageModel?
+        let first: EmbedImagesViewImageModel
+        let second: EmbedImagesViewImageModel?
     }
 
-    let images: [PoastPostEmbedImageModel]
+    let images: [EmbedImagesViewImageModel]
 
     var body: some View {
         let imageRows = images

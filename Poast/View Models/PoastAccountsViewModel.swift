@@ -23,7 +23,7 @@ class PoastAccountsViewModel {
         self.modelContext = modelContext
     }
 
-    func deleteAccount(account: PoastAccountModel) -> PoastAccountsViewModelError? {
+    func deleteAccount(account: AccountModel) -> PoastAccountsViewModelError? {
         if let session = account.session {
             _ = self.credentialsService.deleteCredentials(sessionDID: session.did)
         }
@@ -39,13 +39,7 @@ class PoastAccountsViewModel {
         return nil
     }
 
-    func setActiveSession(session: PoastSessionModel?) -> PoastAccountsViewModelError? {
-        do {
-            try self.preferencesService.setActiveSessionDid(sessionDid: session?.did)
-        } catch(let error) {
-            return .preferencesService(error: error)
-        }
-
-        return nil
+    func setActiveSession(session: SessionModel?) {
+        self.preferencesService.setActiveSessionDid(sessionDid: session?.did)
     }
 }

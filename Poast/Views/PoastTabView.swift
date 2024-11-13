@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastTabView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     var body: some View {
         TabView {
@@ -32,7 +32,7 @@ struct PoastTabView: View {
 
             if let session = user.session {
                 NavigationStack {
-                    PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                    PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: session.account.handle),
                                      authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,
@@ -59,17 +59,17 @@ struct PoastTabView: View {
 }
 
 #Preview {
-    let account = PoastAccountModel(uuid: UUID(),
+    let account = AccountModel(uuid: UUID(),
                                     created: Date(),
                                     handle: "@foobar.baz",
                                     host: URL(string: "https://bsky.social")!,
                                     session: nil)
 
-    let session = PoastSessionModel(account: account,
+    let session = SessionModel(account: account,
                                     did: "",
                                     created: Date())
 
-    let user = PoastUser()
+    let user = UserModel()
 
     user.session = session
 

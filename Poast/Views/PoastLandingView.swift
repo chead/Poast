@@ -11,7 +11,7 @@ import SwiftData
 struct PoastLandingView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     let landingViewModel: PoastLandingViewModel
 
@@ -26,7 +26,7 @@ struct PoastLandingView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: PoastAccountModel.self, configurations: config)
+    let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
     PoastLandingView(landingViewModel: PoastLandingViewModel())
         .modelContainer(container)

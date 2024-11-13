@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct PoastProfileEditView: View {
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     @StateObject var profileEditViewModel: PoastProfileEditViewModel
 
-    @State var avatar: String = ""
     @State var displayName: String = ""
     @State var description: String = ""
     @State var showingBannerConfirmationDialog = false
@@ -40,15 +39,8 @@ struct PoastProfileEditView: View {
                 Button {
                     showingBannerConfirmationDialog = true
                 } label: {
-                    AsyncImage(url: URL(string: avatar)) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        Rectangle()
-                            .fill(.clear)
-                    }
-                    .frame(height: 100)
+                    PoastProfileBannerView(url: URL(string: profileEditViewModel.profile?.banner ?? ""))
+                        .padding()
                 }
                 .confirmationDialog("Banner", isPresented: $showingBannerConfirmationDialog) {
                     Button("Upload from Library") {
@@ -61,7 +53,7 @@ struct PoastProfileEditView: View {
                     showingAvatarConfirmationDialog = true
                 } label: {
                     PoastAvatarView(size: .large,
-                                    url: URL(string: ""))
+                                    url: URL(string: profileEditViewModel.profile?.avatar ?? ""))
                     .offset(y: 50)
                 }
                 .confirmationDialog("Avatar", isPresented: $showingAvatarConfirmationDialog) {
@@ -94,7 +86,6 @@ struct PoastProfileEditView: View {
         }
         .task {
             if let session = user.session, await profileEditViewModel.getProfile(session: session) == nil {
-                avatar = profileEditViewModel.profile?.avatar?.ref.link ?? ""
                 displayName = profileEditViewModel.profile?.displayName ?? ""
                 description = profileEditViewModel.profile?.description ?? ""
             }

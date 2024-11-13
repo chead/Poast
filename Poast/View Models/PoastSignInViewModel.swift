@@ -13,8 +13,7 @@ import SwiftBluesky
 
 enum PoastSignInViewModelError: Error {
     case blueskyClientServerCreateSession(error: BlueskyClientError<ATProto.Server.CreateSessionError>)
-    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
-    case credentialsServiceAddCredentials(error: PoastCredentialsServiceError)
+    case credentialsService(error: PoastCredentialsServiceError)
     case modelContext(error: Error)
     case unknown(error: Error)
 }
@@ -29,24 +28,19 @@ class PoastSignInViewModel {
         self.modelContext = modelContext
     }
 
-    func signIn(host: URL, handle: String, password: String) async -> Result<PoastSessionModel, PoastSignInViewModelError> {
-        do {
-            switch(try await ATProto.Server.createSession(host: host, identifier: handle, password: password)) {
-            case .success(let createSessionResponseBody):
-                switch(getOrCreateAccount(handle: handle, host: host)) {
-                case .success(let account):
-                    switch(createSession(did: createSessionResponseBody.did, account: account)) {
-                    case .success(let session):
-                        if let error = credentialsService.addCredentials(did: createSessionResponseBody.did, accessToken: createSessionResponseBody.accessJwt, refreshToken: createSessionResponseBody.refreshJwt) {
-                            return .failure(.credentialsServiceAddCredentials(error: error))
-                        } else {
-                            try preferencesService.setActiveSessionDid(sessionDid: session.did)
+    func signIn(host: URL, handle: String, password: String) async -> Result<SessionModel, PoastSignInViewModelError> {
+        switch(await ATProto.Server.createSession(host: host, identifier: handle, password: password)) {
+        case .success(let createSessionResponseBody):
+            switch(getOrCreateAccount(handle: handle, host: host)) {
+            case .success(let account):
+                switch(createSession(did: createSessionResponseBody.did, account: account)) {
+                case .success(let session):
+                    if let error = credentialsService.addCredentials(did: createSessionResponseBody.did, accessToken: createSessionResponseBody.accessJwt, refreshToken: createSessionResponseBody.refreshJwt) {
+                        return .failure(.credentialsService(error: error))
+                    } else {
+                        preferencesService.setActiveSessionDid(sessionDid: session.did)
 
-                            return .success(session)
-                        }
-
-                    case .failure(let error):
-                        return .failure(error)
+                        return .success(session)
                     }
 
                 case .failure(let error):
@@ -54,15 +48,16 @@ class PoastSignInViewModel {
                 }
 
             case .failure(let error):
-                return .failure(.blueskyClientServerCreateSession(error: error))
+                return .failure(error)
             }
-        } catch(let error) {
-            return .failure(.unknown(error: error))
+
+        case .failure(let error):
+            return .failure(.blueskyClientServerCreateSession(error: error))
         }
     }
 
-    func getOrCreateAccount(handle: String, host: URL) -> Result<PoastAccountModel, PoastSignInViewModelError> {
-        let accountsFetchDescriptor = FetchDescriptor<PoastAccountModel>(predicate: #Predicate { account in
+    func getOrCreateAccount(handle: String, host: URL) -> Result<AccountModel, PoastSignInViewModelError> {
+        let accountsFetchDescriptor = FetchDescriptor<AccountModel>(predicate: #Predicate { account in
             account.handle == handle && account.host == host
         })
 
@@ -72,7 +67,7 @@ class PoastSignInViewModel {
             if let account = accounts.first {
                 return .success(account)
             } else {
-                let account = PoastAccountModel(uuid: UUID(), created: Date(), handle: handle, host: host, session: nil)
+                let account = AccountModel(uuid: UUID(), created: Date(), handle: handle, host: host, session: nil)
 
                 modelContext.insert(account)
 
@@ -84,13 +79,13 @@ class PoastSignInViewModel {
 
                 return .success(account)
             }
-        } catch(let error){
-            return .failure(.unknown(error: error))
+        } catch(let error) {
+            return .failure(.modelContext(error: error))
         }
     }
 
-    func createSession(did: String, account: PoastAccountModel) -> Result<PoastSessionModel, PoastSignInViewModelError> {
-        let session = PoastSessionModel(account: account, did: did, created: Date())
+    func createSession(did: String, account: AccountModel) -> Result<SessionModel, PoastSignInViewModelError> {
+        let session = SessionModel(account: account, did: did, created: Date())
 
         modelContext.insert(session)
 

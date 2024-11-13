@@ -10,47 +10,48 @@ import SwiftBluesky
 import SwiftATProto
 
 enum PoastProfileEditViewModelError: Error {
-    case credentials
+    case credentialsService(error: PoastCredentialsServiceError)
+    case getProfileFailed
     case unknown
 }
 
-class MutableBlueskyActorProfile {
-    var displayName: String?
-    var description: String?
-    var avatar: ATProtoBlob?
-    var banner: ATProtoBlob?
-    var labels: ATProtoSelfLabels?
-    var joinedViaStarterPack: ATProtoRepoStrongRef?
-    var pinnedPost: ATProtoRepoStrongRef?
-    let createdAt: Date?
-
-    init(profile: Bsky.BskyActor.Profile) {
-        self.displayName = profile.displayName
-        self.description = profile.description
-        self.avatar = profile.avatar
-        self.banner = profile.banner
-        self.labels = profile.labels
-        self.joinedViaStarterPack = profile.joinedViaStarterPack
-        self.pinnedPost = profile.pinnedPost
-        self.createdAt = profile.createdAt
-    }
-
-    func immutableCopy() -> Bsky.BskyActor.Profile {
-        Bsky.BskyActor.Profile(displayName: displayName,
-                               description: description,
-                               avatar: avatar,
-                               banner: banner,labels: labels,
-                               joinedViaStarterPack: joinedViaStarterPack,
-                               pinnedPost: pinnedPost,
-                               createdAt: createdAt)
-    }
-}
+//class MutableBlueskyActorProfile {
+//    var displayName: String?
+//    var description: String?
+//    var avatar: ATProtoBlob?
+//    var banner: ATProtoBlob?
+//    var labels: ATProtoSelfLabels?
+//    var joinedViaStarterPack: ATProtoRepoStrongRef?
+//    var pinnedPost: ATProtoRepoStrongRef?
+//    let createdAt: Date?
+//
+//    init(profile: Bsky.BskyActor.Profile) {
+//        self.displayName = profile.displayName
+//        self.description = profile.description
+//        self.avatar = profile.avatar
+//        self.banner = profile.banner
+//        self.labels = profile.labels
+//        self.joinedViaStarterPack = profile.joinedViaStarterPack
+//        self.pinnedPost = profile.pinnedPost
+//        self.createdAt = profile.createdAt
+//    }
+//
+//    func immutableCopy() -> Bsky.BskyActor.Profile {
+//        Bsky.BskyActor.Profile(displayName: displayName,
+//                               description: description,
+//                               avatar: avatar,
+//                               banner: banner,labels: labels,
+//                               joinedViaStarterPack: joinedViaStarterPack,
+//                               pinnedPost: pinnedPost,
+//                               createdAt: createdAt)
+//    }
+//}
 
 @MainActor
 class PoastProfileEditViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
 
-    @Published var profile: MutableBlueskyActorProfile?
+    @Published var profile: ActorProfileViewModel?
 
     private var handle: String
 
@@ -58,74 +59,77 @@ class PoastProfileEditViewModel: ObservableObject {
         self.handle = handle
     }
 
-    func getProfile(session: PoastSessionModel) async -> PoastProfileEditViewModelError? {
+    func getProfile(session: SessionModel) async -> PoastProfileEditViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
-            guard let credentials = credentials else {
-                return .credentials
-            }
-
-            do {
-                switch(try await Bsky.BskyActor.getProfile(host: session.account.host,
-                                                           accessToken: credentials.accessToken,
-                                                           refreshToken: credentials.refreshToken,
-                                                           actor: handle)) {
-                case .success(let getProfileResponse):
-                    if let credentials = getProfileResponse.credentials {
-                        _ = credentialsService.updateCredentials(did: session.did,
-                                                                 accessToken: credentials.accessToken,
-                                                                 refreshToken: credentials.refreshToken)
-                    }
-
-                    profile = MutableBlueskyActorProfile(profile: getProfileResponse.body)
-
-                case .failure(_):
-                    return .unknown
+            switch(await Bsky.BskyActor.getProfile(host: session.account.host,
+                                                   accessToken: credentials.accessToken,
+                                                   refreshToken: credentials.refreshToken,
+                                                   actor: handle)) {
+            case .success(let getProfileResponse):
+                if let credentials = getProfileResponse.credentials {
+                    _ = credentialsService.updateCredentials(did: session.did,
+                                                             accessToken: credentials.accessToken,
+                                                             refreshToken: credentials.refreshToken)
                 }
-            } catch {
-                return .unknown
+
+                profile = ActorProfileViewModel(profileViewDetailed: getProfileResponse.body)
+
+                return nil
+
+            case .failure(_):
+                return .getProfileFailed
             }
 
-        case .failure(_):
-            return .unknown
+        case .failure(let error):
+            return .credentialsService(error: error)
         }
-
-        return nil
     }
 
-    func putProfile(session: PoastSessionModel) async -> PoastProfileEditViewModelError? {
-        guard let profile = profile else { return .unknown }
+    func putProfile(session: SessionModel) async -> PoastProfileEditViewModelError? {
+//        guard let profile = profile else { return .unknown }
 
-        switch(credentialsService.getCredentials(sessionDID: session.did)) {
-        case .success(let credentials):
-            guard let credentials = credentials else {
-                return .credentials
-            }
+//        switch(credentialsService.getCredentials(sessionDID: session.did)) {
+//        case .success(let credentials):
+//            guard let credentials = credentials else {
+//                return .noCredentials
+//            }
+//
+//
+//        }
 
-            do {
-                switch(try await Bsky.BskyActor.putProfile(host: session.account.host,
-                                                           accessToken: credentials.accessToken,
-                                                           refreshToken: credentials.refreshToken,
-                                                           repo: session.did,
-                                                           profile: profile.immutableCopy())) {
-                case .success(let putProfileResponse):
-                    if let credentials = putProfileResponse.credentials {
-                        _ = credentialsService.updateCredentials(did: session.did,
-                                                                 accessToken: credentials.accessToken,
-                                                                 refreshToken: credentials.refreshToken)
-                    }
+//        switch(credentialsService.getCredentials(sessionDID: session.did)) {
+//        case .success(let credentials):
+//            guard let credentials = credentials else {
+//                return .credentials
+//            }
+//
+//            do {
+//                switch(try await Bsky.BskyActor.putProfile(host: session.account.host,
+//                                                           accessToken: credentials.accessToken,
+//                                                           refreshToken: credentials.refreshToken,
+//                                                           repo: session.did,
+//                                                           profile: profile.immutableCopy())) {
+//                case .success(let putProfileResponse):
+//                    if let credentials = putProfileResponse.credentials {
+//                        _ = credentialsService.updateCredentials(did: session.did,
+//                                                                 accessToken: credentials.accessToken,
+//                                                                 refreshToken: credentials.refreshToken)
+//                    }
+//
+//                    return nil
+//
+//                case .failure(_):
+//                    return .unknown
+//                }
+//            } catch {
+//                return .unknown
+//            }
+//
+//        case .failure(_):
+//            return .unknown
+//        }
 
-                    return nil
-
-                case .failure(_):
-                    return .unknown
-                }
-            } catch {
-                return .unknown
-            }
-
-        case .failure(_):
-            return .unknown
-        }
+        return nil
     }
 }

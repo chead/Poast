@@ -14,7 +14,7 @@ struct PoastFeedPostView: View {
     @Binding var showingThreadURI: String?
     @Binding var interacted: Date
 
-    var post: PoastVisiblePostModel
+    var post: FeedFeedViewPostModel
 
     var body: some View {
         if let parent = post.parent {

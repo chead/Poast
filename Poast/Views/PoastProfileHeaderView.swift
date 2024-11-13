@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastProfileHeaderView: View {
-    let profile: PoastProfileModel
+    let profile: ActorProfileViewModel
 
     var body: some View {
         VStack {

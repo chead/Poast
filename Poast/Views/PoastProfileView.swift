@@ -21,9 +21,9 @@ enum PoastProfileFeedType {
 struct PoastProfileView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
-    @StateObject var profileViewModel: PoastProfileViewModel
+    @StateObject var profileViewModel: ProfileViewViewModel
     @StateObject var authorFeedViewModel: PoastAuthorFeedViewModel
     @StateObject var repliesFeedViewModel: PoastAuthorFeedViewModel
     @StateObject var mediaFeedViewModel: PoastAuthorFeedViewModel
@@ -157,7 +157,7 @@ struct PoastProfileView: View {
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: PoastProfileViewModel(session: session,
+                PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
                                  authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,

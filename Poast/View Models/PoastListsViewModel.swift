@@ -9,9 +9,9 @@ import SwiftUI
 
 @MainActor
 class PoastListsViewModel: ObservableObject {
-    let session: PoastSessionModel
+    let session: SessionModel
 
-    init(session: PoastSessionModel) {
+    init(session: SessionModel) {
         self.session = session
     }
 

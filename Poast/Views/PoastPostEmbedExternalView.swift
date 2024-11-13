@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastPostEmbedExternalView: View {
-    let external: PoastPostEmbedExternalModel
+    let external: EmbedExternalViewExternalModel
 
     var body: some View {
         VStack(alignment: .leading) {

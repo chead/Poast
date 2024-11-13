@@ -12,44 +12,36 @@ import SwiftBluesky
 class PoastLikesFeedViewModel: PoastFeedViewModel {
     private let actor: String
 
-    init(session: PoastSessionModel, modelContext: ModelContext, actor: String) {
+    init(session: SessionModel, modelContext: ModelContext, actor: String) {
         self.actor = actor
 
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[PoastVisiblePostModel], PoastFeedViewModelError> {
+    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], PoastFeedViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
-            guard let credentials = credentials else {
-                return .failure(.noCredentials)
-            }
-
-            do {
-                switch(try await Bsky.Feed.getActorLikes(host: session.account.host,
-                                                         accessToken: credentials.accessToken,
-                                                         refreshToken: credentials.refreshToken,
-                                                         actor: actor,
-                                                         limit: 50,
-                                                         cursor: cursor)) {
-                case .success(let getAuthorFeedResponse):
-                    if let credentials = getAuthorFeedResponse.credentials {
-                        _ = self.credentialsService.updateCredentials(did: session.did,
-                                                                      accessToken: credentials.accessToken,
-                                                                      refreshToken: credentials.refreshToken)
-                    }
-
-                    return .success(getAuthorFeedResponse.body.feed.map { PoastVisiblePostModel(feedViewPost: $0) })
-
-                case .failure(let error):
-                    return .failure(.blueskyClientFeedGetActorLikesFeed(error: error))
+            switch(await Bsky.Feed.getActorLikes(host: session.account.host,
+                                                 accessToken: credentials.accessToken,
+                                                 refreshToken: credentials.refreshToken,
+                                                 actor: actor,
+                                                 limit: 50,
+                                                 cursor: cursor)) {
+            case .success(let getAuthorFeedResponse):
+                if let credentials = getAuthorFeedResponse.credentials {
+                    _ = self.credentialsService.updateCredentials(did: session.did,
+                                                                  accessToken: credentials.accessToken,
+                                                                  refreshToken: credentials.refreshToken)
                 }
-            } catch(let error) {
-                return .failure(.unknown(error: error))
+
+                return .success(getAuthorFeedResponse.body.feed.map { FeedFeedViewPostModel(feedViewPost: $0) })
+
+            case .failure(let error):
+                return .failure(.actorLikesFeed(error: error))
             }
 
         case .failure(let error):
-            return .failure(.credentialsServiceGetCredentials(error: error))
+            return .failure(.credentialsService(error: error))
         }
     }
 }

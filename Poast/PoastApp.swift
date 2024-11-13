@@ -11,14 +11,14 @@ import SwiftBluesky
 
 @main
 struct PoastApp: App {
-    let user: PoastUser
+    let user: UserModel
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            PoastAccountModel.self,
-            PoastPostLikeInteractionModel.self,
-            PoastPostRepostInteractionModel.self,
-            PoastThreadMuteInteractionModel.self
+            AccountModel.self,
+            LikeInteractionModel.self,
+            RepostInteractionModel.self,
+            MuteInteractionModel.self
         ])
 
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -32,17 +32,17 @@ struct PoastApp: App {
 
     init() {
         let preferencesService = PoastPreferencesService()
-        var activeSession: PoastSessionModel? = nil
+        var activeSession: SessionModel? = nil
 
-        if let activeSessionDid = try? preferencesService.getActiveSessionDid() {
-            let sessionsFetchDescriptor = FetchDescriptor<PoastSessionModel>(predicate: #Predicate { session in
+        if let activeSessionDid = preferencesService.getActiveSessionDid() {
+            let sessionsFetchDescriptor = FetchDescriptor<SessionModel>(predicate: #Predicate { session in
                 session.did == activeSessionDid
             })
 
             activeSession = try? sharedModelContainer.mainContext.fetch(sessionsFetchDescriptor).first
         }
 
-        self.user = PoastUser(session: activeSession)
+        self.user = UserModel(session: activeSession)
 
         DependencyProvider.register(PoastCredentialsService())
         DependencyProvider.register(preferencesService)

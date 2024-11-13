@@ -10,7 +10,7 @@ import SwiftData
 import SwiftATProto
 
 struct PoastPostInteractionView: View {
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     @StateObject var postInteractionViewModel: PoastPostInteractionViewModel
 

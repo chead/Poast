@@ -11,13 +11,13 @@ import SwiftData
 struct PoastAccountsView: View {
     @Environment(\.modelContext) private var modelContext
 
-    @EnvironmentObject var user: PoastUser
+    @EnvironmentObject var user: UserModel
 
     let accountsViewModel: PoastAccountsViewModel
 
-    @Query private var accounts: [PoastAccountModel]
+    @Query private var accounts: [AccountModel]
 
-    @State var selectedAccount: PoastAccountModel?
+    @State var selectedAccount: AccountModel?
     @State var showingSignInView: Bool = false
 
     var body: some View {
@@ -61,7 +61,7 @@ struct PoastAccountsView: View {
 
 #Preview {
     let modelConfiguration = ModelConfiguration(isStoredInMemoryOnly: true)
-    let modelContainer = try! ModelContainer(for: PoastAccountModel.self, configurations: modelConfiguration)
+    let modelContainer = try! ModelContainer(for: AccountModel.self, configurations: modelConfiguration)
 
     PoastAccountsView(accountsViewModel: PoastAccountsViewModel(modelContext: modelContainer.mainContext))
 }
