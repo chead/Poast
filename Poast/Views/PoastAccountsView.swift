@@ -13,7 +13,7 @@ struct PoastAccountsView: View {
 
     @EnvironmentObject var user: UserModel
 
-    let accountsViewModel: PoastAccountsViewModel
+    let accountsViewModel: AccountsViewModel
 
     @Query private var accounts: [AccountModel]
 
@@ -63,5 +63,5 @@ struct PoastAccountsView: View {
     let modelConfiguration = ModelConfiguration(isStoredInMemoryOnly: true)
     let modelContainer = try! ModelContainer(for: AccountModel.self, configurations: modelConfiguration)
 
-    PoastAccountsView(accountsViewModel: PoastAccountsViewModel(modelContext: modelContainer.mainContext))
+    PoastAccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContainer.mainContext))
 }

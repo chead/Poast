@@ -8,12 +8,12 @@
 import Foundation
 import SwiftData
 
-enum PoastAccountsViewModelError: Error {
+enum AccountsViewModelError: Error {
     case preferencesService(error: Error)
     case modelContext(error: Error)
 }
 
-class PoastAccountsViewModel {
+class AccountsViewModel {
     @Dependency private var preferencesService: PoastPreferencesService
     @Dependency private var credentialsService: PoastCredentialsService
 
@@ -23,7 +23,7 @@ class PoastAccountsViewModel {
         self.modelContext = modelContext
     }
 
-    func deleteAccount(account: AccountModel) -> PoastAccountsViewModelError? {
+    func deleteAccount(account: AccountModel) -> AccountsViewModelError? {
         if let session = account.session {
             _ = self.credentialsService.deleteCredentials(sessionDID: session.did)
         }

@@ -16,7 +16,7 @@ struct PoastTabView: View {
         TabView {
             if let session = user.session {
                 NavigationStack {
-                    PoastFollowingFeedView(followingFeedViewModel: PoastFollowingFeedViewModel(session: session,
+                    PoastFollowingFeedView(followingFeedViewModel: FollowingFeedViewModel(session: session,
                                                                              modelContext: modelContext))
                 }
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
@@ -34,25 +34,25 @@ struct PoastTabView: View {
                 NavigationStack {
                     PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: session.account.handle),
-                                     authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,
                                                                                    actor: session.account.handle,
                                                                                    filter: .postsNoReplies),
-                                     repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     repliesFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                     modelContext: modelContext,
                                                                                     actor: session.account.handle),
-                                     mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     mediaFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                   modelContext: modelContext,
                                                                                   actor: session.account.handle,
                                                                                   filter: .postsWithMedia),
-                                     likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                     likesFeedViewModel: LikesFeedViewModel(session: session,
                                                                                  modelContext: modelContext,
                                                                                  actor: session.account.handle))
                 }
                 .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
 
-            PoastSettingsView(settingsViewModel: PoastSettingsViewModel(modelContext: modelContext))
+            PoastSettingsView(settingsViewModel: SettingsViewModel(modelContext: modelContext))
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }

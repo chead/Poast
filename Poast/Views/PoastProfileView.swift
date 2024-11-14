@@ -24,10 +24,10 @@ struct PoastProfileView: View {
     @EnvironmentObject var user: UserModel
 
     @StateObject var profileViewModel: ProfileViewViewModel
-    @StateObject var authorFeedViewModel: PoastAuthorFeedViewModel
-    @StateObject var repliesFeedViewModel: PoastAuthorFeedViewModel
-    @StateObject var mediaFeedViewModel: PoastAuthorFeedViewModel
-    @StateObject var likesFeedViewModel: PoastLikesFeedViewModel
+    @StateObject var authorFeedViewModel: AuthorFeedViewModel
+    @StateObject var repliesFeedViewModel: AuthorFeedViewModel
+    @StateObject var mediaFeedViewModel: AuthorFeedViewModel
+    @StateObject var likesFeedViewModel: LikesFeedViewModel
 
     @State var feedType: PoastProfileFeedType = .posts
     @State var showingProfileHandle: String? = nil
@@ -159,18 +159,18 @@ struct PoastProfileView: View {
             if let session = user.session {
                 PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
-                                 authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
                                                                                actor: profileHandle,
                                                                                filter: .postsNoReplies),
-                                 repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 repliesFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                 modelContext: modelContext,
                                                                                 actor: profileHandle),
-                                 mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 mediaFeedViewModel: AuthorFeedViewModel(session: session,
                                                                               modelContext: modelContext,
                                                                               actor: profileHandle,
                                                                               filter: .postsWithMedia),
-                                 likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                 likesFeedViewModel: LikesFeedViewModel(session: session,
                                                                              modelContext: modelContext,
                                                                              actor: profileHandle))
             } else {
@@ -178,7 +178,7 @@ struct PoastProfileView: View {
             }
         }
         .navigationDestination(item: $showingThreadURI) { threadURI in
-            PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
+            PoastThreadView(threadViewModel: ThreadViewModel(uri: threadURI),
                             interacted: $interacted)
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -212,7 +212,7 @@ struct PoastProfileView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             if let profile = profileViewModel.profile {
-                PoastProfileEditView(profileEditViewModel: PoastProfileEditViewModel(handle: profile.handle),
+                PoastProfileEditView(profileEditViewModel: ProfileEditViewModel(handle: profile.handle),
                                      showingEditSheet: $showingEditSheet)
             } else {
                 EmptyView()

@@ -11,11 +11,10 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-enum PoastSignInViewModelError: Error {
-    case blueskyClientServerCreateSession(error: BlueskyClientError<ATProto.Server.CreateSessionError>)
+enum SignInViewModelError: Error {
+    case blueskyClient(error: BlueskyClientError<ATProto.Server.CreateSessionError>)
     case credentialsService(error: PoastCredentialsServiceError)
     case modelContext(error: Error)
-    case unknown(error: Error)
 }
 
 class PoastSignInViewModel {
@@ -28,7 +27,7 @@ class PoastSignInViewModel {
         self.modelContext = modelContext
     }
 
-    func signIn(host: URL, handle: String, password: String) async -> Result<SessionModel, PoastSignInViewModelError> {
+    func signIn(host: URL, handle: String, password: String) async -> Result<SessionModel, SignInViewModelError> {
         switch(await ATProto.Server.createSession(host: host, identifier: handle, password: password)) {
         case .success(let createSessionResponseBody):
             switch(getOrCreateAccount(handle: handle, host: host)) {
@@ -52,11 +51,11 @@ class PoastSignInViewModel {
             }
 
         case .failure(let error):
-            return .failure(.blueskyClientServerCreateSession(error: error))
+            return .failure(.blueskyClient(error: error))
         }
     }
 
-    func getOrCreateAccount(handle: String, host: URL) -> Result<AccountModel, PoastSignInViewModelError> {
+    func getOrCreateAccount(handle: String, host: URL) -> Result<AccountModel, SignInViewModelError> {
         let accountsFetchDescriptor = FetchDescriptor<AccountModel>(predicate: #Predicate { account in
             account.handle == handle && account.host == host
         })
@@ -84,7 +83,7 @@ class PoastSignInViewModel {
         }
     }
 
-    func createSession(did: String, account: AccountModel) -> Result<SessionModel, PoastSignInViewModelError> {
+    func createSession(did: String, account: AccountModel) -> Result<SessionModel, SignInViewModelError> {
         let session = SessionModel(account: account, did: did, created: Date())
 
         modelContext.insert(session)

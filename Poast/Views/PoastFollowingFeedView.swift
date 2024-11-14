@@ -12,7 +12,7 @@ struct PoastFollowingFeedView: View {
 
     @EnvironmentObject var user: UserModel
 
-    @StateObject var followingFeedViewModel: PoastFollowingFeedViewModel
+    @StateObject var followingFeedViewModel: FollowingFeedViewModel
 
     @State var showingComposeSheet: Bool = false
     @State var showingProfileHandle: String? = nil
@@ -35,18 +35,18 @@ struct PoastFollowingFeedView: View {
             if let session = user.session {
                 PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
-                                 authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
                                                                                actor: profileHandle,
                                                                                filter: .postsNoReplies),
-                                 repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 repliesFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                 modelContext: modelContext,
                                                                                 actor: profileHandle),
-                                 mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                 mediaFeedViewModel: AuthorFeedViewModel(session: session,
                                                                               modelContext: modelContext,
                                                                               actor: profileHandle,
                                                                               filter: .postsWithMedia),
-                                 likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                 likesFeedViewModel: LikesFeedViewModel(session: session,
                                                                              modelContext: modelContext,
                                                                              actor: profileHandle))
             } else {
@@ -54,7 +54,7 @@ struct PoastFollowingFeedView: View {
             }
         }
         .navigationDestination(item: $showingThreadURI) { threadURI in
-            PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
+            PoastThreadView(threadViewModel: ThreadViewModel(uri: threadURI),
                             interacted: $interacted)
         }
         .navigationBarTitleDisplayMode(.inline)

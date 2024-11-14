@@ -8,7 +8,7 @@
 import SwiftUI
 
 @MainActor
-class PoastListsViewModel: ObservableObject {
+class ListsViewModel: ObservableObject {
     let session: SessionModel
 
     init(session: SessionModel) {

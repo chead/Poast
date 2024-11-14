@@ -11,7 +11,7 @@ import SwiftData
 struct PoastSettingsView: View {
     @EnvironmentObject var user: UserModel
 
-    let settingsViewModel: PoastSettingsViewModel
+    let settingsViewModel: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -40,5 +40,5 @@ struct PoastSettingsView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
-    PoastSettingsView(settingsViewModel: PoastSettingsViewModel(modelContext: container.mainContext))
+    PoastSettingsView(settingsViewModel: SettingsViewModel(modelContext: container.mainContext))
 }

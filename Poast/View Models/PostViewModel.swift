@@ -1,5 +1,5 @@
 //
-//  PoastPostViewModel.swift
+//  PostViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/31/24.
@@ -9,15 +9,15 @@ import Foundation
 import SwiftBluesky
 import SwiftATProto
 
-enum PoastPostViewModelError: Error {
+enum PostViewModelError: Error {
     case noCredentials
     case credentialsService(error: PoastCredentialsServiceError)
-    case blueskyClient(error: BlueskyClientError<Bsky.Feed.GetPostsError>)
+    case blueskyClientGetPosts(error: BlueskyClientError<Bsky.Feed.GetPostsError>)
     case unknown(error: Error)
 }
 
 @MainActor
-class PoastPostViewModel {
+class PostViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
 
     let post: FeedFeedViewPostModel
@@ -36,7 +36,7 @@ class PoastPostViewModel {
         return formatter.localizedString(for: post.date, relativeTo: Date())
     }
 
-    func getPost(session: SessionModel, uri: String) async -> Result<FeedFeedViewPostModel?, PoastPostViewModelError> {
+    func getPost(session: SessionModel, uri: String) async -> Result<FeedFeedViewPostModel?, PostViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getPosts(host: session.account.host,
@@ -57,7 +57,7 @@ class PoastPostViewModel {
                 }
 
             case .failure(let error):
-                return .failure(.blueskyClient(error: error))
+                return .failure(.blueskyClientGetPosts(error: error))
             }
 
         case .failure(let error):

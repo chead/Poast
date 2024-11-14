@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastListsView: View {
-    @StateObject var listsViewModel: PoastListsViewModel
+    @StateObject var listsViewModel: ListsViewModel
 
     
     var body: some View {

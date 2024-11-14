@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-class PoastAuthorFeedViewModel: PoastFeedViewModel {
+class AuthorFeedViewModel: FeedViewModel {
     private let actor: String
     private let filter: Bsky.Feed.GetAuthorFeedFilter
 
@@ -20,7 +20,7 @@ class PoastAuthorFeedViewModel: PoastFeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], PoastFeedViewModelError> {
+    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getAuthorFeed(host: session.account.host,

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastFeedPostView: View {
-    var feedViewModel: PoastFeedViewModel
+    var feedViewModel: FeedViewModel
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
@@ -20,7 +20,7 @@ struct PoastFeedPostView: View {
         if let parent = post.parent {
             switch(parent) {
             case .post(let parentPost):
-                PoastPostView(postViewModel: PoastPostViewModel(post: parentPost),
+                PoastPostView(postViewModel: PostViewModel(post: parentPost),
                               showingProfileHandle: $showingProfileHandle,
                               showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
@@ -38,7 +38,7 @@ struct PoastFeedPostView: View {
             }
         }
 
-        PoastPostView(postViewModel: PoastPostViewModel(post: post),
+        PoastPostView(postViewModel: PostViewModel(post: post),
                       showingProfileHandle: $showingProfileHandle,
                       showingThreadURI: $showingThreadURI,
                       interacted: $interacted,

@@ -10,7 +10,7 @@ import SwiftData
 import SwiftATProto
 import SwiftBluesky
 
-enum PoastFeedViewModelError: Error {
+enum FeedViewModelError: Error {
     case followingFeed(error: BlueskyClientError<Bsky.Feed.GetTimelineError>)
     case authorFeed(error: BlueskyClientError<Bsky.Feed.GetAuthorFeedError>)
     case actorLikesFeed(error: BlueskyClientError<Bsky.Feed.GetActorLikesError>)
@@ -18,7 +18,7 @@ enum PoastFeedViewModelError: Error {
 }
 
 @MainActor
-class PoastFeedViewModel: ObservableObject {
+class FeedViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
 
     @Published var posts: [FeedFeedViewPostModel] = []
@@ -40,11 +40,11 @@ class PoastFeedViewModel: ObservableObject {
         try? modelContext.delete(model: MuteInteractionModel.self)
     }
 
-    func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], PoastFeedViewModelError> {
+    func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
         return .success([])
     }
 
-    func refreshPosts() async -> PoastFeedViewModelError? {
+    func refreshPosts() async -> FeedViewModelError? {
         switch(await getPosts(cursor: Date())) {
         case .success(let newPosts):
             guard let firstNewPost = newPosts.first else {
@@ -62,7 +62,7 @@ class PoastFeedViewModel: ObservableObject {
         }
     }
 
-    func updatePosts(cursor: Date) async -> PoastFeedViewModelError? {
+    func updatePosts(cursor: Date) async -> FeedViewModelError? {
         switch(await getPosts(cursor: cursor)) {
         case .success(let newPosts):
             removePosts()

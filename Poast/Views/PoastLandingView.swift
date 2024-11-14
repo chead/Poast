@@ -13,13 +13,13 @@ struct PoastLandingView: View {
 
     @EnvironmentObject var user: UserModel
 
-    let landingViewModel: PoastLandingViewModel
+    let landingViewModel: LandingViewModel
 
     var body: some View {
         if user.session != nil {
             PoastTabView()
         } else {
-            PoastAccountsView(accountsViewModel: PoastAccountsViewModel(modelContext: modelContext))
+            PoastAccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContext))
         }
     }
 }
@@ -28,6 +28,6 @@ struct PoastLandingView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
-    PoastLandingView(landingViewModel: PoastLandingViewModel())
+    PoastLandingView(landingViewModel: LandingViewModel())
         .modelContainer(container)
 }

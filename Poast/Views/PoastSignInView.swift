@@ -91,7 +91,7 @@ struct PoastSignInView: View {
                         loading = false
 
                         switch(signInError) {
-                        case .blueskyClientServerCreateSession(error: let createSessionError):
+                        case .blueskyClient(error: let createSessionError):
                             switch(createSessionError) {
                             case .atProtoClient(let atProtoClientError):
                                 switch(atProtoClientError) {

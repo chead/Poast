@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-class PoastFollowingFeedViewModel: PoastFeedViewModel {
+class FollowingFeedViewModel: FeedViewModel {
     let algorithm: String
 
     init(session: SessionModel, modelContext: ModelContext, algorithm: String = "") {
@@ -18,7 +18,7 @@ class PoastFollowingFeedViewModel: PoastFeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], PoastFeedViewModelError> {
+    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getTimeline(host: session.account.host,

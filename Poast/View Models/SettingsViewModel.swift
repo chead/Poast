@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-class PoastSettingsViewModel {
+class SettingsViewModel {
     @Dependency private var credentialsService: PoastCredentialsService
     @Dependency private var preferencesService: PoastPreferencesService
 

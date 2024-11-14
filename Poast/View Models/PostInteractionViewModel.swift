@@ -1,5 +1,5 @@
 //
-//  PoastPostInteractionViewModel.swift
+//  PostInteractionViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/9/24.
@@ -11,7 +11,7 @@ import SwiftData
 import SwiftBluesky
 import SwiftATProto
 
-enum PoastPostInteractionViewModelError: Error {
+enum PostInteractionViewModelError: Error {
     case noCredentials
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
     case blueskyClientLikePost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
@@ -21,11 +21,10 @@ enum PoastPostInteractionViewModelError: Error {
     case blueskyClientMuteThread(error: BlueskyClientError<Bsky.Graph.MuteThreadError>)
     case blueskyClientUnuteThread(error: BlueskyClientError<Bsky.Graph.UnmuteThreadError>)
     case modelContext(error: Error)
-    case unknown(error: Error)
 }
 
 @MainActor
-class PoastPostInteractionViewModel: ObservableObject {
+class PostInteractionViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
 
     @EnvironmentObject var user: UserModel
@@ -51,7 +50,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         getThreadMuteInteraction()
     }
 
-    func toggleLikePost(session: SessionModel) async -> PoastPostInteractionViewModelError? {
+    func toggleLikePost(session: SessionModel) async -> PostInteractionViewModelError? {
         switch((likeInteraction, post.like)) {
         case (.some(let likeInteraction), _):
             return deleteLikeInteraction(interaction: likeInteraction)
@@ -109,7 +108,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         likeInteraction = likeInteractions?.first
     }
 
-    private func createLikeInteraction(interaction: LikeModel) -> PoastPostInteractionViewModelError? {
+    private func createLikeInteraction(interaction: LikeModel) -> PostInteractionViewModelError? {
         if let likeInteraction = likeInteraction {
             modelContext.delete(likeInteraction)
         }
@@ -129,7 +128,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteLikeInteraction(interaction: LikeInteractionModel) -> PoastPostInteractionViewModelError? {
+    private func deleteLikeInteraction(interaction: LikeInteractionModel) -> PostInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -143,7 +142,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func likePost(session: SessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
+    private func likePost(session: SessionModel, uri: String, cid: String) async -> PostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.createLike(host: session.account.host,
@@ -170,7 +169,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleRepostPost(session: SessionModel) async -> PoastPostInteractionViewModelError? {
+    func toggleRepostPost(session: SessionModel) async -> PostInteractionViewModelError? {
         switch((repostInteraction, post.repost)) {
         case (.some(let repostInteraction), _):
             return deleteRepostInteraction(interaction: repostInteraction)
@@ -216,7 +215,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unlikePost(session: SessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
+    private func unlikePost(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             let rkey = String(uri.split(separator: ":").last?.split(separator: "/").last ?? "")
@@ -256,7 +255,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         self.repostInteraction = repostInteractions?.first
     }
 
-    private func createRepostInteraction(interaction: RepostModel) -> PoastPostInteractionViewModelError? {
+    private func createRepostInteraction(interaction: RepostModel) -> PostInteractionViewModelError? {
         if let repostInteraction = repostInteraction {
             modelContext.delete(repostInteraction)
         }
@@ -276,7 +275,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteRepostInteraction(interaction: RepostInteractionModel) -> PoastPostInteractionViewModelError? {
+    private func deleteRepostInteraction(interaction: RepostInteractionModel) -> PostInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -290,7 +289,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func repostPost(session: SessionModel, uri: String, cid: String) async -> PoastPostInteractionViewModelError? {
+    private func repostPost(session: SessionModel, uri: String, cid: String) async -> PostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.createRepost(host: session.account.host,
@@ -317,7 +316,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unrepostPost(session: SessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
+    private func unrepostPost(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
@@ -346,7 +345,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleMutePost(session: SessionModel) async -> PoastPostInteractionViewModelError? {
+    func toggleMutePost(session: SessionModel) async -> PostInteractionViewModelError? {
         switch((threadMuteInteraction, post.threadMuted)) {
         case (.some(let threadMuteInteraction), _):
             return deleteThreadMuteInteraction(interaction: threadMuteInteraction)
@@ -393,7 +392,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         threadMuteInteraction = threadMuteInteractions?.first
     }
 
-    private func createThreadMuteInteraction(interaction: MuteModel) -> PoastPostInteractionViewModelError? {
+    private func createThreadMuteInteraction(interaction: MuteModel) -> PostInteractionViewModelError? {
         if let threadMuteInteraction = threadMuteInteraction {
             modelContext.delete(threadMuteInteraction)
         }
@@ -413,7 +412,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteThreadMuteInteraction(interaction: MuteInteractionModel) -> PoastPostInteractionViewModelError? {
+    private func deleteThreadMuteInteraction(interaction: MuteInteractionModel) -> PostInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -427,7 +426,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func muteThread(session: SessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
+    private func muteThread(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Graph.muteThread(host: session.account.host,
@@ -452,7 +451,7 @@ class PoastPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unmuteThread(session: SessionModel, uri: String) async -> PoastPostInteractionViewModelError? {
+    private func unmuteThread(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Graph.unmuteThread(host: session.account.host,

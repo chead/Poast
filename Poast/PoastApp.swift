@@ -50,7 +50,7 @@ struct PoastApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PoastLandingView(landingViewModel: PoastLandingViewModel())
+            PoastLandingView(landingViewModel: LandingViewModel())
                 .environmentObject(user)
                 .modelContainer(sharedModelContainer)
         }

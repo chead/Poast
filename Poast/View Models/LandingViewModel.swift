@@ -7,8 +7,4 @@
 
 import Foundation
 
-enum PoastLandingViewModelError: Error {
-    case preferencesService
-}
-
-class PoastLandingViewModel {}
+class LandingViewModel {}

@@ -8,13 +8,13 @@
 import Foundation
 import SwiftBluesky
 
-enum PoastThreadViewModelError: Error {
+enum ThreadViewModelError: Error {
     case blueskyClientFeedGetPostThread(error: BlueskyClientError<Bsky.Feed.GetPostThreadError>)
     case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
 }
 
 @MainActor
-class PoastThreadViewModel: ObservableObject {
+class ThreadViewModel: ObservableObject {
     @Dependency internal var credentialsService: PoastCredentialsService
 
     @Published var threadPost: FeedThreadViewPostModel? = nil
@@ -25,7 +25,7 @@ class PoastThreadViewModel: ObservableObject {
         self.uri = uri
     }
 
-    func getThread(session: SessionModel) async -> PoastThreadViewModelError? {
+    func getThread(session: SessionModel) async -> ThreadViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getPostThread(host: session.account.host,

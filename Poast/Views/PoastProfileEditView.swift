@@ -10,7 +10,7 @@ import SwiftUI
 struct PoastProfileEditView: View {
     @EnvironmentObject var user: UserModel
 
-    @StateObject var profileEditViewModel: PoastProfileEditViewModel
+    @StateObject var profileEditViewModel: ProfileEditViewModel
 
     @State var displayName: String = ""
     @State var description: String = ""

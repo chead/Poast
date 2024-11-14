@@ -18,7 +18,7 @@ struct PoastPostView: View {
 
     @EnvironmentObject var user: UserModel
 
-    var postViewModel: PoastPostViewModel
+    var postViewModel: PostViewModel
 
     @State var replyTo: String? = nil
 
@@ -88,7 +88,7 @@ struct PoastPostView: View {
 
                     Spacer()
 
-                    PoastPostInteractionView(postInteractionViewModel: PoastPostInteractionViewModel(modelContext:
+                    PoastPostInteractionView(postInteractionViewModel: PostInteractionViewModel(modelContext:
                                                                                                         modelContext,
 
                                                                                                      post: postViewModel.post),
@@ -200,7 +200,7 @@ struct PoastPostView: View {
                                      embeddingDisabled: false,
                                      pinned: false)
 
-    PoastPostView(postViewModel: PoastPostViewModel(post: post),
+    PoastPostView(postViewModel: PostViewModel(post: post),
                   replyTo: nil,
                   showingProfileHandle: .constant(nil),
                   showingThreadURI: .constant(nil),

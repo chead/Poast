@@ -12,7 +12,7 @@ import SwiftATProto
 struct PoastPostInteractionView: View {
     @EnvironmentObject var user: UserModel
 
-    @StateObject var postInteractionViewModel: PoastPostInteractionViewModel
+    @StateObject var postInteractionViewModel: PostInteractionViewModel
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreConfirmationDialog: Bool = false

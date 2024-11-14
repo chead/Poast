@@ -9,46 +9,14 @@ import Foundation
 import SwiftBluesky
 import SwiftATProto
 
-enum PoastProfileEditViewModelError: Error {
+enum ProfileEditViewModelError: Error {
     case credentialsService(error: PoastCredentialsServiceError)
     case getProfileFailed
     case unknown
 }
 
-//class MutableBlueskyActorProfile {
-//    var displayName: String?
-//    var description: String?
-//    var avatar: ATProtoBlob?
-//    var banner: ATProtoBlob?
-//    var labels: ATProtoSelfLabels?
-//    var joinedViaStarterPack: ATProtoRepoStrongRef?
-//    var pinnedPost: ATProtoRepoStrongRef?
-//    let createdAt: Date?
-//
-//    init(profile: Bsky.BskyActor.Profile) {
-//        self.displayName = profile.displayName
-//        self.description = profile.description
-//        self.avatar = profile.avatar
-//        self.banner = profile.banner
-//        self.labels = profile.labels
-//        self.joinedViaStarterPack = profile.joinedViaStarterPack
-//        self.pinnedPost = profile.pinnedPost
-//        self.createdAt = profile.createdAt
-//    }
-//
-//    func immutableCopy() -> Bsky.BskyActor.Profile {
-//        Bsky.BskyActor.Profile(displayName: displayName,
-//                               description: description,
-//                               avatar: avatar,
-//                               banner: banner,labels: labels,
-//                               joinedViaStarterPack: joinedViaStarterPack,
-//                               pinnedPost: pinnedPost,
-//                               createdAt: createdAt)
-//    }
-//}
-
 @MainActor
-class PoastProfileEditViewModel: ObservableObject {
+class ProfileEditViewModel: ObservableObject {
     @Dependency private var credentialsService: PoastCredentialsService
 
     @Published var profile: ActorProfileViewModel?
@@ -59,7 +27,7 @@ class PoastProfileEditViewModel: ObservableObject {
         self.handle = handle
     }
 
-    func getProfile(session: SessionModel) async -> PoastProfileEditViewModelError? {
+    func getProfile(session: SessionModel) async -> ProfileEditViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.BskyActor.getProfile(host: session.account.host,
@@ -77,7 +45,7 @@ class PoastProfileEditViewModel: ObservableObject {
 
                 return nil
 
-            case .failure(_):
+            case .failure(let error):
                 return .getProfileFailed
             }
 
@@ -86,7 +54,7 @@ class PoastProfileEditViewModel: ObservableObject {
         }
     }
 
-    func putProfile(session: SessionModel) async -> PoastProfileEditViewModelError? {
+    func putProfile(session: SessionModel) async -> ProfileEditViewModelError? {
 //        guard let profile = profile else { return .unknown }
 
 //        switch(credentialsService.getCredentials(sessionDID: session.did)) {

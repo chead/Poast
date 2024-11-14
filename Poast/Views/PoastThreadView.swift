@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PoastThreadParentPostView: View {
-    @ObservedObject var threadViewModel: PoastThreadViewModel
+    @ObservedObject var threadViewModel: ThreadViewModel
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
@@ -16,7 +16,7 @@ struct PoastThreadParentPostView: View {
 
     let posts: [FeedThreadViewPostPostModel]
 
-    init(threadViewModel: PoastThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, threadPost: FeedThreadViewPostModel) {
+    init(threadViewModel: ThreadViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, threadPost: FeedThreadViewPostModel) {
         self._interacted = interacted
         self.threadViewModel = threadViewModel
 
@@ -51,7 +51,7 @@ struct PoastThreadParentPostView: View {
                 Text("Post Not Found")
 
             case .threadPost(let threadPost):
-                PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
+                PoastPostView(postViewModel: PostViewModel(post: threadPost.post),
                               showingProfileHandle: $showingProfileHandle,
                               showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
@@ -62,7 +62,7 @@ struct PoastThreadParentPostView: View {
 }
 
 struct PoastThreadPostView: View {
-    @ObservedObject var threadViewModel: PoastThreadViewModel
+    @ObservedObject var threadViewModel: ThreadViewModel
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
@@ -71,7 +71,7 @@ struct PoastThreadPostView: View {
     let threadPost: FeedThreadViewPostModel
 
     var body: some View {
-        PoastPostView(postViewModel: PoastPostViewModel(post: threadPost.post),
+        PoastPostView(postViewModel: PostViewModel(post: threadPost.post),
                       showingProfileHandle: $showingProfileHandle,
                       showingThreadURI: $showingThreadURI,
                       interacted: $interacted,
@@ -104,7 +104,7 @@ struct PoastThreadView: View {
 
     @EnvironmentObject var user: UserModel
 
-    @StateObject var threadViewModel: PoastThreadViewModel
+    @StateObject var threadViewModel: ThreadViewModel
 
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
@@ -136,24 +136,24 @@ struct PoastThreadView: View {
                 if let session = user.session {
                     PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: profileHandle),
-                                     authorFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,
                                                                                    actor: profileHandle,
                                                                                    filter: .postsNoReplies),
-                                     repliesFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     repliesFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                     modelContext: modelContext,
                                                                                     actor: profileHandle),
-                                     mediaFeedViewModel: PoastAuthorFeedViewModel(session: session,
+                                     mediaFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                   modelContext: modelContext,
                                                                                   actor: profileHandle,
                                                                                   filter: .postsWithMedia),
-                                     likesFeedViewModel: PoastLikesFeedViewModel(session: session,
+                                     likesFeedViewModel: LikesFeedViewModel(session: session,
                                                                                  modelContext: modelContext,
                                                                                  actor: profileHandle))
                 }
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in
-                PoastThreadView(threadViewModel: PoastThreadViewModel(uri: threadURI),
+                PoastThreadView(threadViewModel: ThreadViewModel(uri: threadURI),
                                 interacted: $interacted)
             }
         }
@@ -178,7 +178,7 @@ struct PoastThreadView: View {
 
     let user = UserModel(session: session)
 
-    PoastThreadView(threadViewModel: PoastThreadViewModel(uri: ""),
+    PoastThreadView(threadViewModel: ThreadViewModel(uri: ""),
                     interacted: .constant(Date()))
     .environmentObject(user)
 }
