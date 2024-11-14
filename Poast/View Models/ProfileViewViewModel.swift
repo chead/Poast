@@ -1,5 +1,5 @@
 //
-//  PoastProfileViewModel.swift
+//  ProfileViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 8/9/23.
@@ -10,14 +10,14 @@ import SwiftBluesky
 
 enum PoastProfileViewModelError: Error {
     case noCredentials
-    case credentialsService(error: PoastCredentialsServiceError)
+    case credentialsService(error: CredentialsServiceError)
     case blueskyClient(error: BlueskyClientError<Bsky.BskyActor.GetProfilesError>)
     case unknown(error: Error)
 }
 
 @MainActor
 class ProfileViewViewModel: ObservableObject {
-    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var credentialsService: CredentialsService
 
     @Published var profile: ActorProfileViewModel? = nil
 

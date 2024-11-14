@@ -1,5 +1,5 @@
 //
-//  PoastBlockedProfileModel.swift
+//  FeedBlockedAuthorModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.

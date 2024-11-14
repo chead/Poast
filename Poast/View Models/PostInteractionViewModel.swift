@@ -1,5 +1,5 @@
 //
-//  PostInteractionViewModel.swift
+//  InteractionViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/9/24.
@@ -13,7 +13,7 @@ import SwiftATProto
 
 enum PostInteractionViewModelError: Error {
     case noCredentials
-    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
+    case credentialsServiceGetCredentials(error: CredentialsServiceError)
     case blueskyClientLikePost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
     case blueskyClientUnlikePost(error: BlueskyClientError<ATProto.Repo.DeleteRecordError>)
     case blueskyClientRepostPost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
@@ -25,7 +25,7 @@ enum PostInteractionViewModelError: Error {
 
 @MainActor
 class PostInteractionViewModel: ObservableObject {
-    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var credentialsService: CredentialsService
 
     @EnvironmentObject var user: UserModel
 

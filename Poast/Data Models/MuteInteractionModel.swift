@@ -1,5 +1,5 @@
 //
-//  PoastPostMuteInteractionModel.swift
+//  MuteInteractionModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/26/24.

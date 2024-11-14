@@ -1,5 +1,5 @@
 //
-//  PoastThreadViewModel.swift
+//  ThreadViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/11/24.
@@ -10,12 +10,12 @@ import SwiftBluesky
 
 enum ThreadViewModelError: Error {
     case blueskyClientFeedGetPostThread(error: BlueskyClientError<Bsky.Feed.GetPostThreadError>)
-    case credentialsServiceGetCredentials(error: PoastCredentialsServiceError)
+    case credentialsServiceGetCredentials(error: CredentialsServiceError)
 }
 
 @MainActor
 class ThreadViewModel: ObservableObject {
-    @Dependency internal var credentialsService: PoastCredentialsService
+    @Dependency internal var credentialsService: CredentialsService
 
     @Published var threadPost: FeedThreadViewPostModel? = nil
 

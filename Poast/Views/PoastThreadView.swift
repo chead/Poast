@@ -1,5 +1,5 @@
 //
-//  PoastThreadView.swift
+//  ThreadParentPostView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/13/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastThreadParentPostView: View {
+struct ThreadParentPostView: View {
     @ObservedObject var threadViewModel: ThreadViewModel
 
     @Binding var showingProfileHandle: String?
@@ -51,7 +51,7 @@ struct PoastThreadParentPostView: View {
                 Text("Post Not Found")
 
             case .threadPost(let threadPost):
-                PoastPostView(postViewModel: PostViewModel(post: threadPost.post),
+                PostView(postViewModel: PostViewModel(post: threadPost.post),
                               showingProfileHandle: $showingProfileHandle,
                               showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
@@ -71,7 +71,7 @@ struct PoastThreadPostView: View {
     let threadPost: FeedThreadViewPostModel
 
     var body: some View {
-        PoastPostView(postViewModel: PostViewModel(post: threadPost.post),
+        PostView(postViewModel: PostViewModel(post: threadPost.post),
                       showingProfileHandle: $showingProfileHandle,
                       showingThreadURI: $showingThreadURI,
                       interacted: $interacted,
@@ -115,7 +115,7 @@ struct PoastThreadView: View {
         ScrollViewReader { proxy in
             List {
                 if let threadPost = threadViewModel.threadPost {
-                    PoastThreadParentPostView(threadViewModel: threadViewModel,
+                    ThreadParentPostView(threadViewModel: threadViewModel,
                                               showingProfileHandle: $showingProfileHandle,
                                               showingThreadURI: $showingThreadURI,
                                               interacted: $interacted,
@@ -134,7 +134,7 @@ struct PoastThreadView: View {
             }
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
-                    PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
+                    ProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: profileHandle),
                                      authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,

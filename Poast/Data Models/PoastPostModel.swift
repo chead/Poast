@@ -1,5 +1,5 @@
 //
-//  PoastPostModel.swift
+//  PostModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/13/24.

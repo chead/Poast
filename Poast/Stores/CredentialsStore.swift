@@ -1,5 +1,5 @@
 //
-//  PoastCredentialsStore.swift
+//  CredentialsStore.swift
 //  Poast
 //
 //  Created by Christopher Head on 7/31/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PoastCredentialsStoreError: Error {
+enum CredentialsStoreError: Error {
     case keychainSave
     case keychainUpdate
     case keychainDelete
@@ -15,8 +15,8 @@ enum PoastCredentialsStoreError: Error {
     case decodeCredentials(error: Error)
 }
 
-struct PoastCredentialsStore {
-    func addCredentials(identifier: String, credentials: CredentialsModel) -> PoastCredentialsStoreError? {
+struct CredentialsStore {
+    func addCredentials(identifier: String, credentials: CredentialsModel) -> CredentialsStoreError? {
         do {
             let credentialsData = try JSONEncoder().encode(credentials)
 
@@ -26,7 +26,7 @@ struct PoastCredentialsStore {
         }
     }
 
-    func getCredentials(identifier: String) -> Result<CredentialsModel?, PoastCredentialsStoreError> {
+    func getCredentials(identifier: String) -> Result<CredentialsModel?, CredentialsStoreError> {
         guard let credentialsData = Keychain.load(key: identifier) else {
             return .success(nil)
         }
@@ -38,7 +38,7 @@ struct PoastCredentialsStore {
         }
     }
 
-    func updateCredentials(identifier: String, credentials: CredentialsModel) -> PoastCredentialsStoreError? {
+    func updateCredentials(identifier: String, credentials: CredentialsModel) -> CredentialsStoreError? {
         do {
             let credentialsData = try JSONEncoder().encode(credentials)
 
@@ -48,7 +48,7 @@ struct PoastCredentialsStore {
         }
     }
 
-    func deleteCredentials(identifier: String) -> PoastCredentialsStoreError? {
+    func deleteCredentials(identifier: String) -> CredentialsStoreError? {
         return Keychain.delete(key: identifier) == 0 ? nil : .keychainDelete
     }
 }

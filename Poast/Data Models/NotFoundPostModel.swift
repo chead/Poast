@@ -1,5 +1,5 @@
 //
-//  PoastNotFoundPostModel.swift
+//  NotFoundPostModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/8/24.

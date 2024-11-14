@@ -1,5 +1,5 @@
 //
-//  PoastPostFeedView.swift
+//  FollowingFeedView.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/24/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastFollowingFeedView: View {
+struct FollowingFeedView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -23,7 +23,7 @@ struct PoastFollowingFeedView: View {
     var body: some View {
         List {
             ForEach(followingFeedViewModel.posts) { post in
-                PoastFeedPostView(feedViewModel: followingFeedViewModel,
+                FeedPostView(feedViewModel: followingFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
@@ -33,7 +33,7 @@ struct PoastFollowingFeedView: View {
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
+                ProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
                                  authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
@@ -79,7 +79,7 @@ struct PoastFollowingFeedView: View {
             }
         }
         .sheet(isPresented: $showingComposeSheet) {
-            PoastPostComposeView(showingComposeView: $showingComposeSheet)
+            PostComposeView(showingComposeView: $showingComposeSheet)
                 .interactiveDismissDisabled(true)
         }
         .refreshable {

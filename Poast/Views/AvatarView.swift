@@ -1,5 +1,5 @@
 //
-//  PoastAvatarView.swift
+//  AvatarView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/16/24.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-enum PoastAvatarSize: CGFloat {
-    case small = 50.0
-    case large = 100.0
-}
+struct AvatarView: View {
+    enum Size: CGFloat {
+        case small = 50.0
+        case large = 100.0
+    }
 
-struct PoastAvatarView: View {
-    let size: PoastAvatarSize
+    let size: Size
     let url: URL?
 
     var body: some View {
@@ -34,5 +34,5 @@ struct PoastAvatarView: View {
 }
 
 #Preview {
-    PoastAvatarView(size: .large, url: URL(string: ""))
+    AvatarView(size: .large, url: URL(string: ""))
 }

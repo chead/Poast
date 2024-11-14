@@ -1,5 +1,5 @@
 //
-//  PoastPostInteractionModel.swift
+//  LikeInteractionModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/9/24.

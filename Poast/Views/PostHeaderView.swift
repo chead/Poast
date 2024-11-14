@@ -1,5 +1,5 @@
 //
-//  PoastPostHeaderView.swift
+//  PostHeaderView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastPostHeaderView: View {
+struct PostHeaderView: View {
     let authorName: String
     let timeAgo: String
 
@@ -26,5 +26,5 @@ struct PoastPostHeaderView: View {
 }
 
 #Preview {
-    PoastPostHeaderView(authorName: "Foo", timeAgo: "13 minutes ago")
+    PostHeaderView(authorName: "Foo", timeAgo: "13 minutes ago")
 }

@@ -1,5 +1,5 @@
 //
-//  PoastPostEmbedImagesView.swift
+//  PostEmbedImagesView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/6/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastPostEmbedImagesView: View {
+struct PostEmbedImagesView: View {
     struct ImageRow: Identifiable {
         let id = UUID()
         let first: EmbedImagesViewImageModel

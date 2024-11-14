@@ -1,5 +1,5 @@
 //
-//  PoastProfileEditViewModel.swift
+//  ProfileEditViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/1/24.
@@ -10,14 +10,14 @@ import SwiftBluesky
 import SwiftATProto
 
 enum ProfileEditViewModelError: Error {
-    case credentialsService(error: PoastCredentialsServiceError)
+    case credentialsService(error: CredentialsServiceError)
     case getProfileFailed
     case unknown
 }
 
 @MainActor
 class ProfileEditViewModel: ObservableObject {
-    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var credentialsService: CredentialsService
 
     @Published var profile: ActorProfileViewModel?
 

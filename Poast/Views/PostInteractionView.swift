@@ -1,15 +1,13 @@
 //
-//  PoastPostInteractionView.swift
+//  PostInteractionView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
 //
 
 import SwiftUI
-import SwiftData
-import SwiftATProto
 
-struct PoastPostInteractionView: View {
+struct PostInteractionView: View {
     @EnvironmentObject var user: UserModel
 
     @StateObject var postInteractionViewModel: PostInteractionViewModel

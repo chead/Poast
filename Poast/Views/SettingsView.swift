@@ -1,5 +1,5 @@
 //
-//  PoastSettingsView.swift
+//  SettingsView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/20/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PoastSettingsView: View {
+struct SettingsView: View {
     @EnvironmentObject var user: UserModel
 
     let settingsViewModel: SettingsViewModel
@@ -40,5 +40,5 @@ struct PoastSettingsView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
-    PoastSettingsView(settingsViewModel: SettingsViewModel(modelContext: container.mainContext))
+    SettingsView(settingsViewModel: SettingsViewModel(modelContext: container.mainContext))
 }

@@ -1,5 +1,5 @@
 //
-//  PoastProfileEditView.swift
+//  ProfileEditView.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/1/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastProfileEditView: View {
+struct ProfileEditView: View {
     @EnvironmentObject var user: UserModel
 
     @StateObject var profileEditViewModel: ProfileEditViewModel
@@ -39,7 +39,7 @@ struct PoastProfileEditView: View {
                 Button {
                     showingBannerConfirmationDialog = true
                 } label: {
-                    PoastProfileBannerView(url: URL(string: profileEditViewModel.profile?.banner ?? ""))
+                    ProfileBannerView(url: URL(string: profileEditViewModel.profile?.banner ?? ""))
                         .padding()
                 }
                 .confirmationDialog("Banner", isPresented: $showingBannerConfirmationDialog) {
@@ -52,7 +52,7 @@ struct PoastProfileEditView: View {
                 Button {
                     showingAvatarConfirmationDialog = true
                 } label: {
-                    PoastAvatarView(size: .large,
+                    AvatarView(size: .large,
                                     url: URL(string: profileEditViewModel.profile?.avatar ?? ""))
                     .offset(y: 50)
                 }
@@ -94,5 +94,5 @@ struct PoastProfileEditView: View {
 }
 
 //#Preview {
-//    PoastProfileEditView()
+//    ProfileEditView()
 //}

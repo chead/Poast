@@ -1,5 +1,5 @@
 //
-//  PoastAccountsView.swift
+//  AccountsView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/1/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PoastAccountsView: View {
+struct AccountsView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -39,7 +39,7 @@ struct PoastAccountsView: View {
                 }
             }
             .navigationDestination(item: $selectedAccount, destination: { account in
-                PoastSignInView(host: account.host.absoluteString, handle: account.handle, signInViewModel: PoastSignInViewModel(modelContext: modelContext))
+                SignInView(host: account.host.absoluteString, handle: account.handle, signInViewModel: PoastSignInViewModel(modelContext: modelContext))
             })
             .navigationTitle("Accounts")
             .toolbar {
@@ -52,7 +52,7 @@ struct PoastAccountsView: View {
                     Image(systemName: "plus")
                 }
                 .navigationDestination(isPresented: $showingSignInView) {
-                    PoastSignInView(signInViewModel: PoastSignInViewModel(modelContext: modelContext))
+                    SignInView(signInViewModel: PoastSignInViewModel(modelContext: modelContext))
                 }
             }
         }
@@ -63,5 +63,5 @@ struct PoastAccountsView: View {
     let modelConfiguration = ModelConfiguration(isStoredInMemoryOnly: true)
     let modelContainer = try! ModelContainer(for: AccountModel.self, configurations: modelConfiguration)
 
-    PoastAccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContainer.mainContext))
+    AccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContainer.mainContext))
 }

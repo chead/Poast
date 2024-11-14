@@ -1,5 +1,5 @@
 //
-//  PoastProfileBannerView.swift
+//  ProfileBannerView.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/11/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastProfileBannerView: View {
+struct ProfileBannerView: View {
     let url: URL?
 
     var body: some View {

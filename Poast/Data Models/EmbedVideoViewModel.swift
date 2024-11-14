@@ -1,5 +1,5 @@
 //
-//  EmbedVideoView.swift
+//  EmbedVideoViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 9/22/24.

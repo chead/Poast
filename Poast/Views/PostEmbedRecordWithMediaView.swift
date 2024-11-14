@@ -1,5 +1,5 @@
 //
-//  PoastPostEmbedRecordWithMediaView.swift
+//  PostEmbedRecordWithMediaView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/6/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastPostEmbedRecordWithMediaView: View {
+struct PostEmbedRecordWithMediaView: View {
     @EnvironmentObject var user: UserModel
 
     let record: EmbedRecordViewModel
@@ -20,10 +20,10 @@ struct PoastPostEmbedRecordWithMediaView: View {
                 if let media = media {
                     switch(media) {
                     case .imagesView(let images):
-                        PoastPostEmbedImagesView(images: images)
+                        PostEmbedImagesView(images: images)
 
                     case .externalView(let external):
-                        PoastPostEmbedExternalView(external: external)
+                        PostEmbedExternalView(external: external)
 
                     case .unknown:
                         EmptyView()
@@ -34,7 +34,7 @@ struct PoastPostEmbedRecordWithMediaView: View {
                     ForEach(embeds) { embed in
                         switch(embed) {
                         case .images(let embedImages):
-                            PoastPostEmbedImagesView(images: embedImages)
+                            PostEmbedImagesView(images: embedImages)
 
                         case .recordWithMedia(let embedRecordWithMedia):
 //                            PoastPostEmbedRecordWithMediaView(record: record, media: embedRecordWithMedia)

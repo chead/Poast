@@ -1,5 +1,5 @@
 //
-//  PoastProfileView.swift
+//  ProfileView.swift
 //  Poast
 //
 //  Created by Christopher Head on 8/9/23.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import SwiftBluesky
 
-enum PoastProfileFeedType {
+enum ProfileFeedType {
     case posts
     case replies
     case media
@@ -18,7 +18,7 @@ enum PoastProfileFeedType {
     case lists
 }
 
-struct PoastProfileView: View {
+struct ProfileView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -29,7 +29,7 @@ struct PoastProfileView: View {
     @StateObject var mediaFeedViewModel: AuthorFeedViewModel
     @StateObject var likesFeedViewModel: LikesFeedViewModel
 
-    @State var feedType: PoastProfileFeedType = .posts
+    @State var feedType: ProfileFeedType = .posts
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
@@ -97,7 +97,7 @@ struct PoastProfileView: View {
         switch(feedType) {
         case .posts:
             ForEach(authorFeedViewModel.posts) { post in
-                PoastFeedPostView(feedViewModel: authorFeedViewModel,
+                FeedPostView(feedViewModel: authorFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
@@ -106,7 +106,7 @@ struct PoastProfileView: View {
 
         case .replies:
             ForEach(repliesFeedViewModel.posts) { post in
-                PoastFeedPostView(feedViewModel: repliesFeedViewModel,
+                FeedPostView(feedViewModel: repliesFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
@@ -115,7 +115,7 @@ struct PoastProfileView: View {
 
         case .media:
             ForEach(mediaFeedViewModel.posts) { post in
-                PoastFeedPostView(feedViewModel: mediaFeedViewModel,
+                FeedPostView(feedViewModel: mediaFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
@@ -124,7 +124,7 @@ struct PoastProfileView: View {
 
         case .likes:
             ForEach(likesFeedViewModel.posts) { post in
-                PoastFeedPostView(feedViewModel: likesFeedViewModel,
+                FeedPostView(feedViewModel: likesFeedViewModel,
                                   showingProfileHandle: $showingProfileHandle,
                                   showingThreadURI: $showingThreadURI,
                                   interacted: $interacted,
@@ -145,7 +145,7 @@ struct PoastProfileView: View {
         List {
             Section {
                 if let profile = profileViewModel.profile {
-                    PoastProfileHeaderView(profile: profile)
+                    ProfileHeaderView(profile: profile)
                 }
             }
             Section {
@@ -157,7 +157,7 @@ struct PoastProfileView: View {
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
+                ProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                          handle: profileHandle),
                                  authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                modelContext: modelContext,
@@ -212,7 +212,7 @@ struct PoastProfileView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             if let profile = profileViewModel.profile {
-                PoastProfileEditView(profileEditViewModel: ProfileEditViewModel(handle: profile.handle),
+                ProfileEditView(profileEditViewModel: ProfileEditViewModel(handle: profile.handle),
                                      showingEditSheet: $showingEditSheet)
             } else {
                 EmptyView()

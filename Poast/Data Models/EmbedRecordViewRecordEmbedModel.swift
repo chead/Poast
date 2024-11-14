@@ -1,5 +1,5 @@
 //
-//  PoastPostEmbedRecordEmbedModel.swift
+//  EmbedRecordViewRecordEmbedModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/3/24.

@@ -1,5 +1,5 @@
 //
-//  PoastLabelModel.swift
+//  LabelModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/21/24.

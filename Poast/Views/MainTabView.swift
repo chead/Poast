@@ -1,5 +1,5 @@
 //
-//  PoastTabView.swift
+//  MainTabView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/20/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastTabView: View {
+struct MainTabView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -16,7 +16,7 @@ struct PoastTabView: View {
         TabView {
             if let session = user.session {
                 NavigationStack {
-                    PoastFollowingFeedView(followingFeedViewModel: FollowingFeedViewModel(session: session,
+                    FollowingFeedView(followingFeedViewModel: FollowingFeedViewModel(session: session,
                                                                              modelContext: modelContext))
                 }
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
@@ -32,7 +32,7 @@ struct PoastTabView: View {
 
             if let session = user.session {
                 NavigationStack {
-                    PoastProfileView(profileViewModel: ProfileViewViewModel(session: session,
+                    ProfileView(profileViewModel: ProfileViewViewModel(session: session,
                                                                              handle: session.account.handle),
                                      authorFeedViewModel: AuthorFeedViewModel(session: session,
                                                                                    modelContext: modelContext,
@@ -52,7 +52,7 @@ struct PoastTabView: View {
                 .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }
 
-            PoastSettingsView(settingsViewModel: SettingsViewModel(modelContext: modelContext))
+            SettingsView(settingsViewModel: SettingsViewModel(modelContext: modelContext))
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
@@ -73,6 +73,6 @@ struct PoastTabView: View {
 
     user.session = session
 
-    return PoastTabView()
+    return MainTabView()
         .environmentObject(user)
 }

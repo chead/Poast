@@ -1,5 +1,5 @@
 //
-//  PoastSettingsViewModel.swift
+//  SettingsViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/20/24.
@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 class SettingsViewModel {
-    @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var preferencesService: PoastPreferencesService
+    @Dependency private var credentialsService: CredentialsService
+    @Dependency private var preferencesService: PreferencesService
 
     private var modelContext: ModelContext
 

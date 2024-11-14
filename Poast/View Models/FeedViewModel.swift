@@ -1,5 +1,5 @@
 //
-//  PoastTimelineViewModel.swift
+//  TimelineViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/10/24.
@@ -14,12 +14,12 @@ enum FeedViewModelError: Error {
     case followingFeed(error: BlueskyClientError<Bsky.Feed.GetTimelineError>)
     case authorFeed(error: BlueskyClientError<Bsky.Feed.GetAuthorFeedError>)
     case actorLikesFeed(error: BlueskyClientError<Bsky.Feed.GetActorLikesError>)
-    case credentialsService(error: PoastCredentialsServiceError)
+    case credentialsService(error: CredentialsServiceError)
 }
 
 @MainActor
 class FeedViewModel: ObservableObject {
-    @Dependency internal var credentialsService: PoastCredentialsService
+    @Dependency internal var credentialsService: CredentialsService
 
     @Published var posts: [FeedFeedViewPostModel] = []
 

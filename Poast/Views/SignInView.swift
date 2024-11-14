@@ -1,5 +1,5 @@
 //
-//  PoastAddAccountView.swift
+//  AddAccountView.swift
 //  Poast
 //
 //  Created by Christopher Head on 8/3/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PoastSignInView: View {
+struct SignInView: View {
     @EnvironmentObject var user: UserModel
 
     let signInViewModel: PoastSignInViewModel
@@ -155,6 +155,6 @@ struct PoastSignInView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
-    PoastSignInView(signInViewModel: PoastSignInViewModel(modelContext: container.mainContext))
+    SignInView(signInViewModel: PoastSignInViewModel(modelContext: container.mainContext))
         .environmentObject(UserModel())
 }

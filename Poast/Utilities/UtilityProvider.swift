@@ -14,11 +14,11 @@ final class UtilityProvider: UtilityProviding {
 
     private static var shared = UtilityProvider()
 
-    static func resolve() -> PoastCredentialsStore {
-        let key = "\(PoastCredentialsStore.self)"
+    static func resolve() -> CredentialsStore {
+        let key = "\(CredentialsStore.self)"
 
-        guard let credentialsStore = shared.instances[key] as? PoastCredentialsStore else {
-            let credentialsStore = PoastCredentialsStore()
+        guard let credentialsStore = shared.instances[key] as? CredentialsStore else {
+            let credentialsStore = CredentialsStore()
 
             shared.instances[key] = credentialsStore
             

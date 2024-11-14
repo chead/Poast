@@ -1,5 +1,5 @@
 //
-//  PoastListsView.swift
+//  ListsView.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastListsView: View {
+struct ListsView: View {
     @StateObject var listsViewModel: ListsViewModel
 
     
@@ -17,5 +17,5 @@ struct PoastListsView: View {
 }
 
 //#Preview {
-//    PoastListsView()
+//    ListsView()
 //}

@@ -1,5 +1,5 @@
 //
-//  PoastPostComposeView.swift
+//  PostComposeView.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/24/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastPostComposeView: View {
+struct PostComposeView: View {
     enum FocusedField {
         case textEditor
     }
@@ -105,5 +105,5 @@ struct PoastPostComposeView: View {
 }
 
 #Preview {
-    PoastPostComposeView(showingComposeView: .constant(true))
+    PostComposeView(showingComposeView: .constant(true))
 }

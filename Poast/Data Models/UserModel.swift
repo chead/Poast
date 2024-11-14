@@ -1,5 +1,5 @@
 //
-//  PoastUser.swift
+//  UserModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/16/24.

@@ -1,5 +1,5 @@
 //
-//  PoastAccountsViewModel.swift
+//  AccountsViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/1/24.
@@ -14,8 +14,8 @@ enum AccountsViewModelError: Error {
 }
 
 class AccountsViewModel {
-    @Dependency private var preferencesService: PoastPreferencesService
-    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var preferencesService: PreferencesService
+    @Dependency private var credentialsService: CredentialsService
 
     private var modelContext: ModelContext
 

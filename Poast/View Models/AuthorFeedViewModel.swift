@@ -1,5 +1,5 @@
 //
-//  PoastAuthorTimelineViewModel.swift
+//  AuthorTimelineViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 9/24/23.

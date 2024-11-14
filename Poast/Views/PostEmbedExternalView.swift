@@ -1,5 +1,5 @@
 //
-//  PoastPostEmbedImagesView.swift
+//  PostEmbedImagesView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/6/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastPostEmbedExternalView: View {
+struct PostEmbedExternalView: View {
     let external: EmbedExternalViewExternalModel
 
     var body: some View {

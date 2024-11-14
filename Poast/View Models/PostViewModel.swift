@@ -1,5 +1,5 @@
 //
-//  PostViewModel.swift
+//  ViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/31/24.
@@ -11,14 +11,14 @@ import SwiftATProto
 
 enum PostViewModelError: Error {
     case noCredentials
-    case credentialsService(error: PoastCredentialsServiceError)
+    case credentialsService(error: CredentialsServiceError)
     case blueskyClientGetPosts(error: BlueskyClientError<Bsky.Feed.GetPostsError>)
     case unknown(error: Error)
 }
 
 @MainActor
 class PostViewModel {
-    @Dependency private var credentialsService: PoastCredentialsService
+    @Dependency private var credentialsService: CredentialsService
 
     let post: FeedFeedViewPostModel
 

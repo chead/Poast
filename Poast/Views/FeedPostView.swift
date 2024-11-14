@@ -1,5 +1,5 @@
 //
-//  PoastFeedPostView.swift
+//  FeedPostView.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/31/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastFeedPostView: View {
+struct FeedPostView: View {
     var feedViewModel: FeedViewModel
 
     @Binding var showingProfileHandle: String?
@@ -20,7 +20,7 @@ struct PoastFeedPostView: View {
         if let parent = post.parent {
             switch(parent) {
             case .post(let parentPost):
-                PoastPostView(postViewModel: PostViewModel(post: parentPost),
+                PostView(postViewModel: PostViewModel(post: parentPost),
                               showingProfileHandle: $showingProfileHandle,
                               showingThreadURI: $showingThreadURI,
                               interacted: $interacted,
@@ -38,7 +38,7 @@ struct PoastFeedPostView: View {
             }
         }
 
-        PoastPostView(postViewModel: PostViewModel(post: post),
+        PostView(postViewModel: PostViewModel(post: post),
                       showingProfileHandle: $showingProfileHandle,
                       showingThreadURI: $showingThreadURI,
                       interacted: $interacted,

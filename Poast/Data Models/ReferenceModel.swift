@@ -1,5 +1,5 @@
 //
-//  PoastReferenceModel.swift
+//  ReferenceModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/3/24.

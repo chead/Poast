@@ -1,5 +1,5 @@
 //
-//  PoastPostView.swift
+//  PostView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/25/24.
@@ -8,12 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum PoastPoastViewAction {
-    case thread(String)
-    case profile(String)
-}
-
-struct PoastPostView: View {
+struct PostView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -34,7 +29,7 @@ struct PoastPostView: View {
                 showingProfileHandle = postViewModel.post.author.handle
             } label: {
                 VStack {
-                    PoastAvatarView(size: .small,
+                    AvatarView(size: .small,
                                     url: URL(string: postViewModel.post.author.avatar ?? ""))
                     .padding(.bottom, 10)
                     .padding(.top, 10)
@@ -51,7 +46,7 @@ struct PoastPostView: View {
                 showingThreadURI = postViewModel.post.uri
             } label: {
                 VStack(alignment: .leading) {
-                    PoastPostHeaderView(authorName: postViewModel.post.author.name,
+                    PostHeaderView(authorName: postViewModel.post.author.name,
                                         timeAgo: postViewModel.timeAgoString)
 
                     if let replyTo = replyTo {
@@ -82,13 +77,13 @@ struct PoastPostView: View {
                     if let embed = postViewModel.post.embed {
                         Spacer()
 
-                        PoastPostEmbedView(postViewModel: postViewModel,
+                        PostEmbedView(postViewModel: postViewModel,
                                            embed: embed)
                     }
 
                     Spacer()
 
-                    PoastPostInteractionView(postInteractionViewModel: PostInteractionViewModel(modelContext:
+                    PostInteractionView(postInteractionViewModel: PostInteractionViewModel(modelContext:
                                                                                                         modelContext,
 
                                                                                                      post: postViewModel.post),
@@ -200,7 +195,7 @@ struct PoastPostView: View {
                                      embeddingDisabled: false,
                                      pinned: false)
 
-    PoastPostView(postViewModel: PostViewModel(post: post),
+    PostView(postViewModel: PostViewModel(post: post),
                   replyTo: nil,
                   showingProfileHandle: .constant(nil),
                   showingThreadURI: .constant(nil),

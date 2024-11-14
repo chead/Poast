@@ -1,5 +1,5 @@
 //
-//  PoastAddAccountViewModel.swift
+//  AddAccountViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 8/3/23.
@@ -13,13 +13,13 @@ import SwiftBluesky
 
 enum SignInViewModelError: Error {
     case blueskyClient(error: BlueskyClientError<ATProto.Server.CreateSessionError>)
-    case credentialsService(error: PoastCredentialsServiceError)
+    case credentialsService(error: CredentialsServiceError)
     case modelContext(error: Error)
 }
 
 class PoastSignInViewModel {
-    @Dependency private var credentialsService: PoastCredentialsService
-    @Dependency private var preferencesService: PoastPreferencesService
+    @Dependency private var credentialsService: CredentialsService
+    @Dependency private var preferencesService: PreferencesService
 
     private var modelContext: ModelContext
 

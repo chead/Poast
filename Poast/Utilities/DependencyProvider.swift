@@ -29,7 +29,7 @@ class DependencyProvider: DependencyProviding {
         ServiceProvider.resolve()
     }
     
-    static func resolve() -> PoastCredentialsStore {
+    static func resolve() -> CredentialsStore {
         return UtilityProvider.resolve()
     }
 }

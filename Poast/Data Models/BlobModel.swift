@@ -1,5 +1,5 @@
 //
-//  PoastBlobModel.swift
+//  BlobModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/3/24.

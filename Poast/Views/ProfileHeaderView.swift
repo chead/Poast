@@ -1,5 +1,5 @@
 //
-//  PoastProfileHeaderView.swift
+//  ProfileHeaderView.swift
 //  Poast
 //
 //  Created by Christopher Head on 11/1/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoastProfileHeaderView: View {
+struct ProfileHeaderView: View {
     let profile: ActorProfileViewModel
 
     var body: some View {
@@ -27,7 +27,7 @@ struct PoastProfileHeaderView: View {
                 }
 
                 if let avatar = profile.avatar {
-                    PoastAvatarView(size: .large,
+                    AvatarView(size: .large,
                                     url: URL(string: avatar))
                     .offset(y: 50)
                 }

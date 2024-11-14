@@ -1,5 +1,5 @@
 //
-//  PoastPreferencesService.swift
+//  PreferencesService.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/31/24.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-class PoastPreferencesService {
+class PreferencesService {
     private enum PreferencesKeys {
         enum Session: String {
             case activeSessionDid = "activeSessionDid"

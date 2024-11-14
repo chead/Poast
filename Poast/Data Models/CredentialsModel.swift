@@ -1,5 +1,5 @@
 //
-//  PoastCredentialsModel.swift
+//  CredentialsModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 7/31/23.

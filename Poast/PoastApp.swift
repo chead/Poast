@@ -31,7 +31,7 @@ struct PoastApp: App {
     }()
 
     init() {
-        let preferencesService = PoastPreferencesService()
+        let preferencesService = PreferencesService()
         var activeSession: SessionModel? = nil
 
         if let activeSessionDid = preferencesService.getActiveSessionDid() {
@@ -44,13 +44,13 @@ struct PoastApp: App {
 
         self.user = UserModel(session: activeSession)
 
-        DependencyProvider.register(PoastCredentialsService())
+        DependencyProvider.register(CredentialsService())
         DependencyProvider.register(preferencesService)
     }
 
     var body: some Scene {
         WindowGroup {
-            PoastLandingView(landingViewModel: LandingViewModel())
+            LandingView(landingViewModel: LandingViewModel())
                 .environmentObject(user)
                 .modelContainer(sharedModelContainer)
         }

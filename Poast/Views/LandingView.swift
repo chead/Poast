@@ -1,5 +1,5 @@
 //
-//  PoastLandingView.swift
+//  LandingView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/19/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PoastLandingView: View {
+struct LandingView: View {
     @Environment(\.modelContext) private var modelContext
 
     @EnvironmentObject var user: UserModel
@@ -17,9 +17,9 @@ struct PoastLandingView: View {
 
     var body: some View {
         if user.session != nil {
-            PoastTabView()
+            MainTabView()
         } else {
-            PoastAccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContext))
+            AccountsView(accountsViewModel: AccountsViewModel(modelContext: modelContext))
         }
     }
 }
@@ -28,6 +28,6 @@ struct PoastLandingView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: AccountModel.self, configurations: config)
 
-    PoastLandingView(landingViewModel: LandingViewModel())
+    LandingView(landingViewModel: LandingViewModel())
         .modelContainer(container)
 }

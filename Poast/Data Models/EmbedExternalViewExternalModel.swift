@@ -1,5 +1,5 @@
 //
-//  PoastPostEmbedExternalModel.swift
+//  EmbedExternalViewExternalModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.

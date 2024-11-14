@@ -10,5 +10,5 @@ import CoreData
 import SwiftBluesky
 
 protocol UtilityProviding {
-    static func resolve() -> PoastCredentialsStore
+    static func resolve() -> CredentialsStore
 }
