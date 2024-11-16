@@ -86,6 +86,10 @@ struct PostViewView: View {
                 }
             }
             .buttonStyle(.plain)
+
+            PostViewInteractionView(postViewInteractionViewModel: PostViewInteractionViewModel(modelContext: modelContext,
+                                                                                               postView: postViewViewModel.postView),
+                                        interacted: $interacted)
         }
         .task {
             if isParent,

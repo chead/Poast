@@ -40,9 +40,5 @@ struct FeedViewPostView: View {
                      showingThreadURI: $showingThreadURI,
                      interacted: $interacted,
                      isParent: false)
-
-        FeedViewPostInteractionView(feedViewPostInteractionViewModel: FeedViewPostInteractionViewModel(modelContext: modelContext,
-                                                                                                       feedViewPost: feedViewPost),
-                                    interacted: $interacted)
     }
 }

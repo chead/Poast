@@ -23,17 +23,3 @@ extension Bsky.Feed.FeedViewPost: @retroactive Equatable {
 extension Bsky.Feed.FeedViewPost: @retroactive Identifiable {
     public var id: String { post.uri }
 }
-
-extension Bsky.Feed.FeedViewPost {
-    var canShare: Bool {
-        !(post.author.labels?.contains(where: { label in
-            label.val == "!no-unauthenticated"
-        }) ?? true)
-    }
-
-    var shareURL: URL? {
-        guard let lastURICompoenentIndex = post.uri.lastIndex(of: "/") else { return nil }
-
-        return URL(string: "https://bsky.app/profile/\(post.author.handle)/post/\(String(post.uri.suffix(from: lastURICompoenentIndex).dropFirst()))")
-    }
-}

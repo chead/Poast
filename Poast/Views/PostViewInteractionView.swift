@@ -1,5 +1,5 @@
 //
-//  FeedViewPostInteractionView.swift
+//  PostViewInteractionView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct FeedViewPostInteractionView: View {
+struct PostViewInteractionView: View {
     @EnvironmentObject var user: UserModel
 
-    @StateObject var feedViewPostInteractionViewModel: FeedViewPostInteractionViewModel
+    @StateObject var postViewInteractionViewModel: PostViewInteractionViewModel
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreConfirmationDialog: Bool = false
@@ -25,11 +25,11 @@ struct FeedViewPostInteractionView: View {
             }, label: {
                 HStack {
                     Image(systemName: "bubble")
-                    Text("\(feedViewPostInteractionViewModel.feedViewPost.post.replyCount ?? 0)")
+                    Text("\(postViewInteractionViewModel.postView.replyCount ?? 0)")
                 }
             })
             .buttonStyle(.plain)
-            .disabled(feedViewPostInteractionViewModel.feedViewPost.post.viewer?.replyDisabled ?? false)
+            .disabled(postViewInteractionViewModel.postView.viewer?.replyDisabled ?? false)
 
             Spacer()
 
@@ -37,27 +37,27 @@ struct FeedViewPostInteractionView: View {
                 showingRepostDialog = true
             }, label: {
                 HStack {
-                    if(feedViewPostInteractionViewModel.isReposted()) {
+                    if(postViewInteractionViewModel.isReposted()) {
                         Image(systemName: "repeat")
                             .foregroundColor(.green)
                     } else {
                         Image(systemName: "repeat")
                     }
 
-                    Text("\(feedViewPostInteractionViewModel.getRepostCount())")
+                    Text("\(postViewInteractionViewModel.getRepostCount())")
                 }
             })
             .buttonStyle(.plain)
             .confirmationDialog("Repost",
                                 isPresented: $showingRepostDialog,
                                 titleVisibility: .hidden) {
-                Button(feedViewPostInteractionViewModel.isReposted() ? "Undo repost" : "Repost") {
+                Button(postViewInteractionViewModel.isReposted() ? "Undo repost" : "Repost") {
                     Task {
                         guard let session = user.session else {
                             return
                         }
 
-                        _ = await feedViewPostInteractionViewModel.toggleRepostPost(session: session)
+                        _ = await postViewInteractionViewModel.toggleRepostPost(session: session)
                     }
                 }
 
@@ -72,20 +72,20 @@ struct FeedViewPostInteractionView: View {
                         return
                     }
 
-                    if await feedViewPostInteractionViewModel.toggleLikePost(session: session) == nil {
+                    if await postViewInteractionViewModel.toggleLikePost(session: session) == nil {
                         interacted = Date()
                     }
                 }
             }, label: {
                 HStack {
-                    if(feedViewPostInteractionViewModel.isLiked()) {
+                    if(postViewInteractionViewModel.isLiked()) {
                         Image(systemName: "heart.fill")
                             .foregroundColor(.red)
                     } else {
                         Image(systemName: "heart")
                     }
 
-                    Text("\(feedViewPostInteractionViewModel.getLikeCount())")
+                    Text("\(postViewInteractionViewModel.getLikeCount())")
                 }
             })
             .buttonStyle(.plain)
@@ -100,13 +100,13 @@ struct FeedViewPostInteractionView: View {
             .buttonStyle(.plain)
             .confirmationDialog("More", isPresented: $showingMoreConfirmationDialog) {
                 Button("Copy post text") {
-                    if case let .post(postRecord) = feedViewPostInteractionViewModel.feedViewPost.post.record {
+                    if case let .post(postRecord) = postViewInteractionViewModel.postView.record {
                         UIPasteboard.general.string = postRecord.text
                     }
                 }
 
-                if feedViewPostInteractionViewModel.feedViewPost.canShare,
-                   let postShareURL = feedViewPostInteractionViewModel.feedViewPost.shareURL {
+                if postViewInteractionViewModel.postView.canShare,
+                   let postShareURL = postViewInteractionViewModel.postView.shareURL {
                     ShareLink(item: postShareURL) {
                         Text("Share")
                     }
@@ -116,13 +116,13 @@ struct FeedViewPostInteractionView: View {
                     }
                 }
 
-                Button(feedViewPostInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
+                Button(postViewInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
                     Task {
                         guard let session = user.session else {
                             return
                         }
 
-                        _ = await feedViewPostInteractionViewModel.toggleMutePost(session: session)
+                        _ = await postViewInteractionViewModel.toggleMutePost(session: session)
                     }
                 }
 
@@ -133,7 +133,7 @@ struct FeedViewPostInteractionView: View {
         }
         .confirmationDialog("Share",
                             isPresented: $showingPostShareConfirmationDialog) {
-            if let postShareURL = feedViewPostInteractionViewModel.feedViewPost.shareURL {
+            if let postShareURL = postViewInteractionViewModel.postView.shareURL {
                 ShareLink(item: postShareURL) {
                     Text("Share anyway")
                 }
@@ -142,7 +142,7 @@ struct FeedViewPostInteractionView: View {
             Text("This post is only visibled to users who are logged in.")
         }
         .onAppear {
-            feedViewPostInteractionViewModel.getInteractions()
+            postViewInteractionViewModel.getInteractions()
         }
     }
 }

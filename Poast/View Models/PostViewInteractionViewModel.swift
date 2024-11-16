@@ -11,7 +11,7 @@ import SwiftData
 import SwiftBluesky
 import SwiftATProto
 
-enum PostInteractionViewModelError: Error {
+enum PostViewInteractionViewModelError: Error {
     case noCredentials
     case credentialsServiceGetCredentials(error: CredentialsServiceError)
     case blueskyClientLikePost(error: BlueskyClientError<ATProto.Repo.CreateRecordError>)
@@ -24,22 +24,22 @@ enum PostInteractionViewModelError: Error {
 }
 
 @MainActor
-class FeedViewPostInteractionViewModel: ObservableObject {
+class PostViewInteractionViewModel: ObservableObject {
     @Dependency private var credentialsService: CredentialsService
 
     @EnvironmentObject var user: UserModel
 
     private let modelContext: ModelContext
 
-    let feedViewPost: Bsky.Feed.FeedViewPost
+    let postView: Bsky.Feed.PostView
 
     @Published var likeInteraction: LikeInteractionModel? = nil
     @Published var repostInteraction: RepostInteractionModel? = nil
     @Published var threadMuteInteraction: MuteInteractionModel? = nil
 
-    init(modelContext: ModelContext, feedViewPost: Bsky.Feed.FeedViewPost) {
+    init(modelContext: ModelContext, postView: Bsky.Feed.PostView) {
         self.modelContext = modelContext
-        self.feedViewPost = feedViewPost
+        self.postView = postView
 
         getInteractions()
     }
@@ -50,18 +50,18 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         getThreadMuteInteraction()
     }
 
-    func toggleLikePost(session: SessionModel) async -> PostInteractionViewModelError? {
-        switch((likeInteraction, feedViewPost.post.viewer?.like)) {
+    func toggleLikePost(session: SessionModel) async -> PostViewInteractionViewModelError? {
+        switch((likeInteraction, postView.viewer?.like)) {
         case (.some(let likeInteraction), _):
             return deleteLikeInteraction(interaction: likeInteraction)
 
         case(.none, .some):
-            if(await unlikePost(session: session, uri: feedViewPost.post.uri) == nil) {
+            if(await unlikePost(session: session, uri: postView.uri) == nil) {
                 return createLikeInteraction(interaction: .unliked)
             }
 
         case(.none, .none):
-            if(await likePost(session: session, uri: feedViewPost.post.uri, cid: feedViewPost.post.cid) == nil) {
+            if(await likePost(session: session, uri: postView.uri, cid: postView.cid) == nil) {
                 return createLikeInteraction(interaction: .liked)
             }
         }
@@ -70,7 +70,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     func isLiked() -> Bool {
-        switch((feedViewPost.post.viewer?.like, likeInteraction?.interaction)) {
+        switch((postView.viewer?.like, likeInteraction?.interaction)) {
         case(.some, .none):
             return true
 
@@ -86,18 +86,18 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     func getLikeCount() -> Int {
-        switch((feedViewPost.post.viewer?.like, likeInteraction?.interaction)) {
+        switch((postView.viewer?.like, likeInteraction?.interaction)) {
         case (.none, .some(let likeInteraction)) where likeInteraction == .liked,
             (.some, .some(let likeInteraction)) where likeInteraction == .unliked:
-            return (feedViewPost.post.likeCount ?? 0) + likeInteraction.rawValue
+            return (postView.likeCount ?? 0) + likeInteraction.rawValue
 
         default:
-            return feedViewPost.post.likeCount ?? 0
+            return postView.likeCount ?? 0
         }
     }
 
     private func getLikeInteraction() {
-        let postUri = feedViewPost.post.uri
+        let postUri = postView.uri
 
         let likeInteractionsDescriptor = FetchDescriptor<LikeInteractionModel>(predicate: #Predicate { interaction in
             return interaction.postUri == postUri
@@ -108,12 +108,12 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         likeInteraction = likeInteractions?.first
     }
 
-    private func createLikeInteraction(interaction: LikeModel) -> PostInteractionViewModelError? {
+    private func createLikeInteraction(interaction: LikeModel) -> PostViewInteractionViewModelError? {
         if let likeInteraction = likeInteraction {
             modelContext.delete(likeInteraction)
         }
 
-        let likeInteraction = LikeInteractionModel(postUri: feedViewPost.post.uri, interaction: interaction)
+        let likeInteraction = LikeInteractionModel(postUri: postView.uri, interaction: interaction)
 
         modelContext.insert(likeInteraction)
 
@@ -128,7 +128,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteLikeInteraction(interaction: LikeInteractionModel) -> PostInteractionViewModelError? {
+    private func deleteLikeInteraction(interaction: LikeInteractionModel) -> PostViewInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -142,7 +142,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func likePost(session: SessionModel, uri: String, cid: String) async -> PostInteractionViewModelError? {
+    private func likePost(session: SessionModel, uri: String, cid: String) async -> PostViewInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.createLike(host: session.account.host,
@@ -169,7 +169,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unlikePost(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
+    private func unlikePost(session: SessionModel, uri: String) async -> PostViewInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             let rkey = String(uri.split(separator: ":").last?.split(separator: "/").last ?? "")
@@ -197,18 +197,18 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleRepostPost(session: SessionModel) async -> PostInteractionViewModelError? {
-        switch((repostInteraction, feedViewPost.post.viewer?.repost)) {
+    func toggleRepostPost(session: SessionModel) async -> PostViewInteractionViewModelError? {
+        switch((repostInteraction, postView.viewer?.repost)) {
         case (.some(let repostInteraction), _):
             return deleteRepostInteraction(interaction: repostInteraction)
 
         case(.none, .some(_)):
-            if(await unrepostPost(session: session, uri: feedViewPost.post.uri) == nil) {
+            if(await unrepostPost(session: session, uri: postView.uri) == nil) {
                 return createRepostInteraction(interaction: .unreposted)
             }
 
         case(.none, .none):
-            if(await repostPost(session: session, uri: feedViewPost.post.uri, cid: feedViewPost.post.cid) == nil) {
+            if(await repostPost(session: session, uri: postView.uri, cid: postView.cid) == nil) {
                 return createRepostInteraction(interaction: .reposted)
             }
         }
@@ -217,7 +217,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     func isReposted() -> Bool {
-        switch((feedViewPost.post.viewer?.repost, repostInteraction?.interaction)) {
+        switch((postView.viewer?.repost, repostInteraction?.interaction)) {
         case(.some, .none):
             return true
 
@@ -233,18 +233,18 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     func getRepostCount() -> Int {
-        switch((feedViewPost.post.viewer?.repost, repostInteraction?.interaction)) {
+        switch((postView.viewer?.repost, repostInteraction?.interaction)) {
         case (.none, .some(let repostInteraction)) where repostInteraction == .reposted,
             (.some, .some(let repostInteraction)) where repostInteraction == .unreposted:
-            return (feedViewPost.post.repostCount ?? 0) + repostInteraction.rawValue
+            return (postView.repostCount ?? 0) + repostInteraction.rawValue
 
         default:
-            return feedViewPost.post.repostCount ?? 0
+            return postView.repostCount ?? 0
         }
     }
 
     private func getRepostInteraction() {
-        let postUri = feedViewPost.post.uri
+        let postUri = postView.uri
 
         let repostInteractionsDescriptor = FetchDescriptor<RepostInteractionModel>(predicate: #Predicate { interaction in
             return interaction.postUri == postUri
@@ -255,12 +255,12 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         self.repostInteraction = repostInteractions?.first
     }
 
-    private func createRepostInteraction(interaction: RepostModel) -> PostInteractionViewModelError? {
+    private func createRepostInteraction(interaction: RepostModel) -> PostViewInteractionViewModelError? {
         if let repostInteraction = repostInteraction {
             modelContext.delete(repostInteraction)
         }
 
-        let repostInteraction = RepostInteractionModel(postUri: feedViewPost.post.uri, interaction: interaction)
+        let repostInteraction = RepostInteractionModel(postUri: postView.uri, interaction: interaction)
 
         modelContext.insert(repostInteraction)
 
@@ -275,7 +275,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteRepostInteraction(interaction: RepostInteractionModel) -> PostInteractionViewModelError? {
+    private func deleteRepostInteraction(interaction: RepostInteractionModel) -> PostViewInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -289,7 +289,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func repostPost(session: SessionModel, uri: String, cid: String) async -> PostInteractionViewModelError? {
+    private func repostPost(session: SessionModel, uri: String, cid: String) async -> PostViewInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.createRepost(host: session.account.host,
@@ -316,7 +316,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unrepostPost(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
+    private func unrepostPost(session: SessionModel, uri: String) async -> PostViewInteractionViewModelError? {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             let rkey = uri.split(separator: ":").last?.split(separator: "/").last ?? ""
@@ -345,18 +345,18 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         }
     }
 
-    func toggleMutePost(session: SessionModel) async -> PostInteractionViewModelError? {
-        switch((threadMuteInteraction, feedViewPost.post.viewer?.threadMuted)) {
+    func toggleMutePost(session: SessionModel) async -> PostViewInteractionViewModelError? {
+        switch((threadMuteInteraction, postView.viewer?.threadMuted)) {
         case (.some(let threadMuteInteraction), _):
             return deleteThreadMuteInteraction(interaction: threadMuteInteraction)
 
         case(.none, true):
-            if(await unmuteThread(session: session, uri: feedViewPost.post.uri) == nil) {
+            if(await unmuteThread(session: session, uri: postView.uri) == nil) {
                 return createThreadMuteInteraction(interaction: .unmuted)
             }
 
         case(.none, false):
-            if(await muteThread(session: session, uri: feedViewPost.post.uri) == nil) {
+            if(await muteThread(session: session, uri: postView.uri) == nil) {
                 return createThreadMuteInteraction(interaction: .muted)
             }
 
@@ -368,7 +368,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     func isThreadMuted() -> Bool {
-        switch((feedViewPost.post.viewer?.threadMuted, threadMuteInteraction?.interaction)) {
+        switch((postView.viewer?.threadMuted, threadMuteInteraction?.interaction)) {
         case(true, .none):
             return true
 
@@ -384,7 +384,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
     }
 
     private func getThreadMuteInteraction() {
-        let postUri = feedViewPost.post.uri
+        let postUri = postView.uri
 
         let threadMuteInteractionsDescriptor = FetchDescriptor<MuteInteractionModel>(predicate: #Predicate { interaction in
             return interaction.postUri == postUri
@@ -395,12 +395,12 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         threadMuteInteraction = threadMuteInteractions?.first
     }
 
-    private func createThreadMuteInteraction(interaction: MuteModel) -> PostInteractionViewModelError? {
+    private func createThreadMuteInteraction(interaction: MuteModel) -> PostViewInteractionViewModelError? {
         if let threadMuteInteraction = threadMuteInteraction {
             modelContext.delete(threadMuteInteraction)
         }
 
-        let threadMuteInteraction = MuteInteractionModel(postUri: feedViewPost.post.uri, interaction: interaction)
+        let threadMuteInteraction = MuteInteractionModel(postUri: postView.uri, interaction: interaction)
 
         modelContext.insert(threadMuteInteraction)
 
@@ -415,7 +415,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func deleteThreadMuteInteraction(interaction: MuteInteractionModel) -> PostInteractionViewModelError? {
+    private func deleteThreadMuteInteraction(interaction: MuteInteractionModel) -> PostViewInteractionViewModelError? {
         modelContext.delete(interaction)
 
         do {
@@ -429,7 +429,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         return nil
     }
 
-    private func muteThread(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
+    private func muteThread(session: SessionModel, uri: String) async -> PostViewInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Graph.muteThread(host: session.account.host,
@@ -454,7 +454,7 @@ class FeedViewPostInteractionViewModel: ObservableObject {
         }
     }
 
-    private func unmuteThread(session: SessionModel, uri: String) async -> PostInteractionViewModelError? {
+    private func unmuteThread(session: SessionModel, uri: String) async -> PostViewInteractionViewModelError? {
         switch(credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Graph.unmuteThread(host: session.account.host,
