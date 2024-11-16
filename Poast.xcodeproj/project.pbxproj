@@ -113,6 +113,8 @@
 		C2D3E8892B633EF700440738 /* FollowingFeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D3E8882B633EF700440738 /* FollowingFeedViewModel.swift */; };
 		C2D3E88B2B63430D00440738 /* PostViewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D3E88A2B63430D00440738 /* PostViewView.swift */; };
 		C2E79C082CE8F9C800004908 /* ProfileViewBasic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C072CE8F9C300004908 /* ProfileViewBasic.swift */; };
+		C2E79C0A2CE94D6100004908 /* ThreadViewPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C092CE94D5D00004908 /* ThreadViewPostViewModel.swift */; };
+		C2E79C0F2CE94E5500004908 /* ThreadViewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */; };
 		C2EDB4002B67409400C31720 /* FeedPostViewEmbedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB3FF2B67409400C31720 /* FeedPostViewEmbedModel.swift */; };
 		C2EDB4022B695EA000C31720 /* FeedFeedReplyReferencePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4012B695EA000C31720 /* FeedFeedReplyReferencePost.swift */; };
 		C2EDB4052B69BBB400C31720 /* SwiftATProto in Frameworks */ = {isa = PBXBuildFile; productRef = C2EDB4042B69BBB400C31720 /* SwiftATProto */; };
@@ -244,6 +246,8 @@
 		C2D3E8882B633EF700440738 /* FollowingFeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingFeedViewModel.swift; sourceTree = "<group>"; };
 		C2D3E88A2B63430D00440738 /* PostViewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewView.swift; sourceTree = "<group>"; };
 		C2E79C072CE8F9C300004908 /* ProfileViewBasic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewBasic.swift; sourceTree = "<group>"; };
+		C2E79C092CE94D5D00004908 /* ThreadViewPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPostViewModel.swift; sourceTree = "<group>"; };
+		C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPostView.swift; sourceTree = "<group>"; };
 		C2EDB3FF2B67409400C31720 /* FeedPostViewEmbedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPostViewEmbedModel.swift; sourceTree = "<group>"; };
 		C2EDB4012B695EA000C31720 /* FeedFeedReplyReferencePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFeedReplyReferencePost.swift; sourceTree = "<group>"; };
 		C2EDB4062B6ACC8300C31720 /* PreferencesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesService.swift; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 				C229D8EF2AC0D87B00924661 /* AuthorFeedViewModel.swift */,
 				C20AB6E02CD28F25002DBA8E /* LikesFeedViewModel.swift */,
 				C28EFC2C2B796B70009DB7A3 /* ThreadViewModel.swift */,
+				C2E79C092CE94D5D00004908 /* ThreadViewPostViewModel.swift */,
 				C293624A2B5C21A4002BE99E /* SettingsViewModel.swift */,
 			);
 			path = "View Models";
@@ -421,6 +426,7 @@
 				C2FA38CC2B6D9D510001A8C1 /* FeedViewPostInteractionView.swift */,
 				C2B429F02CD418C200A9AE89 /* FeedViewPostView.swift */,
 				C28EFC322B7BE393009DB7A3 /* PoastThreadView.swift */,
+				C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */,
 				C28AB0E12CCADBF600965DB1 /* FollowingFeedView.swift */,
 				C26EBFBF2CD552D500DA7B3A /* ProfileEditView.swift */,
 				C26EBFC32CD5561200DA7B3A /* ProfileHeaderView.swift */,
@@ -665,6 +671,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2E79C0F2CE94E5500004908 /* ThreadViewPostView.swift in Sources */,
 				C267F8A72CE2CFF1000A273A /* ProfileBannerView.swift in Sources */,
 				C26EBFC22CD5530000DA7B3A /* ProfileEditViewModel.swift in Sources */,
 				C2EDB40B2B6AF50600C31720 /* PostViewViewModel.swift in Sources */,
@@ -744,6 +751,7 @@
 				C2222C622A8421E7000C7C45 /* ProfileViewViewModel.swift in Sources */,
 				C22BE49F2B6DFBED00C24372 /* EmbedRecordViewModel.swift in Sources */,
 				C22BE4D92B72F7AB00C24372 /* EmbedExternalViewView.swift in Sources */,
+				C2E79C0A2CE94D6100004908 /* ThreadViewPostViewModel.swift in Sources */,
 				C26C1BA52CB58B5D000886BB /* NotFoundPostModel.swift in Sources */,
 				C2B1CD9C2CB6D70200978EA1 /* RepostModel.swift in Sources */,
 				C28EFC292B784628009DB7A3 /* FeedViewModel.swift in Sources */,
