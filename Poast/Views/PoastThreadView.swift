@@ -30,7 +30,7 @@ struct ThreadParentPostView: View {
             posts.append(parent!)
 
             switch(parent) {
-            case .threadPost(let threadPost):
+            case .threadViewPost(let threadPost):
                 parent = threadPost.parent
 
             default:
@@ -50,12 +50,13 @@ struct ThreadParentPostView: View {
             case .notFound(_):
                 Text("Post Not Found")
 
-            case .threadPost(let threadPost):
-                PostView(postViewModel: PostViewModel(post: threadPost.post),
-                              showingProfileHandle: $showingProfileHandle,
-                              showingThreadURI: $showingThreadURI,
-                              interacted: $interacted,
-                              isParent: false)
+            case .threadViewPost(let threadViewPost):
+//                PostView(postViewModel: PostViewModel(post: threadPost.post),
+//                              showingProfileHandle: $showingProfileHandle,
+//                              showingThreadURI: $showingThreadURI,
+//                              interacted: $interacted,
+//                              isParent: false)
+                EmptyView()
             }
         }
     }
@@ -71,12 +72,12 @@ struct PoastThreadPostView: View {
     let threadPost: FeedThreadViewPostModel
 
     var body: some View {
-        PostView(postViewModel: PostViewModel(post: threadPost.post),
-                      showingProfileHandle: $showingProfileHandle,
-                      showingThreadURI: $showingThreadURI,
-                      interacted: $interacted,
-                      isParent: false)
-        .id(1)
+//        PostView(postViewModel: PostViewModel(post: threadPost.post),
+//                      showingProfileHandle: $showingProfileHandle,
+//                      showingThreadURI: $showingThreadURI,
+//                      interacted: $interacted,
+//                      isParent: false)
+//        .id(1)
 
         ForEach(threadPost.replies ?? []) { reply in
             switch(reply) {
@@ -86,7 +87,7 @@ struct PoastThreadPostView: View {
             case .notFound(_):
                 Text("Post Not Found")
 
-            case .threadPost(let threadPost):
+            case .threadViewPost(let threadPost):
                 PoastThreadPostView(threadViewModel: threadViewModel,
                                     showingProfileHandle: $showingProfileHandle,
                                     showingThreadURI: $showingThreadURI,

@@ -20,7 +20,7 @@ class AuthorFeedViewModel: FeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
+    override func getPosts(cursor: Date) async -> Result<[Bsky.Feed.FeedViewPost], FeedViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getAuthorFeed(host: session.account.host,
@@ -35,7 +35,7 @@ class AuthorFeedViewModel: FeedViewModel {
                                                                   refreshToken: credentials.refreshToken)
                 }
 
-                return .success(getAuthorFeedResponse.body.feed.map { FeedFeedViewPostModel(feedViewPost: $0) })
+                return .success(getAuthorFeedResponse.body.feed)
 
             case .failure(let error):
                 return .failure(.authorFeed(error: error))

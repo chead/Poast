@@ -16,27 +16,29 @@ enum PostViewModelError: Error {
     case unknown(error: Error)
 }
 
-@MainActor
-class PostViewModel {
-    @Dependency private var credentialsService: CredentialsService
-
-    let post: FeedFeedViewPostModel
-
-    init(post: FeedFeedViewPostModel) {
-        self.post = post
-    }
-
+extension Bsky.Feed.PostView {
     var timeAgoString: String {
-        guard post.date.timeIntervalSinceNow.rounded() != 0 else { return "now" }
+        guard indexedAt.timeIntervalSinceNow.rounded() != 0 else { return "now" }
 
         let formatter = RelativeDateTimeFormatter()
 
         formatter.unitsStyle = .full
 
-        return formatter.localizedString(for: post.date, relativeTo: Date())
+        return formatter.localizedString(for: indexedAt, relativeTo: Date())
+    }
+}
+
+@MainActor
+class PostViewViewModel {
+    @Dependency private var credentialsService: CredentialsService
+
+    let postView: Bsky.Feed.PostView
+
+    init(postView: Bsky.Feed.PostView) {
+        self.postView = postView
     }
 
-    func getPost(session: SessionModel, uri: String) async -> Result<FeedFeedViewPostModel?, PostViewModelError> {
+    func getPost(session: SessionModel, uri: String) async -> Result<Bsky.Feed.PostView?, PostViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getPosts(host: session.account.host,
@@ -50,11 +52,7 @@ class PostViewModel {
                                                                   refreshToken: credentials.refreshToken)
                 }
 
-                if let postView = getPostsResponse.body.posts.first {
-                    return .success(FeedFeedViewPostModel(postView: postView))
-                } else {
-                    return .success(nil)
-                }
+                return .success(getPostsResponse.body.posts.first)
 
             case .failure(let error):
                 return .failure(.blueskyClientGetPosts(error: error))
@@ -63,17 +61,5 @@ class PostViewModel {
         case .failure(let error):
             return .failure(.credentialsService(error: error))
         }
-    }
-
-    func canSharePost() -> Bool {
-        !(post.author.labels?.contains(where: { label in
-            label.val == "!no-unauthenticated"
-        }) ?? true)
-    }
-
-    func postShareURL() -> URL? {
-        guard let lastURICompoenentIndex = post.uri.lastIndex(of: "/") else { return nil }
-
-        return URL(string: "https://bsky.app/profile/\(post.author.handle)/post/\(String(post.uri.suffix(from: lastURICompoenentIndex).dropFirst()))")
     }
 }

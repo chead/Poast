@@ -21,7 +21,7 @@ enum FeedViewModelError: Error {
 class FeedViewModel: ObservableObject {
     @Dependency internal var credentialsService: CredentialsService
 
-    @Published var posts: [FeedFeedViewPostModel] = []
+    @Published var posts: [Bsky.Feed.FeedViewPost] = []
 
     let session: SessionModel
     
@@ -40,18 +40,14 @@ class FeedViewModel: ObservableObject {
         try? modelContext.delete(model: MuteInteractionModel.self)
     }
 
-    func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
+    func getPosts(cursor: Date) async -> Result<[Bsky.Feed.FeedViewPost], FeedViewModelError> {
         return .success([])
     }
 
     func refreshPosts() async -> FeedViewModelError? {
         switch(await getPosts(cursor: Date())) {
         case .success(let newPosts):
-            guard let firstNewPost = newPosts.first else {
-                return nil
-            }
-
-            if(posts.first != firstNewPost) {
+            if(posts.first != newPosts.first) {
                 posts = newPosts
             }
 
@@ -65,8 +61,6 @@ class FeedViewModel: ObservableObject {
     func updatePosts(cursor: Date) async -> FeedViewModelError? {
         switch(await getPosts(cursor: cursor)) {
         case .success(let newPosts):
-            removePosts()
-
             posts.append(contentsOf: newPosts)
 
             return nil

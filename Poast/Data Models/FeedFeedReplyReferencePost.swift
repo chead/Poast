@@ -7,8 +7,8 @@
 
 import SwiftBluesky
 
-indirect enum FeedFeedReplyRefPost: Hashable {
-    case post(FeedFeedViewPostModel)
+indirect enum FeedFeedReplyReferencePost: Hashable {
+    case post(FeedPostViewModel)
     case reference(StrongReferenceModel)
     case notFound(uri: String)
     case blocked(uri: String, authorDid: String)
@@ -16,7 +16,7 @@ indirect enum FeedFeedReplyRefPost: Hashable {
     init(postType: Bsky.Feed.FeedReplyRef.PostType) {
         switch(postType) {
         case .postView(let postView):
-            self = .post(FeedFeedViewPostModel(postView: postView))
+            self = .post(FeedPostViewModel(postView: postView))
 
         case .notFoundPost(let notFoundPost):
             self = .notFound(uri: notFoundPost.uri)

@@ -8,7 +8,7 @@
 import SwiftBluesky
 
 enum EmbedRecordViewRecordEmbedModel: Hashable, Identifiable {
-    var id: Self { return self}
+    var id: Self { return self }
 
     case external(EmbedExternalViewExternalModel)
     case images([EmbedImagesViewImageModel])

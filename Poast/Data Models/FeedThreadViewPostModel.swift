@@ -8,18 +8,18 @@
 import SwiftBluesky
 
 struct FeedThreadViewPostModel: Hashable {
-    let post: FeedFeedViewPostModel
+    let post: FeedPostViewModel
     let parent: FeedThreadViewPostPostModel?
     let replies: [FeedThreadViewPostPostModel]?
 
-    init(post: FeedFeedViewPostModel, parent: FeedThreadViewPostPostModel?, replies: [FeedThreadViewPostPostModel]?) {
+    init(post: FeedPostViewModel, parent: FeedThreadViewPostPostModel?, replies: [FeedThreadViewPostPostModel]?) {
         self.post = post
         self.parent = parent
         self.replies = replies
     }
 
     init(threadViewPost: Bsky.Feed.ThreadViewPost) {
-        self.post = FeedFeedViewPostModel(postView: threadViewPost.post)
+        self.post = FeedPostViewModel(postView: threadViewPost.post)
 
         if let parent = threadViewPost.parent {
             self.parent = FeedThreadViewPostPostModel(threadViewPostPostType: parent)

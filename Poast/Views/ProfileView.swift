@@ -97,38 +97,34 @@ struct ProfileView: View {
         switch(feedType) {
         case .posts:
             ForEach(authorFeedViewModel.posts) { post in
-                FeedPostView(feedViewModel: authorFeedViewModel,
-                                  showingProfileHandle: $showingProfileHandle,
-                                  showingThreadURI: $showingThreadURI,
-                                  interacted: $interacted,
-                                  post: post)
+                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+                                 showingThreadURI: $showingThreadURI,
+                                 interacted: $interacted,
+                                 feedViewPost: post)
             }
 
         case .replies:
             ForEach(repliesFeedViewModel.posts) { post in
-                FeedPostView(feedViewModel: repliesFeedViewModel,
-                                  showingProfileHandle: $showingProfileHandle,
-                                  showingThreadURI: $showingThreadURI,
-                                  interacted: $interacted,
-                                  post: post)
+                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+                                 showingThreadURI: $showingThreadURI,
+                                 interacted: $interacted,
+                                 feedViewPost: post)
             }
 
         case .media:
             ForEach(mediaFeedViewModel.posts) { post in
-                FeedPostView(feedViewModel: mediaFeedViewModel,
-                                  showingProfileHandle: $showingProfileHandle,
-                                  showingThreadURI: $showingThreadURI,
-                                  interacted: $interacted,
-                                  post: post)
+                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+                                 showingThreadURI: $showingThreadURI,
+                                 interacted: $interacted,
+                                 feedViewPost: post)
             }
 
         case .likes:
             ForEach(likesFeedViewModel.posts) { post in
-                FeedPostView(feedViewModel: likesFeedViewModel,
-                                  showingProfileHandle: $showingProfileHandle,
-                                  showingThreadURI: $showingThreadURI,
-                                  interacted: $interacted,
-                                  post: post)
+                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+                                 showingThreadURI: $showingThreadURI,
+                                 interacted: $interacted,
+                                 feedViewPost: post)
             }
 
         case .feeds:

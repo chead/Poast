@@ -1,5 +1,5 @@
 //
-//  PostInteractionView.swift
+//  FeedViewPostInteractionView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/2/24.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct PostInteractionView: View {
+struct FeedViewPostInteractionView: View {
     @EnvironmentObject var user: UserModel
 
-    @StateObject var postInteractionViewModel: PostInteractionViewModel
+    @StateObject var feedViewPostInteractionViewModel: FeedViewPostInteractionViewModel
 
     @State var showingRepostDialog: Bool = false
     @State var showingMoreConfirmationDialog: Bool = false
@@ -25,11 +25,11 @@ struct PostInteractionView: View {
             }, label: {
                 HStack {
                     Image(systemName: "bubble")
-                    Text("\(postInteractionViewModel.post.replyCount)")
+                    Text("\(feedViewPostInteractionViewModel.feedViewPost.post.replyCount ?? 0)")
                 }
             })
             .buttonStyle(.plain)
-            .disabled(postInteractionViewModel.post.replyDisabled)
+            .disabled(feedViewPostInteractionViewModel.feedViewPost.post.viewer?.replyDisabled ?? false)
 
             Spacer()
 
@@ -37,27 +37,27 @@ struct PostInteractionView: View {
                 showingRepostDialog = true
             }, label: {
                 HStack {
-                    if(postInteractionViewModel.isReposted()) {
+                    if(feedViewPostInteractionViewModel.isReposted()) {
                         Image(systemName: "repeat")
                             .foregroundColor(.green)
                     } else {
                         Image(systemName: "repeat")
                     }
 
-                    Text("\(postInteractionViewModel.getRepostCount())")
+                    Text("\(feedViewPostInteractionViewModel.getRepostCount())")
                 }
             })
             .buttonStyle(.plain)
             .confirmationDialog("Repost",
                                 isPresented: $showingRepostDialog,
                                 titleVisibility: .hidden) {
-                Button(postInteractionViewModel.isReposted() ? "Undo repost" : "Repost") {
+                Button(feedViewPostInteractionViewModel.isReposted() ? "Undo repost" : "Repost") {
                     Task {
                         guard let session = user.session else {
                             return
                         }
 
-                        _ = await postInteractionViewModel.toggleRepostPost(session: session)
+                        _ = await feedViewPostInteractionViewModel.toggleRepostPost(session: session)
                     }
                 }
 
@@ -72,20 +72,20 @@ struct PostInteractionView: View {
                         return
                     }
 
-                    _ = await postInteractionViewModel.toggleLikePost(session: session)
+                    if await feedViewPostInteractionViewModel.toggleLikePost(session: session) == nil {
+                        interacted = Date()
+                    }
                 }
-
-                interacted = Date()
             }, label: {
                 HStack {
-                    if(postInteractionViewModel.isLiked()) {
+                    if(feedViewPostInteractionViewModel.isLiked()) {
                         Image(systemName: "heart.fill")
                             .foregroundColor(.red)
                     } else {
                         Image(systemName: "heart")
                     }
 
-                    Text("\(postInteractionViewModel.getLikeCount())")
+                    Text("\(feedViewPostInteractionViewModel.getLikeCount())")
                 }
             })
             .buttonStyle(.plain)
@@ -100,10 +100,13 @@ struct PostInteractionView: View {
             .buttonStyle(.plain)
             .confirmationDialog("More", isPresented: $showingMoreConfirmationDialog) {
                 Button("Copy post text") {
-                    UIPasteboard.general.string = postInteractionViewModel.post.text
+                    if case let .post(postRecord) = feedViewPostInteractionViewModel.feedViewPost.post.record {
+                        UIPasteboard.general.string = postRecord.text
+                    }
                 }
 
-                if postInteractionViewModel.canSharePost(), let postShareURL = postInteractionViewModel.postShareURL() {
+                if feedViewPostInteractionViewModel.feedViewPost.canShare,
+                   let postShareURL = feedViewPostInteractionViewModel.feedViewPost.shareURL {
                     ShareLink(item: postShareURL) {
                         Text("Share")
                     }
@@ -113,13 +116,13 @@ struct PostInteractionView: View {
                     }
                 }
 
-                Button(postInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
+                Button(feedViewPostInteractionViewModel.isThreadMuted() ? "Unmute thread" : "Mute thread") {
                     Task {
                         guard let session = user.session else {
                             return
                         }
 
-                        _ = await postInteractionViewModel.toggleMutePost(session: session)
+                        _ = await feedViewPostInteractionViewModel.toggleMutePost(session: session)
                     }
                 }
 
@@ -130,7 +133,7 @@ struct PostInteractionView: View {
         }
         .confirmationDialog("Share",
                             isPresented: $showingPostShareConfirmationDialog) {
-            if let postShareURL = postInteractionViewModel.postShareURL() {
+            if let postShareURL = feedViewPostInteractionViewModel.feedViewPost.shareURL {
                 ShareLink(item: postShareURL) {
                     Text("Share anyway")
                 }
@@ -139,7 +142,7 @@ struct PostInteractionView: View {
             Text("This post is only visibled to users who are logged in.")
         }
         .onAppear {
-            postInteractionViewModel.getInteractions()
+            feedViewPostInteractionViewModel.getInteractions()
         }
     }
 }

@@ -18,7 +18,7 @@ class FollowingFeedViewModel: FeedViewModel {
         super.init(session: session, modelContext: modelContext)
     }
 
-    override func getPosts(cursor: Date) async -> Result<[FeedFeedViewPostModel], FeedViewModelError> {
+    override func getPosts(cursor: Date) async -> Result<[Bsky.Feed.FeedViewPost], FeedViewModelError> {
         switch(self.credentialsService.getCredentials(sessionDID: session.did)) {
         case .success(let credentials):
             switch(await Bsky.Feed.getTimeline(host: session.account.host,
@@ -28,9 +28,7 @@ class FollowingFeedViewModel: FeedViewModel {
                                                limit: 50,
                                                cursor: cursor)) {
             case .success(let getTimelineResponse):
-                return .success(getTimelineResponse.body.feed.map {
-                    FeedFeedViewPostModel(feedViewPost: $0)
-                })
+                return .success(getTimelineResponse.body.feed)
 
             case .failure(let error):
                 return .failure(.followingFeed(error: error))

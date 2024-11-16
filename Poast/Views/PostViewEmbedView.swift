@@ -6,32 +6,29 @@
 //
 
 import SwiftUI
+import SwiftBluesky
 
-struct PostEmbedView: View {
+struct PostViewEmbedView: View {
     @EnvironmentObject var user: UserModel
 
-    let postViewModel: PostViewModel
-
-    @State var embed: FeedPostViewEmbedModel
+    @State var embed: Bsky.Feed.PostView.EmbedType
 
     var body: some View {
         switch(embed) {
-        case .images(let images):
-            PostEmbedImagesView(images: images)
+        case .imagesView(let view):
+            EmbedImagesViewView(view: view)
 
-        case .external(let external):
-            PostEmbedExternalView(external: external)
+        case .externalView(let view):
+            EmbedExternalViewViewView(view: view)
 
-        case .record(let record):
-            PostEmbedRecordWithMediaView(record: record,
-                                              media: nil)
+        case .recordView(let view):
+            EmbedRecordViewView(view: view)
 
-        case .recordWithMedia(let recordWithMedia):
-            PostEmbedRecordWithMediaView(record: recordWithMedia.record,
-                                              media: recordWithMedia.media)
+        case .recordWithMediaView(let view):
+            EmbedRecordWithMediaViewView(view: view)
 
-        default:
-            EmptyView()
+        case .videoView(let view):
+            EmbedVideoViewView(view: view)
         }
     }
 }

@@ -1,18 +1,19 @@
 //
-//  PostEmbedImagesView.swift
+//  PostEmbedImagesViewView.swift
 //  Poast
 //
 //  Created by Christopher Head on 2/6/24.
 //
 
 import SwiftUI
+import SwiftBluesky
 
-struct PostEmbedExternalView: View {
-    let external: EmbedExternalViewExternalModel
+struct EmbedExternalViewViewView: View {
+    let view: Bsky.Embed.External.View
 
     var body: some View {
         VStack(alignment: .leading) {
-            if let thumb = external.thumb {
+            if let thumb = view.external.thumb {
                 AsyncImage(url: URL(string: thumb)) { image in
                     image
                         .resizable()
@@ -24,7 +25,7 @@ struct PostEmbedExternalView: View {
                 .cornerRadius(8.0)
             }
 
-            Link(external.description, destination: URL(string: external.uri)!)
+            Link(view.external.description, destination: URL(string: view.external.uri)!)
                 .buttonStyle(.plain)
         }
         .padding()

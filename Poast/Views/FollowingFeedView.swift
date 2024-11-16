@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftBluesky
 
 struct FollowingFeedView: View {
     @Environment(\.modelContext) private var modelContext
@@ -20,35 +21,51 @@ struct FollowingFeedView: View {
     @State var interacted: Date = Date()
     @State var hasAppeared: Bool = false
 
+    struct FeedViewPostRow: Equatable, Hashable, Identifiable {
+        let id = UUID()
+        let feedViewPost: Bsky.Feed.FeedViewPost
+
+        public static func ==(lhs: FeedViewPostRow, rhs: FeedViewPostRow) -> Bool {
+            return lhs.id == rhs.id
+        }
+    }
+
     var body: some View {
         List {
-            ForEach(followingFeedViewModel.posts) { post in
-                FeedPostView(feedViewModel: followingFeedViewModel,
-                                  showingProfileHandle: $showingProfileHandle,
-                                  showingThreadURI: $showingThreadURI,
-                                  interacted: $interacted,
-                                  post: post)
+            ForEach(followingFeedViewModel.posts.map { FeedViewPostRow(feedViewPost: $0) }) { feedViewPostRow in
+                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+                                 showingThreadURI: $showingThreadURI,
+                                 interacted: $interacted,
+                                 feedViewPost: feedViewPostRow.feedViewPost)
+                .onAppear {
+                    Task {
+                        if followingFeedViewModel.posts.lastIndex(of: feedViewPostRow.feedViewPost) == followingFeedViewModel.posts.count - 1 {
+                            _ = await followingFeedViewModel.updatePosts(cursor: feedViewPostRow.feedViewPost.post.indexedAt)
+                        }
+                    }
+                }
             }
         }
         .listStyle(.plain)
         .navigationDestination(item: $showingProfileHandle) { profileHandle in
             if let session = user.session {
-                ProfileView(profileViewModel: ProfileViewViewModel(session: session,
-                                                                         handle: profileHandle),
-                                 authorFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                               modelContext: modelContext,
-                                                                               actor: profileHandle,
-                                                                               filter: .postsNoReplies),
-                                 repliesFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                modelContext: modelContext,
-                                                                                actor: profileHandle),
-                                 mediaFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                              modelContext: modelContext,
-                                                                              actor: profileHandle,
-                                                                              filter: .postsWithMedia),
-                                 likesFeedViewModel: LikesFeedViewModel(session: session,
-                                                                             modelContext: modelContext,
-                                                                             actor: profileHandle))
+//                ProfileView(profileViewModel: ProfileViewViewModel(session: session,
+//                                                                         handle: profileHandle),
+//                                 authorFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                               modelContext: modelContext,
+//                                                                               actor: profileHandle,
+//                                                                               filter: .postsNoReplies),
+//                                 repliesFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                                modelContext: modelContext,
+//                                                                                actor: profileHandle),
+//                                 mediaFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                              modelContext: modelContext,
+//                                                                              actor: profileHandle,
+//                                                                              filter: .postsWithMedia),
+//                                 likesFeedViewModel: LikesFeedViewModel(session: session,
+//                                                                             modelContext: modelContext,
+//                                                                             actor: profileHandle))
+                EmptyView()
             } else {
                 EmptyView()
             }
@@ -91,6 +108,9 @@ struct FollowingFeedView: View {
                 
                 hasAppeared.toggle()
             }
+        }
+        .onChange(of: interacted) { oldValue, newValue in
+            
         }
     }
 }

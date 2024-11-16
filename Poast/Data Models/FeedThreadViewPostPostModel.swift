@@ -12,10 +12,9 @@ indirect enum FeedThreadViewPostPostModel: Hashable, Identifiable {
 
     case blocked(BlockedPostModel)
     case notFound(NotFoundPostModel)
-    case threadPost(FeedThreadViewPostModel)
+    case threadViewPost(FeedThreadViewPostModel)
 
     init(threadViewPostPostType: Bsky.Feed.ThreadViewPost.PostType) {
-
         switch(threadViewPostPostType) {
         case .blockedPost(let blockedPost):
             self = .blocked(BlockedPostModel(uri: blockedPost.uri, authorDid: blockedPost.author.did))
@@ -24,7 +23,7 @@ indirect enum FeedThreadViewPostPostModel: Hashable, Identifiable {
             self = .notFound(NotFoundPostModel(uri: notFoundPost.uri))
 
         case .threadViewPost(let threadViewPost):
-            self = .threadPost(FeedThreadViewPostModel(threadViewPost: threadViewPost))
+            self = .threadViewPost(FeedThreadViewPostModel(threadViewPost: threadViewPost))
         }
     }
 
@@ -36,7 +35,7 @@ indirect enum FeedThreadViewPostPostModel: Hashable, Identifiable {
         case (.notFound(let lhsValue), .notFound(let rhsValue)):
             return lhsValue == rhsValue
 
-        case (.threadPost(let lhsValue), .threadPost(let rhsValue)):
+        case (.threadViewPost(let lhsValue), .threadViewPost(let rhsValue)):
             return lhsValue == rhsValue
 
         default:
