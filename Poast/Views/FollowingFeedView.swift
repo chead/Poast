@@ -8,6 +8,19 @@
 import SwiftUI
 import SwiftBluesky
 
+struct FeedViewPostRow: Equatable, Hashable, Identifiable {
+    let id = UUID()
+    let feedViewPost: Bsky.Feed.FeedViewPost
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    public static func ==(lhs: FeedViewPostRow, rhs: FeedViewPostRow) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
 struct FollowingFeedView: View {
     @Environment(\.modelContext) private var modelContext
 
@@ -20,15 +33,6 @@ struct FollowingFeedView: View {
     @State var showingThreadURI: String? = nil
     @State var interacted: Date = Date()
     @State var hasAppeared: Bool = false
-
-    struct FeedViewPostRow: Equatable, Hashable, Identifiable {
-        let id = UUID()
-        let feedViewPost: Bsky.Feed.FeedViewPost
-
-        public static func ==(lhs: FeedViewPostRow, rhs: FeedViewPostRow) -> Bool {
-            return lhs.id == rhs.id
-        }
-    }
 
     var body: some View {
         List {
@@ -71,8 +75,8 @@ struct FollowingFeedView: View {
             }
         }
         .navigationDestination(item: $showingThreadURI) { threadURI in
-            PoastThreadView(threadViewModel: ThreadViewModel(uri: threadURI),
-                            interacted: $interacted)
+            ThreadViewPostView(threadViewPostViewModel: ThreadViewPostViewModel(uri: threadURI),
+                               interacted: $interacted)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -108,9 +112,6 @@ struct FollowingFeedView: View {
                 
                 hasAppeared.toggle()
             }
-        }
-        .onChange(of: interacted) { oldValue, newValue in
-            
         }
     }
 }

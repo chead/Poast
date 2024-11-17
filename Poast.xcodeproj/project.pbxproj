@@ -116,6 +116,9 @@
 		C2E79C0A2CE94D6100004908 /* ThreadViewPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C092CE94D5D00004908 /* ThreadViewPostViewModel.swift */; };
 		C2E79C0F2CE94E5500004908 /* ThreadViewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */; };
 		C2E79C112CE951B100004908 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C102CE951AC00004908 /* PostView.swift */; };
+		C2E79C152CE98A0800004908 /* BlockedPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C142CE98A0800004908 /* BlockedPostView.swift */; };
+		C2E79C172CE98A2800004908 /* NotFoundPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C162CE98A2800004908 /* NotFoundPostView.swift */; };
+		C2E79C192CE9A35000004908 /* ThreadViewPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C182CE9A34D00004908 /* ThreadViewPost.swift */; };
 		C2EDB4002B67409400C31720 /* FeedPostViewEmbedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB3FF2B67409400C31720 /* FeedPostViewEmbedModel.swift */; };
 		C2EDB4022B695EA000C31720 /* FeedFeedReplyReferencePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4012B695EA000C31720 /* FeedFeedReplyReferencePost.swift */; };
 		C2EDB4052B69BBB400C31720 /* SwiftATProto in Frameworks */ = {isa = PBXBuildFile; productRef = C2EDB4042B69BBB400C31720 /* SwiftATProto */; };
@@ -250,6 +253,9 @@
 		C2E79C092CE94D5D00004908 /* ThreadViewPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPostViewModel.swift; sourceTree = "<group>"; };
 		C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPostView.swift; sourceTree = "<group>"; };
 		C2E79C102CE951AC00004908 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		C2E79C142CE98A0800004908 /* BlockedPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedPostView.swift; sourceTree = "<group>"; };
+		C2E79C162CE98A2800004908 /* NotFoundPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotFoundPostView.swift; sourceTree = "<group>"; };
+		C2E79C182CE9A34D00004908 /* ThreadViewPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPost.swift; sourceTree = "<group>"; };
 		C2EDB3FF2B67409400C31720 /* FeedPostViewEmbedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPostViewEmbedModel.swift; sourceTree = "<group>"; };
 		C2EDB4012B695EA000C31720 /* FeedFeedReplyReferencePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFeedReplyReferencePost.swift; sourceTree = "<group>"; };
 		C2EDB4062B6ACC8300C31720 /* PreferencesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesService.swift; sourceTree = "<group>"; };
@@ -403,6 +409,7 @@
 			children = (
 				C28651672CE8527800E1A4E9 /* FeedViewPost.swift */,
 				C2E79C102CE951AC00004908 /* PostView.swift */,
+				C2E79C182CE9A34D00004908 /* ThreadViewPost.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -428,6 +435,8 @@
 				C2D3E88A2B63430D00440738 /* PostViewView.swift */,
 				C2FA38CC2B6D9D510001A8C1 /* PostViewInteractionView.swift */,
 				C2B429F02CD418C200A9AE89 /* FeedViewPostView.swift */,
+				C2E79C142CE98A0800004908 /* BlockedPostView.swift */,
+				C2E79C162CE98A2800004908 /* NotFoundPostView.swift */,
 				C28EFC322B7BE393009DB7A3 /* PoastThreadView.swift */,
 				C2E79C0E2CE94E5500004908 /* ThreadViewPostView.swift */,
 				C28AB0E12CCADBF600965DB1 /* FollowingFeedView.swift */,
@@ -706,6 +715,7 @@
 				C229D8F02AC0D87B00924661 /* AuthorFeedViewModel.swift in Sources */,
 				C28651612CE808EB00E1A4E9 /* EmbedRecordViewDetachedView.swift in Sources */,
 				C28EFC332B7BE393009DB7A3 /* PoastThreadView.swift in Sources */,
+				C2E79C192CE9A35000004908 /* ThreadViewPost.swift in Sources */,
 				C20AB6E12CD28F2E002DBA8E /* LikesFeedViewModel.swift in Sources */,
 				C2F6E28C2CCB10A60016A97C /* PostComposeView.swift in Sources */,
 				C21BC8722CCD4541002B54BE /* MuteInteractionModel.swift in Sources */,
@@ -713,6 +723,7 @@
 				C2BB71C02CE5441B00C6F602 /* EmbedRecordViewRecordModel.swift in Sources */,
 				C2D044E62A78A33D001DC946 /* CredentialsModel.swift in Sources */,
 				C27FFC6E2CBADFB4003435F3 /* RepostInteractionModel.swift in Sources */,
+				C2E79C152CE98A0800004908 /* BlockedPostView.swift in Sources */,
 				C2BB71CA2CE5B24C00C6F602 /* FeedPostViewModel.swift in Sources */,
 				C293623D2B5B17C4002BE99E /* AccountsViewModel.swift in Sources */,
 				C2F54CD42CC03B17005150F2 /* UserModel.swift in Sources */,
@@ -758,6 +769,7 @@
 				C2E79C0A2CE94D6100004908 /* ThreadViewPostViewModel.swift in Sources */,
 				C26C1BA52CB58B5D000886BB /* NotFoundPostModel.swift in Sources */,
 				C2B1CD9C2CB6D70200978EA1 /* RepostModel.swift in Sources */,
+				C2E79C172CE98A2800004908 /* NotFoundPostView.swift in Sources */,
 				C28EFC292B784628009DB7A3 /* FeedViewModel.swift in Sources */,
 				C2D045442A798AF5001DC946 /* ServiceProvider.swift in Sources */,
 				C22CEDBF2CA0BA4300FD7CBB /* EmbedVideoViewModel.swift in Sources */,

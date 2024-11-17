@@ -1,5 +1,5 @@
 //
-//  PostView.swift
+//  PostViewView.swift
 //  Poast
 //
 //  Created by Christopher Head on 1/25/24.
@@ -23,6 +23,7 @@ struct PostViewView: View {
     @Binding var interacted: Date
 
     let isParent: Bool
+    let showThread: Bool
 
     var body: some View {
         HStack(alignment: .top) {
@@ -44,7 +45,9 @@ struct PostViewView: View {
             }.buttonStyle(.plain)
 
             Button {
-                showingThreadURI = postViewViewModel.postView.uri
+                if(showThread) {
+                    showingThreadURI = postViewViewModel.postView.uri
+                }
             } label: {
                 VStack(alignment: .leading) {
                     HStack {
@@ -83,13 +86,13 @@ struct PostViewView: View {
 
                         Spacer()
                     }
+
+                    PostViewInteractionView(postViewInteractionViewModel: PostViewInteractionViewModel(modelContext: modelContext,
+                                                                                                       postView: postViewViewModel.postView),
+                                            interacted: $interacted)
                 }
             }
             .buttonStyle(.plain)
-
-            PostViewInteractionView(postViewInteractionViewModel: PostViewInteractionViewModel(modelContext: modelContext,
-                                                                                               postView: postViewViewModel.postView),
-                                        interacted: $interacted)
         }
         .task {
             if isParent,

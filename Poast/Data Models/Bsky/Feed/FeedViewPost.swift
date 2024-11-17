@@ -8,11 +8,11 @@
 import Foundation
 import SwiftBluesky
 
-extension Bsky.Feed.FeedViewPost: @retroactive Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(post.uri)
-    }
-}
+//extension Bsky.Feed.FeedViewPost: @retroactive Hashable {
+//    public func hash(into hasher: inout Hasher) {
+//        hasher.combine(post.uri)
+//    }
+//}
 
 extension Bsky.Feed.FeedViewPost: @retroactive Equatable {
     public static func ==(lhs: Bsky.Feed.FeedViewPost, rhs: Bsky.Feed.FeedViewPost) -> Bool {
@@ -20,6 +20,6 @@ extension Bsky.Feed.FeedViewPost: @retroactive Equatable {
     }
 }
 
-extension Bsky.Feed.FeedViewPost: @retroactive Identifiable {
-    public var id: String { post.uri }
-}
+//extension Bsky.Feed.FeedViewPost: @retroactive Identifiable {
+//    public var id: String { post.uri }
+//}

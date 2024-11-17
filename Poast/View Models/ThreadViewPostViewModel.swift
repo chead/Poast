@@ -17,7 +17,7 @@ enum ThreadViewPostViewModelError: Error {
 class ThreadViewPostViewModel: ObservableObject {
     @Dependency internal var credentialsService: CredentialsService
 
-    @Published var threadPost: Bsky.Feed.ThreadViewPost? = nil
+    @Published var threadViewPost: Bsky.Feed.ThreadViewPost? = nil
 
     private let uri: String
 
@@ -39,7 +39,7 @@ class ThreadViewPostViewModel: ObservableObject {
                                                                   refreshToken: credentials.refreshToken)
                 }
 
-                self.threadPost = getThreadResponse.body.thread
+                self.threadViewPost = getThreadResponse.body.thread
 
                 return nil
 
@@ -50,5 +50,24 @@ class ThreadViewPostViewModel: ObservableObject {
         case .failure(let error):
             return .credentialsServiceGetCredentials(error: error)
         }
+    }
+
+    var parentThreadViewPosts: [Bsky.Feed.ThreadViewPost.PostType] {
+        var parentThreadViewPosts: [Bsky.Feed.ThreadViewPost.PostType] = []
+        var parentThreadViewPost = threadViewPost?.parent
+
+        while(parentThreadViewPost != nil) {
+            parentThreadViewPosts.append(parentThreadViewPost!)
+
+            switch(parentThreadViewPost) {
+            case .threadViewPost(let threadPost):
+                parentThreadViewPost = threadPost.parent
+
+            default:
+                parentThreadViewPost = nil
+            }
+        }
+
+        return parentThreadViewPosts.reversed()
     }
 }

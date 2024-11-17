@@ -25,13 +25,14 @@ struct FeedViewPostView: View {
                              showingProfileHandle: $showingProfileHandle,
                              showingThreadURI: $showingThreadURI,
                              interacted: $interacted,
-                             isParent: true)
+                             isParent: true,
+                             showThread: true)
 
             case .blockedPost(_):
-                Text("Blocked post")
+                BlockedPostView()
 
             case .notFoundPost(_):
-                Text("Post not found")
+                NotFoundPostView()
             }
         }
 
@@ -39,6 +40,7 @@ struct FeedViewPostView: View {
                      showingProfileHandle: $showingProfileHandle,
                      showingThreadURI: $showingThreadURI,
                      interacted: $interacted,
-                     isParent: false)
+                     isParent: false,
+                     showThread: true)
     }
 }

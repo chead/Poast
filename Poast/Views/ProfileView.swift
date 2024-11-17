@@ -46,7 +46,6 @@ struct ProfileView: View {
                 .foregroundStyle(feedType == .posts ? .blue : .gray)
                 .padding(.horizontal, 20)
 
-
                 Spacer()
 
                 Button("Replies") {
@@ -96,36 +95,42 @@ struct ProfileView: View {
     var feed: some View {
         switch(feedType) {
         case .posts:
-            ForEach(authorFeedViewModel.posts) { post in
-                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
-                                 showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
-                                 feedViewPost: post)
-            }
+//            ForEach(authorFeedViewModel.posts) { post in
+//                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+//                                 showingThreadURI: $showingThreadURI,
+//                                 interacted: $interacted,
+//                                 feedViewPost: post)
+//            }
+            EmptyView()
 
         case .replies:
-            ForEach(repliesFeedViewModel.posts) { post in
-                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
-                                 showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
-                                 feedViewPost: post)
-            }
+//            ForEach(repliesFeedViewModel.posts) { post in
+//                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+//                                 showingThreadURI: $showingThreadURI,
+//                                 interacted: $interacted,
+//                                 feedViewPost: post)
+//            }
+
+            EmptyView()
 
         case .media:
-            ForEach(mediaFeedViewModel.posts) { post in
-                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
-                                 showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
-                                 feedViewPost: post)
-            }
+//            ForEach(mediaFeedViewModel.posts) { post in
+//                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+//                                 showingThreadURI: $showingThreadURI,
+//                                 interacted: $interacted,
+//                                 feedViewPost: post)
+//            }
+            EmptyView()
 
         case .likes:
-            ForEach(likesFeedViewModel.posts) { post in
-                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
-                                 showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
-                                 feedViewPost: post)
-            }
+//            ForEach(likesFeedViewModel.posts) { post in
+//                FeedViewPostView(showingProfileHandle: $showingProfileHandle,
+//                                 showingThreadURI: $showingThreadURI,
+//                                 interacted: $interacted,
+//                                 feedViewPost: post)
+//            }
+
+            EmptyView()
 
         case .feeds:
             Rectangle()
