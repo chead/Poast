@@ -25,13 +25,24 @@ struct PostViewView: View {
     let isParent: Bool
     let showThread: Bool
 
+    init(postViewViewModel: PostViewViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, isParent: Bool = false, showThread: Bool = false) {
+        self.postViewViewModel = postViewViewModel
+
+        self._showingProfileHandle = showingProfileHandle
+        self._showingThreadURI = showingThreadURI
+        self._interacted = interacted
+
+        self.isParent = isParent
+        self.showThread = showThread
+    }
+
     var body: some View {
         HStack(alignment: .top) {
             Button {
                 showingProfileHandle = postViewViewModel.postView.author.handle
             } label: {
                 VStack {
-                    AvatarView(size: .small,
+                    AvatarView(size: .medium,
                                url: URL(string: postViewViewModel.postView.author.avatar ?? ""))
                     .padding(.bottom, 10)
                     .padding(.top, 10)

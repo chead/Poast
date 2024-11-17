@@ -40,7 +40,6 @@ struct FeedViewPostView: View {
                      showingProfileHandle: $showingProfileHandle,
                      showingThreadURI: $showingThreadURI,
                      interacted: $interacted,
-                     isParent: false,
                      showThread: true)
     }
 }

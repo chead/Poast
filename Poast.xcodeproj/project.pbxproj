@@ -119,6 +119,7 @@
 		C2E79C152CE98A0800004908 /* BlockedPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C142CE98A0800004908 /* BlockedPostView.swift */; };
 		C2E79C172CE98A2800004908 /* NotFoundPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C162CE98A2800004908 /* NotFoundPostView.swift */; };
 		C2E79C192CE9A35000004908 /* ThreadViewPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E79C182CE9A34D00004908 /* ThreadViewPost.swift */; };
+		C2E79C1C2CE9F49400004908 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C2E79C1B2CE9F49400004908 /* NukeUI */; };
 		C2EDB4002B67409400C31720 /* FeedPostViewEmbedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB3FF2B67409400C31720 /* FeedPostViewEmbedModel.swift */; };
 		C2EDB4022B695EA000C31720 /* FeedFeedReplyReferencePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EDB4012B695EA000C31720 /* FeedFeedReplyReferencePost.swift */; };
 		C2EDB4052B69BBB400C31720 /* SwiftATProto in Frameworks */ = {isa = PBXBuildFile; productRef = C2EDB4042B69BBB400C31720 /* SwiftATProto */; };
@@ -276,6 +277,7 @@
 				C22D620A2B5DD8C200A1E1B4 /* SwiftATProto in Frameworks */,
 				C29362512B5CAF75002BE99E /* SwiftBluesky in Frameworks */,
 				C22D62042B5DD47B00A1E1B4 /* SwiftATProto in Frameworks */,
+				C2E79C1C2CE9F49400004908 /* NukeUI in Frameworks */,
 				C22D62012B5DCFC500A1E1B4 /* SwiftATProto in Frameworks */,
 				C22D620F2B5E1B2600A1E1B4 /* SwiftBluesky in Frameworks */,
 			);
@@ -565,6 +567,7 @@
 				C22D62092B5DD8C200A1E1B4 /* SwiftATProto */,
 				C22D620E2B5E1B2600A1E1B4 /* SwiftBluesky */,
 				C2EDB4042B69BBB400C31720 /* SwiftATProto */,
+				C2E79C1B2CE9F49400004908 /* NukeUI */,
 			);
 			productName = Poast;
 			productReference = C24213A32A7567A40012950B /* Poast.app */;
@@ -640,6 +643,7 @@
 			mainGroup = C242139A2A7567A40012950B;
 			packageReferences = (
 				C22D620D2B5E1B2600A1E1B4 /* XCRemoteSwiftPackageReference "SwiftBluesky" */,
+				C2E79C1A2CE9F49300004908 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = C24213A42A7567A40012950B /* Products */;
 			projectDirPath = "";
@@ -1136,6 +1140,14 @@
 				minimumVersion = 0.3.5;
 			};
 		};
+		C2E79C1A2CE9F49300004908 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1167,6 +1179,11 @@
 		C29362532B5CB221002BE99E /* SwiftATProto */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwiftATProto;
+		};
+		C2E79C1B2CE9F49400004908 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2E79C1A2CE9F49300004908 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
 		};
 		C2EDB4042B69BBB400C31720 /* SwiftATProto */ = {
 			isa = XCSwiftPackageProductDependency;

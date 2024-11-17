@@ -43,7 +43,6 @@ struct ThreadViewPostView: View {
                                      showingProfileHandle: $showingProfileHandle,
                                      showingThreadURI: $showingThreadURI,
                                      interacted: $interacted,
-                                     isParent: false,
                                      showThread: true)
 
                     case .blockedPost(_):
@@ -58,9 +57,7 @@ struct ThreadViewPostView: View {
                     PostViewView(postViewViewModel: PostViewViewModel(postView: threadViewPost.post),
                                  showingProfileHandle: $showingProfileHandle,
                                  showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
-                                 isParent: false,
-                                 showThread: false)
+                                 interacted: $interacted)
                     .id(1)
                 }
 
@@ -71,7 +68,6 @@ struct ThreadViewPostView: View {
                                      showingProfileHandle: $showingProfileHandle,
                                      showingThreadURI: $showingThreadURI,
                                      interacted: $interacted,
-                                     isParent: false,
                                      showThread: true)
 
                     case .blockedPost(_):

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftBluesky
+import NukeUI
 
 struct EmbedExternalViewViewView: View {
     let view: Bsky.Embed.External.View
@@ -14,13 +15,14 @@ struct EmbedExternalViewViewView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let thumb = view.external.thumb {
-                AsyncImage(url: URL(string: thumb)) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } placeholder: {
-                    Rectangle()
-                        .fill(.gray)
+                LazyImage(url: URL(string: thumb)) { state in
+                    if let image = state.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        Color.gray.opacity(0.2)
+                    }
                 }
                 .cornerRadius(8.0)
             }

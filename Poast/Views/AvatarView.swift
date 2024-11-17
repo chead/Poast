@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import NukeUI
 
 struct AvatarView: View {
     enum Size: CGFloat {
-        case small = 50.0
+        case small = 25.0
+        case medium = 50.0
         case large = 100.0
     }
 
@@ -18,14 +20,14 @@ struct AvatarView: View {
 
     var body: some View {
         VStack {
-            AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Rectangle()
-                    .fill(.clear)
-                    .frame(width: size.rawValue, height: size.rawValue)
+            LazyImage(url: url) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Color.gray.opacity(0.2)
+                }
             }
             .frame(width: size.rawValue, height: size.rawValue)
             .clipShape(Circle())
