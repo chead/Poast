@@ -13,7 +13,6 @@ struct FeedViewPostView: View {
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
-    @Binding var interacted: Date
 
     var feedViewPost: Bsky.Feed.FeedViewPost
 
@@ -24,7 +23,6 @@ struct FeedViewPostView: View {
                 PostViewView(postViewViewModel: PostViewViewModel(postView: postView),
                              showingProfileHandle: $showingProfileHandle,
                              showingThreadURI: $showingThreadURI,
-                             interacted: $interacted,
                              isParent: true,
                              showThread: true)
 
@@ -39,7 +37,6 @@ struct FeedViewPostView: View {
         PostViewView(postViewViewModel: PostViewViewModel(postView: feedViewPost.post),
                      showingProfileHandle: $showingProfileHandle,
                      showingThreadURI: $showingThreadURI,
-                     interacted: $interacted,
                      showThread: true)
     }
 }

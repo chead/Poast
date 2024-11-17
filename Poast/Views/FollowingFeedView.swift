@@ -31,7 +31,6 @@ struct FollowingFeedView: View {
     @State var showingComposeSheet: Bool = false
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
-    @State var interacted: Date = Date()
     @State var hasAppeared: Bool = false
 
     var body: some View {
@@ -39,7 +38,6 @@ struct FollowingFeedView: View {
             ForEach(followingFeedViewModel.posts.map { FeedViewPostRow(feedViewPost: $0) }) { feedViewPostRow in
                 FeedViewPostView(showingProfileHandle: $showingProfileHandle,
                                  showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted,
                                  feedViewPost: feedViewPostRow.feedViewPost)
                 .onAppear {
                     Task {
@@ -75,8 +73,7 @@ struct FollowingFeedView: View {
             }
         }
         .navigationDestination(item: $showingThreadURI) { threadURI in
-            ThreadViewPostView(threadViewPostViewModel: ThreadViewPostViewModel(uri: threadURI),
-                               interacted: $interacted)
+            ThreadViewPostView(threadViewPostViewModel: ThreadViewPostViewModel(uri: threadURI))
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

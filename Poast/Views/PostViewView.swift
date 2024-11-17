@@ -20,17 +20,15 @@ struct PostViewView: View {
 
     @Binding var showingProfileHandle: String?
     @Binding var showingThreadURI: String?
-    @Binding var interacted: Date
 
     let isParent: Bool
     let showThread: Bool
 
-    init(postViewViewModel: PostViewViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, interacted: Binding<Date>, isParent: Bool = false, showThread: Bool = false) {
+    init(postViewViewModel: PostViewViewModel, showingProfileHandle: Binding<String?>, showingThreadURI: Binding<String?>, isParent: Bool = false, showThread: Bool = false) {
         self.postViewViewModel = postViewViewModel
 
         self._showingProfileHandle = showingProfileHandle
         self._showingThreadURI = showingThreadURI
-        self._interacted = interacted
 
         self.isParent = isParent
         self.showThread = showThread
@@ -99,8 +97,7 @@ struct PostViewView: View {
                     }
 
                     PostViewInteractionView(postViewInteractionViewModel: PostViewInteractionViewModel(modelContext: modelContext,
-                                                                                                       postView: postViewViewModel.postView),
-                                            interacted: $interacted)
+                                                                                                       postView: postViewViewModel.postView))
                 }
             }
             .buttonStyle(.plain)

@@ -16,8 +16,6 @@ struct PostViewInteractionView: View {
     @State var showingMoreConfirmationDialog: Bool = false
     @State var showingPostShareConfirmationDialog: Bool = false
 
-    @Binding var interacted: Date
-
     var body: some View {
         HStack {
             Button(action: {
@@ -72,9 +70,7 @@ struct PostViewInteractionView: View {
                         return
                     }
 
-                    if await postViewInteractionViewModel.toggleLikePost(session: session) == nil {
-                        interacted = Date()
-                    }
+                    _ = await postViewInteractionViewModel.toggleLikePost(session: session)
                 }
             }, label: {
                 HStack {

@@ -31,8 +31,6 @@ struct ThreadViewPostView: View {
     @State var showingProfileHandle: String? = nil
     @State var showingThreadURI: String? = nil
 
-    @Binding var interacted: Date
-
     var body: some View {
         ScrollViewReader { proxy in
             List {
@@ -42,7 +40,6 @@ struct ThreadViewPostView: View {
                         PostViewView(postViewViewModel: PostViewViewModel(postView: threadViewPost.post),
                                      showingProfileHandle: $showingProfileHandle,
                                      showingThreadURI: $showingThreadURI,
-                                     interacted: $interacted,
                                      showThread: true)
 
                     case .blockedPost(_):
@@ -56,8 +53,7 @@ struct ThreadViewPostView: View {
                 if let threadViewPost = threadViewPostViewModel.threadViewPost {
                     PostViewView(postViewViewModel: PostViewViewModel(postView: threadViewPost.post),
                                  showingProfileHandle: $showingProfileHandle,
-                                 showingThreadURI: $showingThreadURI,
-                                 interacted: $interacted)
+                                 showingThreadURI: $showingThreadURI)
                     .id(1)
                 }
 
@@ -67,7 +63,6 @@ struct ThreadViewPostView: View {
                         PostViewView(postViewViewModel: PostViewViewModel(postView: threadViewPost.post),
                                      showingProfileHandle: $showingProfileHandle,
                                      showingThreadURI: $showingThreadURI,
-                                     interacted: $interacted,
                                      showThread: true)
 
                     case .blockedPost(_):
@@ -83,8 +78,7 @@ struct ThreadViewPostView: View {
                 proxy.scrollTo(1, anchor: .top)
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in
-                ThreadViewPostView(threadViewPostViewModel: ThreadViewPostViewModel(uri: threadURI),
-                                   interacted: $interacted)
+                ThreadViewPostView(threadViewPostViewModel: ThreadViewPostViewModel(uri: threadURI))
             }
         }
         .task {
