@@ -1,5 +1,5 @@
 //
-//  AuthorLikesViewModel.swift
+//  ActorLikesViewModel.swift
 //  Poast
 //
 //  Created by Christopher Head on 10/30/24.

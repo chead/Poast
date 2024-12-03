@@ -135,22 +135,22 @@ struct PoastThreadView: View {
             }
             .navigationDestination(item: $showingProfileHandle) { profileHandle in
                 if let session = user.session {
-                    ProfileView(profileViewModel: ProfileViewViewModel(session: session,
-                                                                             handle: profileHandle),
-                                     authorFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                   modelContext: modelContext,
-                                                                                   actor: profileHandle,
-                                                                                   filter: .postsNoReplies),
-                                     repliesFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                    modelContext: modelContext,
-                                                                                    actor: profileHandle),
-                                     mediaFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                  modelContext: modelContext,
-                                                                                  actor: profileHandle,
-                                                                                  filter: .postsWithMedia),
-                                     likesFeedViewModel: LikesFeedViewModel(session: session,
-                                                                                 modelContext: modelContext,
-                                                                                 actor: profileHandle))
+//                    ProfileView(profileViewModel: ProfileViewViewModel(session: session,
+//                                                                             handle: profileHandle),
+//                                     authorFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                                   modelContext: modelContext,
+//                                                                                   actor: profileHandle,
+//                                                                                   filter: .postsNoReplies),
+//                                     repliesFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                                    modelContext: modelContext,
+//                                                                                    actor: profileHandle),
+//                                     mediaFeedViewModel: AuthorFeedViewModel(session: session,
+//                                                                                  modelContext: modelContext,
+//                                                                                  actor: profileHandle,
+//                                                                                  filter: .postsWithMedia),
+//                                     likesFeedViewModel: ActorLikesViewModel(session: session,
+//                                                                                 modelContext: modelContext,
+//                                                                                 actor: profileHandle))
                 }
             }
             .navigationDestination(item: $showingThreadURI) { threadURI in

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import SwiftBluesky
 
-class FollowingFeedViewModel: FeedViewModel {
+class TimelineViewModel: FeedViewModel {
     let algorithm: String
 
     init(session: SessionModel, modelContext: ModelContext, algorithm: String = "") {

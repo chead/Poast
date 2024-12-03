@@ -26,7 +26,7 @@ struct FollowingFeedView: View {
 
     @EnvironmentObject var user: UserModel
 
-    @StateObject var followingFeedViewModel: FollowingFeedViewModel
+    @StateObject var followingFeedViewModel: TimelineViewModel
 
     @State var showingComposeSheet: Bool = false
     @State var showingProfileHandle: String? = nil

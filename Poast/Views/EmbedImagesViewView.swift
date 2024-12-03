@@ -35,7 +35,7 @@ struct EmbedImagesViewView: View {
                         if let image = state.image {
                             image
                                 .resizable()
-                                .scaledToFill()
+                                .scaledToFit()
                         } else {
                             Color.gray.opacity(0.2)
                         }
@@ -47,7 +47,7 @@ struct EmbedImagesViewView: View {
                             if let image = state.image {
                                 image
                                     .resizable()
-                                    .scaledToFill()
+                                    .scaledToFit()
                             } else {
                                 Color.gray.opacity(0.2)
                             }

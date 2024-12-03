@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import SwiftBluesky
 
+/*
 enum ProfileFeedType {
     case posts
     case replies
@@ -17,6 +18,7 @@ enum ProfileFeedType {
     case feeds
     case lists
 }
+
 
 struct ProfileView: View {
     @Environment(\.modelContext) private var modelContext
@@ -171,7 +173,7 @@ struct ProfileView: View {
                                                                               modelContext: modelContext,
                                                                               actor: profileHandle,
                                                                               filter: .postsWithMedia),
-                                 likesFeedViewModel: LikesFeedViewModel(session: session,
+                                 likesFeedViewModel: ActorLikesViewModel(session: session,
                                                                              modelContext: modelContext,
                                                                              actor: profileHandle))
             } else {
@@ -342,3 +344,4 @@ struct ProfileView: View {
 //
 //    return profileView
 //}
+*/

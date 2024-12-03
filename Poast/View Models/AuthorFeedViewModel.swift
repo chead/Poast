@@ -27,6 +27,7 @@ class AuthorFeedViewModel: FeedViewModel {
                                                  accessToken: credentials.accessToken,
                                                  refreshToken: credentials.refreshToken,
                                                  actor: actor,
+                                                 filter: filter,
                                                  cursor: cursor)) {
             case .success(let getAuthorFeedResponse):
                 if let credentials = getAuthorFeedResponse.credentials {

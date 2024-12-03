@@ -16,17 +16,7 @@ enum PostViewModelError: Error {
     case unknown(error: Error)
 }
 
-extension Bsky.Feed.PostView {
-    var timeAgoString: String {
-        guard indexedAt.timeIntervalSinceNow.rounded() != 0 else { return "now" }
 
-        let formatter = RelativeDateTimeFormatter()
-
-        formatter.unitsStyle = .full
-
-        return formatter.localizedString(for: indexedAt, relativeTo: Date())
-    }
-}
 
 @MainActor
 class PostViewViewModel {

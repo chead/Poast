@@ -22,6 +22,10 @@ struct EmbedRecordViewView: View {
                                url: URL(string: viewRecord.author.avatar ?? ""))
 
                     Text(viewRecord.author.name)
+
+                    Spacer()
+
+                    Text(viewRecord.timeAgoString)
                 }
 
                 Text(viewRecord.value.text)

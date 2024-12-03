@@ -16,7 +16,7 @@ struct MainTabView: View {
         TabView {
             if let session = user.session {
                 NavigationStack {
-                    FollowingFeedView(followingFeedViewModel: FollowingFeedViewModel(session: session,
+                    FollowingFeedView(followingFeedViewModel: TimelineViewModel(session: session,
                                                                              modelContext: modelContext))
                 }
                 .tabItem { Label("Timeline", systemImage: "dot.radiowaves.up.forward") }
@@ -32,22 +32,9 @@ struct MainTabView: View {
 
             if let session = user.session {
                 NavigationStack {
-                    ProfileView(profileViewModel: ProfileViewViewModel(session: session,
-                                                                             handle: session.account.handle),
-                                     authorFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                   modelContext: modelContext,
-                                                                                   actor: session.account.handle,
-                                                                                   filter: .postsNoReplies),
-                                     repliesFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                    modelContext: modelContext,
-                                                                                    actor: session.account.handle),
-                                     mediaFeedViewModel: AuthorFeedViewModel(session: session,
-                                                                                  modelContext: modelContext,
-                                                                                  actor: session.account.handle,
-                                                                                  filter: .postsWithMedia),
-                                     likesFeedViewModel: LikesFeedViewModel(session: session,
-                                                                                 modelContext: modelContext,
-                                                                                 actor: session.account.handle))
+                    ProfileViewDetailedView(session: session,
+                                            modelContext: modelContext,
+                                            handle: session.account.handle)
                 }
                 .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
             }

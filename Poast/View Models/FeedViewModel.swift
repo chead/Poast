@@ -17,7 +17,6 @@ enum FeedViewModelError: Error {
     case credentialsService(error: CredentialsServiceError)
 }
 
-@MainActor
 class FeedViewModel: ObservableObject {
     @Dependency internal var credentialsService: CredentialsService
 
@@ -32,6 +31,7 @@ class FeedViewModel: ObservableObject {
         self.modelContext = modelContext
     }
 
+    @MainActor
     func removePosts() {
         posts.removeAll()
 
@@ -40,10 +40,12 @@ class FeedViewModel: ObservableObject {
         try? modelContext.delete(model: MuteInteractionModel.self)
     }
 
+    @MainActor
     func getPosts(cursor: Date) async -> Result<[Bsky.Feed.FeedViewPost], FeedViewModelError> {
         return .success([])
     }
 
+    @MainActor
     func refreshPosts() async -> FeedViewModelError? {
         switch(await getPosts(cursor: Date())) {
         case .success(let newPosts):
@@ -58,6 +60,7 @@ class FeedViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     func updatePosts(cursor: Date) async -> FeedViewModelError? {
         switch(await getPosts(cursor: cursor)) {
         case .success(let newPosts):

@@ -1,8 +1,8 @@
 //
-//  ProfileViewBasic.swift
+//  BskyActor.swift
 //  Poast
 //
-//  Created by Christopher Head on 11/16/24.
+//  Created by Christopher Head on 11/17/24.
 //
 
 import SwiftBluesky

@@ -25,12 +25,15 @@ struct FeedViewPostView: View {
                              showingThreadURI: $showingThreadURI,
                              isParent: true,
                              showThread: true)
+                .padding()
 
             case .blockedPost(_):
                 BlockedPostView()
+                    .padding()
 
             case .notFoundPost(_):
                 NotFoundPostView()
+                    .padding()
             }
         }
 
@@ -38,5 +41,6 @@ struct FeedViewPostView: View {
                      showingProfileHandle: $showingProfileHandle,
                      showingThreadURI: $showingThreadURI,
                      showThread: true)
+        .padding()
     }
 }
